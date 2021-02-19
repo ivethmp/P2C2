@@ -6,4 +6,10 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Irony">
+      <HintPath>..\..\Irony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
