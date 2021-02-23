@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static P1.TS.Simb;
 
 namespace P1.Interfaz
 {
@@ -12,7 +13,7 @@ namespace P1.Interfaz
         public int lin { get; set; }
         public int col { get; set; }
 
-        Tipo GetTipo(Entor en, AST arbol);
+        Tipo getTipo(Entor en, AST arbol);
 
         object getValImp(Entor en, AST arbol);
 
