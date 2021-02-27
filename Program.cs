@@ -19,13 +19,15 @@ namespace P1
 
             //string text = System.IO.File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\input", "entrada.txt"));
             string text = System.IO.File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input\\entrada.txt"));
-            Sintactico sintac = new Sintactico();
-            sintac.Analizar(text);
+            //Sintactico sintac = new Sintactico();
+            
             
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
+            //sintac.Analizar( text);
         }
     }
 }

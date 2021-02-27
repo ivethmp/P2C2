@@ -5,12 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Irony.Ast;
 using Irony.Parsing;
+using System.Windows.Forms;
 
 namespace P1.Analizador
 {
     class Sintactico
     {
-        public void Analizar(String cad)
+        public void Analizar(TextBox salida, String cad)
         {
             Gramatica gramatica = new Gramatica();
             LanguageData lenguaje = new LanguageData(gramatica);
@@ -18,26 +19,34 @@ namespace P1.Analizador
             ParseTree arbol = parser.Parse(cad);
             ParseTreeNode raiz = arbol.Root;
 
-            instrucs(raiz.ChildNodes.ElementAt(0));
+            if (raiz==null)
+            {
+                System.Diagnostics.Debug.WriteLine("no tiene nada el arbol");
+                return;
+            }
+
+            instrucs(salida, raiz.ChildNodes.ElementAt(0));
 
         }
 
-        public void instrucs(ParseTreeNode NodoA)
+        public void instrucs(TextBox salida, ParseTreeNode NodoA)
         {
             if (NodoA.ChildNodes.Count == 2)
             {
-                instruc(NodoA.ChildNodes.ElementAt(0));
-                instrucs(NodoA.ChildNodes.ElementAt(1));
+                instruc(salida,NodoA.ChildNodes.ElementAt(0));
+                instrucs(salida, NodoA.ChildNodes.ElementAt(1));
             }
             else
             {
-                instruc(NodoA.ChildNodes.ElementAt(0));
+                instruc(salida, NodoA.ChildNodes.ElementAt(0));
             }
         }
 
-        public void instruc(ParseTreeNode NodoA)
+        public void instruc(TextBox salida,ParseTreeNode NodoA)
         {
             System.Diagnostics.Debug.WriteLine("El valor de la expresion es: " + Exp(NodoA.ChildNodes.ElementAt(2)));
+
+            salida.Text+= ("El valor de la expresion es: " + Exp(NodoA.ChildNodes.ElementAt(2))+"\n")+"\r\n";
         }
 
         public double Exp(ParseTreeNode NodoA)

@@ -11,15 +11,23 @@ namespace P1.Analizador
     class Gramatica : Grammar
     {
 
-        public Gramatica()
+        public Gramatica():base(caseSensitive:false)
         {
 
             #region ER
-            var NUMERO = new NumberLiteral("Numero");
+            StringLiteral CADENA = new StringLiteral("cadena", "\"");
+            var INT = new NumberLiteral("entero");
+            var DECIMAL = new RegexBasedTerminal("decimal", "[0-9]+'.'[0-9]+");
+            IdentifierTerminal IDENT = new IdentifierTerminal("id");
+
+            CommentTerminal comLinea = new CommentTerminal("CMLine", "//", "\n", "\r\n");
+            CommentTerminal coMLinea1 = new CommentTerminal("CMMLine", "(*", "*)");
+            CommentTerminal coMLineaV2 = new CommentTerminal("CMMLine2", "{", "}");
             #endregion
 
             #region Terminales
-            var REVALUAR = ToTerm("Evaluar");
+            var IMPR = ToTerm("write");
+            var IMPR2 = ToTerm("writeln");
             var PTCOMA = ToTerm(";");
             var PARIZQ = ToTerm("(");
             var PARDER = ToTerm(")");
@@ -33,30 +41,38 @@ namespace P1.Analizador
             RegisterOperators(1, MAS, MENOS);
             RegisterOperators(2, POR, DIVIDIDO);
 
+            NonGrammarTerminals.Add(comLinea);
+            NonGrammarTerminals.Add(coMLinea1);
+            NonGrammarTerminals.Add(coMLineaV2);
+
             #endregion
 
             #region No Terminales
             NonTerminal ini = new NonTerminal("ini");
-            NonTerminal instruccion = new NonTerminal("instruccion");
-            NonTerminal instrucciones = new NonTerminal("instrucciones");
-            NonTerminal expresion = new NonTerminal("expresion");
+            NonTerminal instr = new NonTerminal("instr");
+            NonTerminal instrs = new NonTerminal("instrs");
+            NonTerminal expr = new NonTerminal("expr");
+            NonTerminal writ = new NonTerminal("writel");
             #endregion
 
             #region Gramatica
-            ini.Rule = instrucciones;
+            ini.Rule = instrs;
 
-            instrucciones.Rule = instruccion + instrucciones
-                | instruccion;
+            instrs.Rule = instr + instrs
+                | instr;
 
-            instruccion.Rule = REVALUAR + CORIZQ + expresion + CORDER + PTCOMA;
+            instr.Rule = writ + CORIZQ + expr + CORDER + PTCOMA;
 
-            expresion.Rule = MENOS + expresion
-                | expresion + MAS + expresion
-                | expresion + MENOS + expresion
-                | expresion + POR + expresion
-                | expresion + DIVIDIDO + expresion
-                | NUMERO
-                | PARIZQ + expresion + PARDER;
+            writ.Rule = IMPR
+                    | IMPR2;
+
+            expr.Rule = MENOS + expr
+                | expr + MAS + expr
+                | expr + MENOS + expr
+                | expr + POR + expr
+                | expr + DIVIDIDO + expr
+                | INT
+                | PARIZQ + expr + PARDER;
 
             #endregion
 

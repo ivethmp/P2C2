@@ -1,4 +1,5 @@
-﻿using System;
+﻿using P1.Analizador;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,12 +17,18 @@ namespace P1
         {
             InitializeComponent();
         }
-
+        //boton analizaar
         private void button1_Click(object sender, EventArgs e)
         {
             String texto = entrada.Text;
             Console.WriteLine(texto);
             System.Diagnostics.Debug.WriteLine(texto);
+
+            Sintactico sintac = new Sintactico();
+
+           sintac.Analizar(salida,texto);
+
+
         }
     }
 }
