@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.TS;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,9 @@ namespace P1.Interfaz
         public int lin { get; set; }
         public int col { get; set; }
 
-        Tipo getTipo(Entor en, AST arbol);
+        Tipo getTipo(Entor en, TabS arbol);
 
-        object getValImp(Entor en, AST arbol);
+        object getValImp(Entor en, TabS arbol);
 
     }
 }

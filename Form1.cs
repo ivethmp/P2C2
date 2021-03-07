@@ -13,6 +13,7 @@ namespace P1
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -28,6 +29,11 @@ namespace P1
 
            sintac.Analizar(salida,texto);
 
+
+        }
+
+        private void salida_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

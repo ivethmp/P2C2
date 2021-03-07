@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.TS;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,6 @@ namespace P1.Interfaz
         public int lin { get; set; }
         public int col { get; set; }
 
-        object ejecutar(Entor en, AST arbol);
+        Object ejecutar(Entor en, TabS tabS);
     }
 }

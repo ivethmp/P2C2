@@ -1,22 +1,28 @@
-﻿using System;
+﻿using P1.Arbol;
+using P1.Interfaz;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace P1.TS
 {
     //En simbolo se definen la estructura de cada uno de estos
-    public class Simb
+    public class Simb:Expr
     {
 
-        private Tipo tip;
+        public Tipo tip;
+        public String id;
+        public Object val;
 
-        private String id;
-        private Object val;
+        public int lin { get ; set ; }
+        public int col { get ; set ; }
 
-        public Simb(String id, Tipo tip)
+        public Simb(String id, Tipo tip, int lin, int col)
         {
             this.tip = tip;
             this.id = id;
+            this.lin = lin;
+            this.col = col;
         }
 
         public enum Tipo
@@ -28,8 +34,10 @@ namespace P1.TS
             VOID,
             TYPE,
             OBJ,
-            ARRAY
+            ARRAY,
+            INVAL
         }
+
         public String getId()
         {
             return id;
@@ -45,5 +53,14 @@ namespace P1.TS
             val = valor;
         }
 
+        public Tipo getTipo(Entor en, TabS arbol)
+        {
+            return tip;
+        }
+
+        public object getValImp(Entor en, TabS arbol)
+        {
+            return val;
+        }
     }
 }
