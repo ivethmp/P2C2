@@ -17,6 +17,7 @@ namespace P1.Instruccion
         public enum tipOper
         {
             SUMA,
+            CONCAT,
             RESTA,
             POR,
             DIVISION,
@@ -55,6 +56,7 @@ namespace P1.Instruccion
             switch (oper)
             {
                 case "+": return tipOper.SUMA;
+                case ",": return tipOper.CONCAT;
                 case "-": return tipOper.RESTA;
                 case "*": return tipOper.POR;
                 case "/": return tipOper.DIVISION;
@@ -106,6 +108,12 @@ namespace P1.Instruccion
                             Form1.errores.AppendText("Error, datos incorrectos para realizar Suma");
                             return null;
                         }
+                    }
+                    #endregion
+                    #region Concatenar
+                    else if (operador == tipOper.CONCAT)
+                    {
+                        return op1.ToString() + op2.ToString();      
                     }
                     #endregion
                     #region Resta

@@ -83,7 +83,7 @@ namespace P1.Arbol
             for (Entor e = this; e != null; e = e.anterior)
             {
                 Simb simbolo = (Simb)(e.tabS[id]);
-                if (simbolo == null)
+                if (simbolo != null)
                     return simbolo;
 
 

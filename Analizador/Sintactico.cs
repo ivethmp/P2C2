@@ -28,13 +28,9 @@ namespace P1.Analizador
             ParseTree arbol = parser.Parse(cad);
             ParseTreeNode raiz = arbol.Root;
             bool error = arbol.HasErrors();
-            //int numeroE = raiz.;
             
-
-            System.Diagnostics.Debug.WriteLine(/*numE + */" errores_?" + error + "numE ");
             if (arbol.HasErrors())
             {
-
                 Form1.errores.Text = (BuildParsingErrorMessage(arbol.ParserMessages));
                 return;
                 //throw new InvalidOperationException(BuildParsingErrorMessage(arbol.ParserMessages));
@@ -49,28 +45,19 @@ namespace P1.Analizador
 
             TabS global = new TabS();
             Entor entorno = new Entor(null);
-            System.Diagnostics.Debug.WriteLine("antes del for");
             foreach (Instruc inst in AST)
             {
                     inst.ejecutar(entorno, global);
             }
             
-                       
-
-                       // instrucs( raiz.ChildNodes.ElementAt(0));
-
         }
         private static string BuildParsingErrorMessage(LogMessageList messages)
-        {
+        {//este metodo obtiene los mensajes de error sintactico desde la gramatica
             var sb = new StringBuilder();
             sb.AppendLine("Errores de sintaxis:");
             messages.ForEach(msg => sb.AppendLine($"\t{msg.Message + " lin:" + msg.Location.Line + " col:"+ msg.Location.Column}"));
             return sb.ToString();
         }
-        /*private SerializationInfo BuildParsingErrorMessage(LogMessageList parserMessages)
-        {
-            throw new NotImplementedException();
-        }*/
 
         public LinkedList<Instruc> instrucs( ParseTreeNode nodoA)
         {
@@ -98,6 +85,13 @@ namespace P1.Analizador
                 {
                     System.Diagnostics.Debug.WriteLine("entre al for");
                     lista.AddLast(instruc(declarar));
+                }
+                return lista;
+            }else if (bloque.ChildNodes[1].Term.Name == "BLOQ_BEGIN")
+            {
+                foreach (ParseTreeNode instbegin in bloque.ChildNodes[1].ChildNodes)
+                {
+                    lista.AddLast(instruc(instbegin.ChildNodes[0]));
                 }
                 return lista;
             }
@@ -166,16 +160,15 @@ namespace P1.Analizador
                 
                 case "asigna":
                     {
-                        return null;
+                        return new Asig(nodoA.ChildNodes[0].Token.Text,expresion(nodoA.ChildNodes[2]),0,0);
                     }
                 case "writel":
-                    {
-                        Console.WriteLine("entre al writel");
-                        if (nodoA.ChildNodes.ElementAt(0).ToString().Split(' ')[0].ToLower().Equals("writeln"))
+                    {//El primer if es de writeln
+                        if (nodoA.ChildNodes[0].ChildNodes[0].Term.Name == "writeln")
                         {//significa que es un salto de linea 
-                            return new Print(expresion(nodoA.ChildNodes.ElementAt(2)),nodoA.ChildNodes.ElementAt(2).Token.Location.Line, nodoA.ChildNodes.ElementAt(2).Token.Location.Column, true);
-                        }
-                        return new Print((Expr)expresion(nodoA.ChildNodes.ElementAt(2)), nodoA.ChildNodes.ElementAt(2).Token.Location.Line, nodoA.ChildNodes.ElementAt(2).Token.Location.Column, false);
+                            return new Print(expresion(nodoA.ChildNodes[2]),nodoA.ChildNodes[1].Token.Location.Line,nodoA.ChildNodes[1].Token.Location.Column,true);
+                        }//significa que es un write sin salto de linea por lo que la bandera es false
+                        return new Print((Expr)expresion(nodoA.ChildNodes[2]), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
                         //(Expr)analizr(nodoA, linea,columna)
                     }
                     // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
@@ -282,36 +275,7 @@ namespace P1.Analizador
             }
             
         }
-
-        public double Exp(ParseTreeNode NodoA)
-        {
-            if (NodoA.ChildNodes.Count == 3)
-            {
-                string token = NodoA.ChildNodes.ElementAt(1).ToString().Split(' ')[0];
-                switch (token)
-                {
-                    case "+":
-                        return Exp(NodoA.ChildNodes.ElementAt(0)) + Exp(NodoA.ChildNodes.ElementAt(2));
-                    case "-":
-                        return Exp(NodoA.ChildNodes.ElementAt(0)) - Exp(NodoA.ChildNodes.ElementAt(2));
-                    case "*":
-                        return Exp(NodoA.ChildNodes.ElementAt(0)) * Exp(NodoA.ChildNodes.ElementAt(2));
-                    case "/":
-                        return Exp(NodoA.ChildNodes.ElementAt(0)) / Exp(NodoA.ChildNodes.ElementAt(2));
-                    default:
-                        return Exp(NodoA.ChildNodes.ElementAt(1));
-                }
-
-            }
-            else if (NodoA.ChildNodes.Count == 2)
-            {
-                return -1 * Exp(NodoA.ChildNodes.ElementAt(1));
-            }
-            else
-            {
-                return Double.Parse(NodoA.ChildNodes.ElementAt(0).ToString().Split(' ')[0]);
-            }
-        }
+        
     
     }
 }

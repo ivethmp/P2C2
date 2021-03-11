@@ -21,6 +21,9 @@ namespace P1
         //boton analizaar
         private void button1_Click(object sender, EventArgs e)
         {
+            //entrada.Clear();
+            salida.Clear();
+            errores.Clear();
             String texto = entrada.Text;
             Console.WriteLine(texto);
             System.Diagnostics.Debug.WriteLine(texto);
