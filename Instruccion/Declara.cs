@@ -16,19 +16,21 @@ namespace P1.Instruccion
         public int col { get ; set ; }
 
 
-        public Declara(LinkedList<Simb> listaID, Simb.Tipo tipoD, int lin, int col)
+        /*public Declara(LinkedList<Simb> listaID, Simb.Tipo tipoD, int lin, int col)
         {
             this.listaID = listaID;
             this.tipoD = tipoD;
             this.lin = lin;
             this.col = col;
             
-        }
-        public Declara(LinkedList<Simb> listaID, Simb.Tipo tipoD, Expr val)
+        }*/
+        public Declara(LinkedList<Simb> listaID, Simb.Tipo tipoD, Expr val, int lin, int col)
         {
             this.listaID = listaID;
             this.tipoD = tipoD;
             this.val = val;
+            this.lin = lin;
+            this.col = col;
         }
 
         public object ejecutar(Entor en, TabS tabS)
@@ -56,6 +58,8 @@ namespace P1.Instruccion
 
             foreach(Simb sim in listaID)
             {
+                lin = sim.lin;
+                col = sim.col;
                 if (!en.buscar(sim.id))
                 {
                     if(tipoD == tipoA)//esta declarado segun el tipo que se inicializo
@@ -65,6 +69,7 @@ namespace P1.Instruccion
                     }
                     else
                     {
+                        
                         Form1.errores.AppendText("Error en Declaracion, id " + sim.id + " se inicializo con el tipo incorrecto, lin:" + lin + " col:" + col);
                         return false;//no se declaro nada
                     }

@@ -17,7 +17,6 @@ namespace P1.Analizador
             #region ER
             StringLiteral CADENA = new StringLiteral("cadena", "\"");
             var INT = new NumberLiteral("entero");
-            var DECIMAL = new RegexBasedTerminal("decimal", "[0-9]+'.'[0-9]+");
             IdentifierTerminal IDENT = new IdentifierTerminal("id");
 
             CommentTerminal comLinea = new CommentTerminal("CMLine", "//", "\n", "\r\n");
@@ -44,6 +43,8 @@ namespace P1.Analizador
             var OOR = ToTerm("or");
             var AAND = ToTerm("and");
 
+            //MarkReservedWords
+
             var IGUAL = ToTerm("=");
             
             var PTCOMA = ToTerm(";");
@@ -63,6 +64,7 @@ namespace P1.Analizador
             var MAYIQ = ToTerm(">=");
             var MENIQ = ToTerm("<=");
             var DIF = ToTerm("<>");
+            var error = SyntaxError;
 
             RegisterOperators(1, MAS, MENOS);
             RegisterOperators(2, POR, DIVIDIDO);
@@ -91,23 +93,27 @@ namespace P1.Analizador
             NonTerminal prim = new NonTerminal("PRIMITIVOS");
             NonTerminal bloqVar = new NonTerminal("BLOQ_VAR");
             NonTerminal bloqBegin = new NonTerminal("BLOQ_BEGIN");
+            
             #endregion
 
             #region Gramatica
-            ini.Rule = instrs;
+            ini.Rule = instrs
+                     | error;
 
             instrs.Rule = instrs + instr
-                | PROG + IDENT + PTCOMA + instr;
+                | PROG + IDENT + PTCOMA + instr
+                | error;
 
             //iniProg.Rule = PROG + IDENT + PTCOMA;
 
             instr.Rule = //INSTRUCCIONES 
-                          VARI + bloqVar
-                        | BBEGIN + bloqBegin;
+                          VARI + bloqVar + PTCOMA
+                        | BBEGIN + bloqBegin
+                        | error;
 
             bloqVar.Rule = //BLOQUE DE DECLARACION VAR EN PASCAL
-                          declar + PTCOMA;
-
+                        MakePlusRule(bloqVar, PTCOMA, declar);
+                       
             bloqBegin.Rule =//BLOQUE DE BEGIN EN PASCAL
                           asig + PTCOMA
                         | print;
@@ -118,10 +124,14 @@ namespace P1.Analizador
 
             //DECLARACION RULE
             declar.Rule = listDec + DOSPTS + tipo
-                         | IDENT + DOSPTS + tipo + IGUAL + prim; //DECLARACION Y ASIGNACION;
+                         | IDENT + DOSPTS + tipo
+                         | IDENT + DOSPTS + tipo + IGUAL + expr; //DECLARACION Y ASIGNACION;
             //LISTA DE DECLARACIONES
-            listDec.Rule = listDec + COMA + IDENT
-                           | IDENT;
+
+            listDec.Rule = MakePlusRule(listDec, COMA, IDENT);
+                      //    | IDENT;
+            /*listDec.Rule = listDec + COMA + IDENT
+                           | IDENT;*/
 
             asig.Rule = IDENT + DPTSIGUAL + expr; //ESTA ES UNA ASIGNACION EN BEGIN
                         
@@ -140,7 +150,6 @@ namespace P1.Analizador
             
             expr.Rule = //EXPRESIONES
                          prim
-                       | IDENT
                        | exprAritmetica
                        | exprRelacional
                        | exprLogica
@@ -167,11 +176,11 @@ namespace P1.Analizador
                        | expr + AAND + expr;
 
             prim.Rule = //VALORES PRIMITIVOS
-                          ENTERO
+                          INT
                         | CADENA
-                        | DECIMAL
                         | TRUE
-                        | FALSE;
+                        | FALSE
+                        | IDENT;
 
             #endregion
 

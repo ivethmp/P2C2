@@ -20,7 +20,7 @@ namespace P1.Instruccion
             object valor = this.getValImp(en, arbol);
             if (valor is int)
                 return Tipo.INT;
-            else if (valor is Double)
+            else if (valor is Double || valor is Decimal)
                 return Tipo.REAL;
             else if (valor is String)
                 return Tipo.STRING;

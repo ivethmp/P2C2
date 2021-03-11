@@ -27,12 +27,17 @@ namespace P1
 
             Sintactico sintac = new Sintactico();
 
-           sintac.Analizar(salida,texto);
+           sintac.Analizar(texto);
 
 
         }
 
         private void salida_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void errores_TextChanged(object sender, EventArgs e)
         {
 
         }

@@ -10,8 +10,8 @@ namespace P1.Instruccion
 {
     class Oper : Expr
     {
-        public int lin { get ; set ; }
-        public int col { get ; set ; }
+        public int lin { get; set; }
+        public int col { get; set; }
 
 
         public enum tipOper
@@ -27,6 +27,7 @@ namespace P1.Instruccion
             MENIQ,
             MAYIOQ,
             IGUAL,
+            NOT,
             OTRO
         }
 
@@ -43,10 +44,15 @@ namespace P1.Instruccion
             this.operIzq = operIzq;
             this.operDer = operDer;
         }
+        public Oper(Expr operUna, tipOper operador)
+        {
+            this.operUna = operUna;
+            this.operador = operador;
+        }
 
         public static tipOper getOperador(string oper)
         {//retorna el tipo de operacion que se realiza
-            switch(oper)
+            switch (oper)
             {
                 case "+": return tipOper.SUMA;
                 case "-": return tipOper.RESTA;
@@ -59,7 +65,7 @@ namespace P1.Instruccion
                 case "=": return tipOper.IGUAL;
                 default: return tipOper.OTRO;
             }
-          
+
         }
         public Simb.Tipo getTipo(Entor en, TabS tabS)
         {//retorna el tipo de dato que se esta utilizando
@@ -75,18 +81,122 @@ namespace P1.Instruccion
         {
             try
             {
-                if(operUna == null)
+                if (operUna == null)
                 {
                     object op1 = operIzq.getValImp(en, tabS);
                     object op2 = operDer.getValImp(en, tabS);
                     #region Sum
-                    if(operador == tipOper.SUMA)
+                    if (operador == tipOper.SUMA)
                     {
                         if (op1 is int && op2 is int)
                             return (int)op1 + (int)op2;
-                        
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) + Convert.ToDecimal(op2);
+                        }
+                        else if (op1 is String || op2 is String)
+                        {
+                            if (op1 == null) op1 = "null";
+                            if (op2 == null) op2 = "null";
+                            return op1.ToString() + op2.ToString();
+                        }
+                        else
+                        {
+                            Form1.errores.AppendText("Error, datos incorrectos para realizar Suma");
+                            return null;
+                        }
                     }
+                    #endregion
+                    #region Resta
+                    else if (operador == tipOper.RESTA)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 - (int)op2;
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) - Convert.ToDecimal(op2);
+                        }
+                        else if (op1 is String || op2 is String)
+                        {
+                            Form1.errores.AppendText("Error, datos incorrectos para realizar Resta");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region Multi
+                    else if (operador == tipOper.POR)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 * (int)op2;
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) * Convert.ToDecimal(op2);
+                        }
+                        else if (op1 is String || op2 is String)
+                        {
+                            Form1.errores.AppendText("Error, datos incorrectos para realizar Multiplicacion");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region Division
+                    else if (operador == tipOper.DIVISION)
+                    {
+                        if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            if((int)op2 == 0)
+                            {
+                                Form1.salida.AppendText("Error, No se puede dividir por 0, infinito");
+                                return null;
+                            }
+                            if (op1 is int && op2 is int)
+                            {
+                                return (int)op1 / (int)op2;
+                            }
+                                return Convert.ToDecimal(op1) / Convert.ToDecimal(op2);
+                        }
+                        else 
+                        {
+                            Form1.errores.AppendText("Error, datos incorrectos para realizar Division");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region MOD
+                    else if (operador == tipOper.MOD)
+                    {
+                        if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            if ((int)op2 == 0)
+                            {
+                                Form1.salida.AppendText("Error, No se puede utilizar MOD por 0, infinito");
+                                return null;
+                            }
+                            if (op1 is int && op2 is int)
+                            {
+                                return (int)op1 % (int)op2;
+                            }
+                            return Convert.ToDecimal(op1) % Convert.ToDecimal(op2);
+                        }
+                        else
+                        {
+                            Form1.errores.AppendText("Error, datos incorrectos para realizar MOD");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    //Aqui tendrian que ir el resto de operaciones RELACIONALES
+
+
                 }
+
+            }
+            catch
+            {
+
             }
             return val;
         }
