@@ -12,6 +12,7 @@ using P1.Arbol;
 using P1.Instruccion;
 using System.Runtime.Serialization;
 using Irony;
+using P1.Reportes;
 
 namespace P1.Analizador
 {
@@ -49,7 +50,10 @@ namespace P1.Analizador
             {
                     inst.ejecutar(entorno, global);
             }
-            
+            RepTabS reporte = new RepTabS();
+            reporte.GenHTML(entorno);
+
+
         }
         private static string BuildParsingErrorMessage(LogMessageList messages)
         {//este metodo obtiene los mensajes de error sintactico desde la gramatica

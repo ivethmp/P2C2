@@ -28,7 +28,7 @@ namespace P1.Analizador
             var PROG = ToTerm("program");
             var VARI = ToTerm("var");
             var BBEGIN = ToTerm("begin");
-            var END = ToTerm("end");
+            var END = ToTerm("end.");
             var IMPR = ToTerm("write");
             var IMPR2 = ToTerm("writeln");
             var ENTERO = ToTerm("integer");
@@ -94,6 +94,8 @@ namespace P1.Analizador
             NonTerminal bloqVar = new NonTerminal("BLOQ_VAR");
             NonTerminal bloqBegin = new NonTerminal("BLOQ_BEGIN");
             NonTerminal instrBegin = new NonTerminal("INSTR_BEGIN");
+            NonTerminal ifS = new NonTerminal("IF");
+
 
             #endregion
 
@@ -109,7 +111,7 @@ namespace P1.Analizador
 
             instr.Rule = //BLOQUE INSTRUCCIONES VAR, BEGIN
                           VARI + bloqVar + PTCOMA
-                        | BBEGIN + bloqBegin + PTCOMA
+                        | BBEGIN + bloqBegin + PTCOMA + END
                         | error;
 
             bloqVar.Rule = //BLOQUE DE VAR EN PASCAL

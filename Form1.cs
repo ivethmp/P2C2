@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,18 @@ namespace P1
         private void errores_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void tabSimbol_Click(object sender, EventArgs e)
+        {
+            Process process = new Process();
+            //process.StartInfo.Arguments = "chrome.exe";
+            process.StartInfo.FileName = "chrome.exe";
+            process.StartInfo.Arguments = "ReporteTablaS.html";
+            //process.StartInfo.FileName = output;
+            //debo usar userShellExecute en net core
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
         }
     }
 }
