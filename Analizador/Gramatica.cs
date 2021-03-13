@@ -27,8 +27,9 @@ namespace P1.Analizador
             #region Terminales
             var PROG = ToTerm("program");
             var VARI = ToTerm("var");
+            var CONST = ToTerm("const");
             var BBEGIN = ToTerm("begin");
-            var END = ToTerm("end.");
+            var END = ToTerm("end");
             var IMPR = ToTerm("write");
             var IMPR2 = ToTerm("writeln");
             var ENTERO = ToTerm("integer");
@@ -42,11 +43,13 @@ namespace P1.Analizador
             var NOT = ToTerm("not");
             var OOR = ToTerm("or");
             var AAND = ToTerm("and");
+            var FUNC = ToTerm("function");
+            var PROC = ToTerm("procedure");
 
             //MarkReservedWords
 
             var IGUAL = ToTerm("=");
-            
+            var PUNTO = ToTerm(".");
             var PTCOMA = ToTerm(";");
             var COMA = ToTerm(",");
             var DOSPTS = ToTerm(":");
@@ -92,27 +95,59 @@ namespace P1.Analizador
             NonTerminal iniProg = new NonTerminal("PROGRAM");
             NonTerminal prim = new NonTerminal("PRIMITIVOS");
             NonTerminal bloqVar = new NonTerminal("BLOQ_VAR");
+            NonTerminal OpcVar = new NonTerminal("OPCION_VAR");
             NonTerminal bloqBegin = new NonTerminal("BLOQ_BEGIN");
             NonTerminal instrBegin = new NonTerminal("INSTR_BEGIN");
+            NonTerminal bloqFunProc = new NonTerminal("BLOQ_FUNCION-PROCEDURE");
+            NonTerminal funcion = new NonTerminal("FUNCION");
+            NonTerminal funcProc = new NonTerminal("BLOQ_FUNC-PROC");
+            NonTerminal decFunPro = new NonTerminal("DECLARA_FUN-PROC");
+            NonTerminal listDecFP = new NonTerminal("LISTA_DECLA");
+            NonTerminal instrFun = new NonTerminal("INSTRUC_FUN-PROC");
+            NonTerminal pntComa = new NonTerminal("PUNTO-PTCOMA"); 
             NonTerminal ifS = new NonTerminal("IF");
 
 
             #endregion
 
             #region Gramatica
-            ini.Rule = instrs
+            ini.Rule = PROG + IDENT + PTCOMA + instrs 
                      | error;
 
-            instrs.Rule = instrs + instr
-                | PROG + IDENT + PTCOMA + instr
+            instrs.Rule = instrs + instr 
+                | instr
                 | error;
 
             //iniProg.Rule = PROG + IDENT + PTCOMA;
 
             instr.Rule = //BLOQUE INSTRUCCIONES VAR, BEGIN
-                          VARI + bloqVar + PTCOMA
-                        | BBEGIN + bloqBegin + PTCOMA + END
+                          OpcVar + bloqVar + PTCOMA
+                        | BBEGIN + bloqBegin + PTCOMA + END + pntComa
+                        | FUNC + funcProc + DOSPTS + tipo + PTCOMA + instrs
+                        | PROC + funcProc + PTCOMA + instrs
                         | error;
+
+            pntComa.Rule = PUNTO
+                           | PTCOMA;
+
+            //bloqFunProc.Rule = 
+            //BLOQUE DE FUNCIONES
+            //funcion.Rule = FUNC + funcProc + DOSPTS + tipo + instrFun ;
+
+            /*instrFun.Rule = listDecFP + PTCOMA + BBEGIN + bloqBegin + PTCOMA + END + PTCOMA
+                          | BBEGIN + bloqBegin + PTCOMA + END + PTCOMA
+                          | error;
+            */
+            funcProc.Rule = IDENT + PARIZQ + listDecFP + PARDER
+                            | IDENT + PARIZQ + PARDER;
+
+            listDecFP.Rule = MakePlusRule(listDecFP, PTCOMA,decFunPro);
+            
+            decFunPro.Rule = OpcVar + declar
+                            | declar;
+            //Opcion var o constante
+            OpcVar.Rule = VARI
+                        | CONST;
 
             bloqVar.Rule = //BLOQUE DE VAR EN PASCAL
                         MakePlusRule(bloqVar, PTCOMA, declar);
@@ -184,7 +219,9 @@ namespace P1.Analizador
             #endregion
 
             #region Preferencias
+            //MarkPunctuation(";");
             this.Root = ini;
+            
             #endregion
 
         }

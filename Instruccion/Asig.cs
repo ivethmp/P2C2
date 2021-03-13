@@ -38,13 +38,13 @@ namespace P1.Instruccion
                 else
                 {
 
-                    Form1.errores.AppendText("Error en Asignar, id " + actual.id + " posee otro tipo de de datos , lin:" + val.lin + " col:" + val.col);
+                    Form1.error.AppendText("Error en Asignar, id " + actual.id + " posee otro tipo de de datos , lin:" + val.lin + " col:" + val.col);
                     return false;//no se asigno nada 
                 }
             }
             else
             {
-                Form1.errores.AppendText("Error, No existe el id " + ide + " lin:" + lin + " col:" + col);
+                Form1.error.AppendText("Error, No existe el id " + ide + " lin:" + lin + " col:" + col);
                 return null;
             }
             return null;

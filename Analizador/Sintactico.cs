@@ -25,14 +25,14 @@ namespace P1.Analizador
             Gramatica gramatica = new Gramatica();
             LanguageData lenguaje = new LanguageData(gramatica);
             Parser parser = new Parser(lenguaje);
-            //System.Diagnostics.Debug.WriteLine("enter a analizar" + cad);
             ParseTree arbol = parser.Parse(cad);
             ParseTreeNode raiz = arbol.Root;
             bool error = arbol.HasErrors();
             
             if (arbol.HasErrors())
             {
-                Form1.errores.Text = (BuildParsingErrorMessage(arbol.ParserMessages));
+                Form1.error.Text = (BuildParsingErrorMessage(arbol.ParserMessages));
+                
                 return;
                 //throw new InvalidOperationException(BuildParsingErrorMessage(arbol.ParserMessages));
             }
@@ -42,7 +42,7 @@ namespace P1.Analizador
                 return;
             }
 
-            LinkedList<Instruc> AST = instrucs( raiz.ChildNodes.ElementAt(0));
+            LinkedList<Instruc> AST = instrucs( raiz.ChildNodes.ElementAt(3));
 
             TabS global = new TabS();
             Entor entorno = new Entor(null);
@@ -52,6 +52,9 @@ namespace P1.Analizador
             }
             RepTabS reporte = new RepTabS();
             reporte.GenHTML(entorno);
+            //GenGraphviz g = new GenGraphviz();
+            //g.graficar(raiz);
+            GenG.Run(GenGraphviz.getDot(raiz));
 
 
         }
@@ -65,7 +68,7 @@ namespace P1.Analizador
 
         public LinkedList<Instruc> instrucs( ParseTreeNode nodoA)
         {
-            if (nodoA.ChildNodes.Count == 2)
+            if (nodoA.ChildNodes.Count ==2 )
             {
                 LinkedList<Instruc> lista = instrucs (nodoA.ChildNodes.ElementAt(0));
               
@@ -76,7 +79,7 @@ namespace P1.Analizador
             {
                 LinkedList<Instruc> lista = new LinkedList<Instruc>();
                 //lista.AddLast(instruc( nodoA.ChildNodes.ElementAt(3)));
-                return bloques(nodoA.ChildNodes.ElementAt(3),lista);
+                return bloques(nodoA.ChildNodes.ElementAt(0),lista);
             }
         }
 
@@ -97,6 +100,10 @@ namespace P1.Analizador
                 {
                     lista.AddLast(instruc(instbegin.ChildNodes[0]));
                 }
+                return lista;
+            }else if (bloque.ChildNodes[1].Term.Name == "BLOQ_FUNC-PROC")
+            {
+                lista.AddLast(instruc(bloque));
                 return lista;
             }
             return null;
@@ -175,24 +182,59 @@ namespace P1.Analizador
                         return new Print((Expr)expresion(nodoA.ChildNodes[2]), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
                         //(Expr)analizr(nodoA, linea,columna)
                     }
-                    // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
+                // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
+
+                
                  case "numero":
                      string tokenValor = nodoA.ChildNodes.ElementAt(1).ToString().Split(' ')[0];
                     return null;
                      //return new Declaracion(tokenValor, Simbolo.Tipo.NUMERO);
 
                  default:
-                     if (nodoA.ChildNodes.Count == 3)
-                     {
-                         tokenValor = nodoA.ChildNodes.ElementAt(0).ToString().Split(' ')[0];
-                         //return new Asignacion(tokenValor, expresion_numerica(actual));
-                     }
-                     else
-                     {
-                         tokenValor = nodoA.ChildNodes.ElementAt(0).ToString().Split(' ')[0];
-                         //return new Asignacion(tokenValor, expresion_numerica(actual.ChildNodes.ElementAt(2)));
-                     }
-                    return null;
+                    {
+                        if (nodoA.ChildNodes[0].Token.Text == "function" || nodoA.ChildNodes[0].Token.Text == "procedure")
+                        {
+                            Simb.Tipo tipoA;
+                            if (nodoA.ChildNodes[0].Token.Text == "procedure")
+                                tipoA = Simb.Tipo.VOID;
+                            else    tipoA = tipoVar(nodoA.ChildNodes[3].ChildNodes[0]);
+
+                            
+                            if(nodoA.ChildNodes[1].ChildNodes.Count == 3)//no tiene parametros
+                            {
+
+                            }else//tiene parametros
+                            {
+                                LinkedList<Declara> param = new LinkedList<Declara>();
+                                foreach (ParseTreeNode parametro in nodoA.ChildNodes[1].ChildNodes[2].ChildNodes)
+                                {
+                                    if (parametro.ChildNodes.Count == 2)
+                                    {
+                                        if (parametro.ChildNodes[1].ChildNodes.Count != 3)
+                                        {
+                                            Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Column);
+                                            return null;
+                                        }
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[1]));
+                                    }
+                                    else
+                                    {
+                                        if (parametro.ChildNodes[0].ChildNodes.Count != 3)
+                                        {
+                                            Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Column);
+                                            return null;
+                                        }
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[0]));
+                                    }
+                                }
+                                LinkedList<Instruc> instruciones = instrucs(nodoA.ChildNodes[5]);
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, param, instrucs(nodoA.ChildNodes[5]),tipoA,nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                            }
+                            
+                        }
+                        return null;
+
+                    }
              }
             
         }

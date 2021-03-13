@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace P1
 {
     partial class Form1
@@ -19,8 +21,9 @@ namespace P1
                 components.Dispose();
             }
             base.Dispose(disposing);
-        }
 
+        }
+         
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -31,8 +34,8 @@ namespace P1
         {
             this.button1 = new System.Windows.Forms.Button();
             this.entrada = new System.Windows.Forms.TextBox();
-            errores = new System.Windows.Forms.RichTextBox();
-            salida = new System.Windows.Forms.RichTextBox();
+            this.errores = new System.Windows.Forms.RichTextBox();
+            this.salida = new System.Windows.Forms.RichTextBox();
             this.tabSimbol = new System.Windows.Forms.Button();
             this.astG = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -57,20 +60,21 @@ namespace P1
             // 
             // errores
             // 
-            errores.Location = new System.Drawing.Point(428, 254);
-            errores.Name = "errores";
-            errores.Size = new System.Drawing.Size(335, 99);
-            errores.TabIndex = 3;
-            errores.Text = "";
-            errores.TextChanged += new System.EventHandler(this.errores_TextChanged);
+            this.errores.Location = new System.Drawing.Point(428, 254);
+            this.errores.Name = "errores";
+            this.errores.ReadOnly = true;
+            this.errores.Size = new System.Drawing.Size(335, 99);
+            this.errores.TabIndex = 3;
+            this.errores.Text = "";
+            this.errores.TextChanged += new System.EventHandler(this.errores_TextChanged);
             // 
             // salida
             // 
-            salida.Location = new System.Drawing.Point(428, 61);
-            salida.Name = "salida";
-            salida.Size = new System.Drawing.Size(335, 187);
-            salida.TabIndex = 4;
-            salida.Text = "";
+            this.salida.Location = new System.Drawing.Point(428, 61);
+            this.salida.Name = "salida";
+            this.salida.Size = new System.Drawing.Size(335, 187);
+            this.salida.TabIndex = 4;
+            this.salida.Text = "";
             // 
             // tabSimbol
             // 
@@ -90,6 +94,7 @@ namespace P1
             this.astG.TabIndex = 6;
             this.astG.Text = "Arbol AST";
             this.astG.UseVisualStyleBackColor = true;
+            this.astG.Click += new System.EventHandler(this.astG_Click);
             // 
             // Form1
             // 
@@ -98,8 +103,8 @@ namespace P1
             this.ClientSize = new System.Drawing.Size(800, 475);
             this.Controls.Add(this.astG);
             this.Controls.Add(this.tabSimbol);
-            this.Controls.Add(salida);
-            this.Controls.Add(errores);
+            this.Controls.Add(this.salida);
+            this.Controls.Add(this.errores);
             this.Controls.Add(this.entrada);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
@@ -115,8 +120,9 @@ namespace P1
         private System.Windows.Forms.TextBox entrada;
         private System.Windows.Forms.Button tabSimbol;
         private System.Windows.Forms.Button astG;
-        public static System.Windows.Forms.RichTextBox salida;
-        public static System.Windows.Forms.RichTextBox errores;
+        private RichTextBox salida;
+        private RichTextBox errores;
+
     }
 }
 

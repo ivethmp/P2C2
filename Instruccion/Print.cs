@@ -30,15 +30,15 @@ namespace P1.Instruccion
             {
                 if (bandera == true)//significa que es con salto de lines writeln
                 {
-                    Form1.salida.AppendText(val.ToString() + "\n");
+                    Form1.salir.AppendText(val.ToString() + "\n");
                     return true;
                 }
-                Form1.salida.AppendText(val.ToString());
+                Form1.salir.AppendText(val.ToString());
                 return true;
 
             }
 
-            Form1.errores.AppendText("Error en write(ln), lin:" + lin + " col:" + col);
+            Form1.error.AppendText("Error en write(ln), lin:" + lin + " col:" + col);
             return false;
         }
     }

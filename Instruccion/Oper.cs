@@ -105,7 +105,7 @@ namespace P1.Instruccion
                         }
                         else
                         {
-                            Form1.errores.AppendText("Error, datos incorrectos para realizar Suma");
+                            Form1.error.AppendText("Error, datos incorrectos para realizar Suma");
                             return null;
                         }
                     }
@@ -128,7 +128,7 @@ namespace P1.Instruccion
                         }
                         else if (op1 is String || op2 is String)
                         {
-                            Form1.errores.AppendText("Error, datos incorrectos para realizar Resta");
+                            Form1.error.AppendText("Error, datos incorrectos para realizar Resta");
                             return null;
                         }
                     }
@@ -145,7 +145,7 @@ namespace P1.Instruccion
                         }
                         else if (op1 is String || op2 is String)
                         {
-                            Form1.errores.AppendText("Error, datos incorrectos para realizar Multiplicacion");
+                            Form1.error.AppendText("Error, datos incorrectos para realizar Multiplicacion");
                             return null;
                         }
                     }
@@ -157,7 +157,7 @@ namespace P1.Instruccion
                         {
                             if((int)op2 == 0)
                             {
-                                Form1.salida.AppendText("Error, No se puede dividir por 0, infinito");
+                                Form1.salir.AppendText("Error, No se puede dividir por 0, infinito");
                                 return null;
                             }
                             if (op1 is int && op2 is int)
@@ -168,7 +168,7 @@ namespace P1.Instruccion
                         }
                         else 
                         {
-                            Form1.errores.AppendText("Error, datos incorrectos para realizar Division");
+                            Form1.error.AppendText("Error, datos incorrectos para realizar Division");
                             return null;
                         }
                     }
@@ -180,7 +180,7 @@ namespace P1.Instruccion
                         {
                             if ((int)op2 == 0)
                             {
-                                Form1.salida.AppendText("Error, No se puede utilizar MOD por 0, infinito");
+                                Form1.salir.AppendText("Error, No se puede utilizar MOD por 0, infinito");
                                 return null;
                             }
                             if (op1 is int && op2 is int)
@@ -191,12 +191,46 @@ namespace P1.Instruccion
                         }
                         else
                         {
-                            Form1.errores.AppendText("Error, datos incorrectos para realizar MOD");
+                            Form1.error.AppendText("Error, datos incorrectos para realizar MOD");
                             return null;
                         }
                     }
                     #endregion
                     //Aqui tendrian que ir el resto de operaciones RELACIONALES
+                    #region MayorQue
+                    if (operador == tipOper.MAYORQ)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 > (int)op2;
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) > Convert.ToDecimal(op2);
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region MenorQue
+                    if (operador == tipOper.MENORQ)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 > (int)op2;
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) < Convert.ToDecimal(op2);
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error Sintactico, No se pueden Comparar \"<\" datos No numericos");
+                            return null;
+                        }
+                    }
+                    #endregion
 
 
                 }

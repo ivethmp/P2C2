@@ -70,14 +70,14 @@ namespace P1.Instruccion
                     else
                     {
                         
-                        Form1.errores.AppendText("Error en Declaracion, id " + sim.id + " se inicializo con el tipo incorrecto, lin:" + lin + " col:" + col);
+                        Form1.error.AppendText("Error en Declaracion, id " + sim.id + " se inicializo con el tipo incorrecto, lin:" + lin + " col:" + col);
                         return false;//no se declaro nada
                     }
                     
                 }
                 else
                 {
-                    Form1.errores.AppendText("Error, id" + sim.id + " ya fue declarado, linea:" + lin + " columna:" + col);
+                    Form1.error.AppendText("Error, id" + sim.id + " ya fue declarado, linea:" + lin + " columna:" + col);
                     return false;
                 }
             }

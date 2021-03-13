@@ -43,7 +43,7 @@ namespace P1.Instruccion
             }
             else
             {
-                Form1.errores.AppendText("Error, No existe el id " + ide + " lin:" + lin + " col:" + col);
+                Form1.error.AppendText("Error, No existe el id " + ide + " lin:" + lin + " col:" + col);
                 return null;
             }
         }
