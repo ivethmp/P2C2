@@ -6,7 +6,7 @@ using System.Text;
 
 namespace P1.Arbol
 {
-    public class Entor
+    class Entor
     {
         private Hashtable tabS;
         private Entor anterior;

@@ -22,15 +22,15 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, TabS tabS)
+        public object ejecutar(Entor en, AST arbol)
         {
-            Object valor = val.getValImp(en, tabS);
-            Simb.Tipo tipoA = val.getTipo(en, tabS);
+            Object valor = val.getValImp(en, arbol);
+            Simb.Tipo tipoA = val.getTipo(en, arbol);
 
             if (en.buscar(ide))//id encontrada
             {
                 Simb actual = en.getSimb(ide);//obtengo el simbolo actual a evaluar
-                if (actual.getTipo(en,tabS) == tipoA)//valida que el tipo obtenido sea el mismo que el tipo del valor
+                if (actual.getTipo(en, arbol) == tipoA)//valida que el tipo obtenido sea el mismo que el tipo del valor
                 {
                     actual.val = valor;//se asigna el valor antes de ser agregado
                     en.actualizar(actual.id, actual);//se ha actualizado el valor de la variable

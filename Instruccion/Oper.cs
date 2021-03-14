@@ -69,9 +69,9 @@ namespace P1.Instruccion
             }
 
         }
-        public Simb.Tipo getTipo(Entor en, TabS tabS)
+        public Simb.Tipo getTipo(Entor en, AST arbol)
         {//retorna el tipo de dato que se esta utilizando
-            object val = this.getValImp(en, tabS);
+            object val = this.getValImp(en, arbol);
             if (val is bool) return Tipo.BOOL;
             else if (val is int) return Tipo.INT;
             else if (val is Double) return Tipo.REAL;
@@ -79,14 +79,14 @@ namespace P1.Instruccion
             return Tipo.OBJ;
         }
 
-        public object getValImp(Entor en, TabS tabS)
+        public object getValImp(Entor en, AST arbol)
         {
             try
             {
                 if (operUna == null)
                 {
-                    object op1 = operIzq.getValImp(en, tabS);
-                    object op2 = operDer.getValImp(en, tabS);
+                    object op1 = operIzq.getValImp(en, arbol);
+                    object op2 = operDer.getValImp(en, arbol);
                     #region Sum
                     if (operador == tipOper.SUMA)
                     {

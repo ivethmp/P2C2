@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 namespace P1.TS
 {
     //Dentro de una tabla simbolo estan las funciones para construir la misma
-    public class TabS : LinkedList<Simb>
+    public class TabS
     {
         public TabS():base()
         {
 
         }
         //obtener los valores dentros de la tabla de simbolos
-        public Object getVal(String id)
+     /*   public Object getVal(String id)
         {
             foreach (Simb s in this)
             {
@@ -27,9 +27,9 @@ namespace P1.TS
             }
             Console.WriteLine("La variable " + id + " no existe en este ámbito.");
             return "Desconocido";
-        }
+        }*/
 
-        public void setVal(String id, Object val)
+    /*    public void setVal(String id, Object val)
         {
             foreach (Simb s in this)
             {
@@ -42,6 +42,6 @@ namespace P1.TS
             Console.WriteLine("La variable " + id + " no existe en este ámbito, por lo "
                     + "que no puede asignársele un valor.");
         }
-
+    */
     }
 }

@@ -18,7 +18,11 @@ namespace P1.Analizador
 {
     class Sintactico
     {
+       
         
+
+        public AST arb { get; set; }
+
         public void Analizar( String cad)
         {
             System.Diagnostics.Debug.WriteLine("enter a analizar0");
@@ -28,6 +32,7 @@ namespace P1.Analizador
             ParseTree arbol = parser.Parse(cad);
             ParseTreeNode raiz = arbol.Root;
             bool error = arbol.HasErrors();
+            
             
             if (arbol.HasErrors())
             {
@@ -42,13 +47,31 @@ namespace P1.Analizador
                 return;
             }
 
+
             LinkedList<Instruc> AST = instrucs( raiz.ChildNodes.ElementAt(3));
 
-            TabS global = new TabS();
+            arb = new Arbol.AST(AST);
+
+
+
+            //arbol = (TabS)instrucs(raiz.ChildNodes.ElementAt(3));
+            //ins = AST;
+            //TabS global = new TabS();
             Entor entorno = new Entor(null);
+            /*foreach (Instruc inst in AST)
+            {
+                if(inst is Func)
+                {
+                    inst.ejecutar(entorno, arb);
+                }
+            }
+            */
             foreach (Instruc inst in AST)
             {
-                    inst.ejecutar(entorno, global);
+                if (!(inst is Func))
+                {
+                    inst.ejecutar(entorno, arb);
+                }
             }
             RepTabS reporte = new RepTabS();
             reporte.GenHTML(entorno);
@@ -175,16 +198,67 @@ namespace P1.Analizador
                     }
                 case "writel":
                     {//El primer if es de writeln
+                        /*Expr valor;
+                        if (nodoA.ChildNodes[2].ChildNodes.Count > 1)
+                        {
+                            valor = expresion(nodoA.ChildNodes[2]);
+                        }else valor = expresion(nodoA.ChildNodes[2]);*/
                         if (nodoA.ChildNodes[0].ChildNodes[0].Term.Name == "writeln")
                         {//significa que es un salto de linea 
+
                             return new Print(expresion(nodoA.ChildNodes[2]),nodoA.ChildNodes[1].Token.Location.Line,nodoA.ChildNodes[1].Token.Location.Column,true);
                         }//significa que es un write sin salto de linea por lo que la bandera es false
                         return new Print((Expr)expresion(nodoA.ChildNodes[2]), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
                         //(Expr)analizr(nodoA, linea,columna)
                     }
                 // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
+                case "call_func-proc":
+                    {
+                        if(nodoA.ChildNodes[2].ChildNodes.Count > 0)
+                        {
+                            LinkedList<Expr> valParam = new LinkedList<Expr>();
+                            foreach(ParseTreeNode hijo in nodoA.ChildNodes[2].ChildNodes)
+                            {
+                                valParam.AddLast(expresion(hijo));
+                            }
+                            return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
+                        }
+                        return null;
+                    }
+                case "bloq_if":
+                    {
+                        Expr cond = expresion(nodoA.ChildNodes[0].ChildNodes[2]);
+                        LinkedList<Instruc> insIfS = new LinkedList<Instruc>();
+                        insIfS = bloques(nodoA.ChildNodes[0].ChildNodes[5], insIfS);
+                        LinkedList<Instruc> insElse = new LinkedList<Instruc>();
+                        LinkedList<If> listIfElse = new LinkedList<If>();
 
-                
+                        if (nodoA.ChildNodes[2].ChildNodes.Count == 2)//es if else
+                        {
+                            if(nodoA.ChildNodes[2].ChildNodes[0].ChildNodes[0].Term.Name == "ELSE")//ELSE SIMPLE
+                                insElse = bloques(nodoA.ChildNodes[2].ChildNodes[0].ChildNodes[1], insElse);
+                            else //if else if else if else sin else al final
+                            {
+                                foreach (ParseTreeNode ifs in nodoA.ChildNodes[2].ChildNodes[0].ChildNodes)
+                                {
+                                    LinkedList<Instruc> list = new LinkedList<Instruc>();
+                                    listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3]), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
+                                }
+                                
+                            }
+                        }
+                        else if(nodoA.ChildNodes[2].ChildNodes.Count == 4)//  if ifelse ifelse else
+                        {
+                            foreach (ParseTreeNode ifs in nodoA.ChildNodes[2].ChildNodes[0].ChildNodes)
+                            {
+                                LinkedList<Instruc> list = new LinkedList<Instruc>();
+                                listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3]), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
+                            }//else 
+                            insElse = bloques(nodoA.ChildNodes[2].ChildNodes[2].ChildNodes[1], insElse);
+                        }
+                        return new If(cond, insIfS, insElse, listIfElse, nodoA.ChildNodes[0].ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].ChildNodes[0].Token.Location.Column);
+                    }
+
                  case "numero":
                      string tokenValor = nodoA.ChildNodes.ElementAt(1).ToString().Split(' ')[0];
                     return null;
@@ -202,8 +276,9 @@ namespace P1.Analizador
                             
                             if(nodoA.ChildNodes[1].ChildNodes.Count == 3)//no tiene parametros
                             {
-
-                            }else//tiene parametros
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, instrucs(nodoA.ChildNodes[5]), tipoA, nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                            }
+                            else//tiene parametros
                             {
                                 LinkedList<Declara> param = new LinkedList<Declara>();
                                 foreach (ParseTreeNode parametro in nodoA.ChildNodes[1].ChildNodes[2].ChildNodes)
@@ -267,13 +342,13 @@ namespace P1.Analizador
                     }
                 case "EXPR_REL":
                     {
-                        return new Oper((Expr)nodoA.ChildNodes[0], (Expr)nodoA.ChildNodes[2], Oper.getOperador(nodoA.ChildNodes[1].Token.Text));
+                        return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2]),Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                     }
                 case "EXPR_LOG":
                     {
                         if(nodoA.ChildNodes.Count == 3)
                         {
-                            return new Oper((Expr)nodoA.ChildNodes[0], (Expr)nodoA.ChildNodes[2], Oper.getOperador(nodoA.ChildNodes[1].Token.Text));
+                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2]), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                         }else
                             return new Oper((Expr)nodoA.ChildNodes[1], Oper.tipOper.NOT);
 
@@ -316,6 +391,19 @@ namespace P1.Analizador
                     } 
                 default:
                     {
+                        if(nodoA.Term.Name == "ExpWrite")
+                        { 
+                            if (nodoA.ChildNodes.Count == 3)
+                            {
+                                if (nodoA.ChildNodes[1].Token.Text == ",")
+                                {
+                                    return new Oper((Expr)expresion(nodoA.ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[2]), Oper.getOperador(nodoA.ChildNodes[1].Token.Text));
+
+                                }
+                            }
+                            return (expresion(nodoA.ChildNodes[0]));
+                        }
+
                         return expresion(nodoA.ChildNodes[1]);
                     }
             }

@@ -45,6 +45,9 @@ namespace P1.Analizador
             var AAND = ToTerm("and");
             var FUNC = ToTerm("function");
             var PROC = ToTerm("procedure");
+            var IF = ToTerm("if");
+            var ELSE = ToTerm("else");
+            var THEN = ToTerm("then");
 
             //MarkReservedWords
 
@@ -69,8 +72,15 @@ namespace P1.Analizador
             var DIF = ToTerm("<>");
             var error = SyntaxError;
 
-            RegisterOperators(1, MAS, MENOS);
-            RegisterOperators(2, POR, DIVIDIDO);
+            RegisterOperators(1, Associativity.Right, IGUAL);
+            RegisterOperators(2, Associativity.Left, COMA);
+            RegisterOperators(3, Associativity.Left, OOR);
+            RegisterOperators(4, Associativity.Left, AAND);
+            RegisterOperators(5, Associativity.Left, MAS, MENOS);
+            RegisterOperators(6, Associativity.Left, POR, DIVIDIDO);
+            RegisterOperators(8, Associativity.Right, NOT);
+            RegisterOperators(9, Associativity.Left, PARIZQ, PARDER);
+
 
             NonGrammarTerminals.Add(comLinea);
             NonGrammarTerminals.Add(coMLinea1);
@@ -98,14 +108,24 @@ namespace P1.Analizador
             NonTerminal OpcVar = new NonTerminal("OPCION_VAR");
             NonTerminal bloqBegin = new NonTerminal("BLOQ_BEGIN");
             NonTerminal instrBegin = new NonTerminal("INSTR_BEGIN");
-            NonTerminal bloqFunProc = new NonTerminal("BLOQ_FUNCION-PROCEDURE");
-            NonTerminal funcion = new NonTerminal("FUNCION");
+            NonTerminal expresion = new NonTerminal("expresion");
             NonTerminal funcProc = new NonTerminal("BLOQ_FUNC-PROC");
             NonTerminal decFunPro = new NonTerminal("DECLARA_FUN-PROC");
             NonTerminal listDecFP = new NonTerminal("LISTA_DECLA");
-            NonTerminal instrFun = new NonTerminal("INSTRUC_FUN-PROC");
-            NonTerminal pntComa = new NonTerminal("PUNTO-PTCOMA"); 
-            NonTerminal ifS = new NonTerminal("IF");
+            NonTerminal CallFunProc = new NonTerminal("CALL_FUNC-PROC");
+            NonTerminal pntComa = new NonTerminal("PUNTO-PTCOMA");
+            NonTerminal ExpWrite = new NonTerminal("ExpWrite");
+            NonTerminal ifE = new NonTerminal("IF");
+            NonTerminal listElse = new NonTerminal("LIST_ELSE");
+            NonTerminal bloqIF = new NonTerminal("BLOQ_IF");
+            NonTerminal ifSimp = new NonTerminal("IF_SIM");
+            NonTerminal ifElse = new NonTerminal("IF_ELSE");
+            NonTerminal ifComp = new NonTerminal("IF_COMP");
+            NonTerminal ElseIf = new NonTerminal("ELSE_IF");
+            NonTerminal ElseS = new NonTerminal("ELSE");
+            NonTerminal instBegin = new NonTerminal("INSTRS_BEGIN");
+            NonTerminal parIzq = new NonTerminal("op_parIzq");
+            NonTerminal parDer = new NonTerminal("op_parDer");
 
 
             #endregion
@@ -122,7 +142,7 @@ namespace P1.Analizador
 
             instr.Rule = //BLOQUE INSTRUCCIONES VAR, BEGIN
                           OpcVar + bloqVar + PTCOMA
-                        | BBEGIN + bloqBegin + PTCOMA + END + pntComa
+                        | BBEGIN + bloqBegin + END + pntComa
                         | FUNC + funcProc + DOSPTS + tipo + PTCOMA + instrs
                         | PROC + funcProc + PTCOMA + instrs
                         | error;
@@ -130,6 +150,8 @@ namespace P1.Analizador
             pntComa.Rule = PUNTO
                            | PTCOMA;
 
+            CallFunProc.Rule = IDENT + PARIZQ+ expresion + PARDER;
+            expresion.Rule = MakeStarRule(expresion,COMA,expr);
             //bloqFunProc.Rule = 
             //BLOQUE DE FUNCIONES
             //funcion.Rule = FUNC + funcProc + DOSPTS + tipo + instrFun ;
@@ -161,13 +183,42 @@ namespace P1.Analizador
             listDec.Rule = MakePlusRule(listDec, COMA, IDENT);
 
             bloqBegin.Rule =//BLOQUE DE BEGIN EN PASCAL
-                             MakePlusRule(bloqBegin, PTCOMA, instrBegin);
+                             MakePlusRule(bloqBegin, instrBegin);
 
             // INSTRUCCIONES EN EL BEGIN
-            instrBegin.Rule = asig
-                            | print;
+            instrBegin.Rule = asig + PTCOMA
+                            | print + PTCOMA
+                            | CallFunProc + PTCOMA
+                            | bloqIF
+                            ;
 
-            asig.Rule = IDENT + DPTSIGUAL + expr; //ESTA ES UNA ASIGNACION EN BEGIN
+            bloqIF.Rule = ifSimp + PTCOMA+ ifElse;
+
+            ifElse.Rule = ElseS + PTCOMA
+                          | listElse + PTCOMA
+                          | listElse + PTCOMA + ElseS + PTCOMA
+                          | Empty;
+
+
+
+            listElse.Rule = MakePlusRule(listElse, PTCOMA, ElseIf);
+
+            ElseIf.Rule = ELSE + IF + parIzq + expr + parDer + THEN + instBegin;
+
+            ifSimp.Rule = IF + parIzq + expr + parDer + THEN + instBegin;
+                        
+            ElseS.Rule = ELSE + instBegin;
+            
+            parIzq.Rule = PARIZQ
+                         | Empty;
+            parDer.Rule = PARDER
+                         | Empty;
+
+
+            instBegin.Rule = BBEGIN + bloqBegin + END ;
+
+            asig.Rule = IDENT + DPTSIGUAL + expr //ESTA ES UNA ASIGNACION EN BEGIN
+                        ;
             
             tipo.Rule = //TIPOS DE VARIABLES
                           ENTERO
@@ -176,7 +227,11 @@ namespace P1.Analizador
                         | BOOL;
 
             
-            print.Rule = writ + PARIZQ + expr + PARDER;
+            print.Rule = writ + PARIZQ + ExpWrite + PARDER;
+
+            ExpWrite.Rule = expr
+
+                        | expr + COMA + expr;
 
             writ.Rule = IMPR
                        | IMPR2;
@@ -191,7 +246,6 @@ namespace P1.Analizador
             exprAritmetica.Rule = //EXPRESIONES ARITMETICAS
                           MENOS + expr
                         | expr + MAS + expr
-                        | expr + COMA + expr
                         | expr + MENOS + expr
                         | expr + POR + expr
                         | expr + DIVIDIDO + expr;

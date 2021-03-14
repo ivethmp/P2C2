@@ -7,7 +7,7 @@ using System.Text;
 namespace P1.TS
 {
     //En simbolo se definen la estructura de cada uno de estos
-    public class Simb:Expr
+    class Simb:Expr
     {
 
         public Tipo tip;
@@ -53,12 +53,12 @@ namespace P1.TS
             val = valor;
         }
 
-        public Tipo getTipo(Entor en, TabS arbol)
+        public Tipo getTipo(Entor en, AST arbol)
         {
             return tip;
         }
 
-        public object getValImp(Entor en, TabS arbol)
+        public object getValImp(Entor en, AST arbol)
         {
             return val;
         }

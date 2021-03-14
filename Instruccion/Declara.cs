@@ -9,9 +9,9 @@ namespace P1.Instruccion
 {
     class Declara : Instruc
     {
-        LinkedList<Simb> listaID;
+        public LinkedList<Simb> listaID;
         private Simb.Tipo tipoD;
-        private Expr val;//el valor al inicializar una variable 
+        public Expr val;//el valor al inicializar una variable 
         public int lin { get; set ; }
         public int col { get ; set ; }
 
@@ -33,14 +33,14 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, TabS tabS)
+        public object ejecutar(Entor en, AST arbol)
         {
             object valor;
             Simb.Tipo tipoA;
             if (val != null)//se verifica si la variable esta inicializada o no y el tipo 
             {
-                valor = val.getValImp(en, tabS);
-                tipoA = val.getTipo(en, tabS);
+                valor = val.getValImp(en, arbol);
+                tipoA = val.getTipo(en, arbol);
             }
             else
             {//como no esta inicializada se toma el tipo de variable tal cual y se inicializa

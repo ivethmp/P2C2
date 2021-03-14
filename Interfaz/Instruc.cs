@@ -11,6 +11,6 @@ namespace P1.Interfaz
         public int lin { get; set; }
         public int col { get; set; }
 
-        Object ejecutar(Entor en, TabS tabS);
+        Object ejecutar(Entor en, AST arbol);
     }
 }

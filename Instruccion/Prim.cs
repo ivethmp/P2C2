@@ -15,7 +15,7 @@ namespace P1.Instruccion
         
         private object val;
        // se obtiene el valor del simbolo
-        public Tipo getTipo(Entor en, TabS arbol)
+        public Tipo getTipo(Entor en, AST arbol)
         {
             object valor = this.getValImp(en, arbol);
             if (valor is int)
@@ -31,7 +31,7 @@ namespace P1.Instruccion
             return Tipo.OBJ;
         }
 
-        public object getValImp(Entor en, TabS arbol)
+        public object getValImp(Entor en, AST arbol)
         { 
             return val;
         }

@@ -23,7 +23,7 @@ namespace P1.Instruccion
         public int lin { get ; set ; }
         public int col { get ; set ; }
 
-        public object ejecutar(Entor en, TabS arbol)
+        public object ejecutar(Entor en, AST arbol)
         {
             object val = imprimir.getValImp(en, arbol);
             if (val != null)

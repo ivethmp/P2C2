@@ -55,6 +55,7 @@ namespace P1
             this.entrada.Location = new System.Drawing.Point(51, 61);
             this.entrada.Multiline = true;
             this.entrada.Name = "entrada";
+            this.entrada.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.entrada.Size = new System.Drawing.Size(345, 320);
             this.entrada.TabIndex = 1;
             // 

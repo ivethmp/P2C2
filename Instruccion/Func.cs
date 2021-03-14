@@ -13,8 +13,8 @@ namespace P1.Instruccion
         public int lin { get ; set; }
         public int col { get; set; }
         LinkedList<Declara> param;
-        String id;
-        private Simb.Tipo tipoF;
+        public String id;
+        public Simb.Tipo tipoF;
         LinkedList<Instruc> instrucciones;
         LinkedList<Expr> valParam;
 
@@ -36,7 +36,7 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, TabS tabS)
+        public object ejecutar(Entor en, AST arbol)
         {
             Entor tabL = new Entor(en);
 
@@ -49,26 +49,47 @@ namespace P1.Instruccion
             LinkedList<Expr> valores = new LinkedList<Expr>();
             foreach (Expr e in valParam)//valParam son de la llamada a funcion 
             {
-                valores.AddLast(new Prim(e.getValImp(en, tabS), 0, 0));
+                valores.AddLast(new Prim(e.getValImp(en, arbol), 0, 0));
             }
 
-            if (param.Count == valores.Count)
+
+            int contParam = 0;
+            foreach (Declara dec in param)
+            {
+                foreach(Simb sim in dec.listaID)
+                {
+                    contParam++;
+                }
+                dec.ejecutar(tabL, arbol);
+            }
+
+            if (contParam == valores.Count)
             {
                 //declaracion de variables
-                for (int i = 0; i < param.Count; i++)
+                
+
+                foreach (Declara dec in param)
                 {
-                    param.ElementAt(i).ejecutar(tabL,tabS);
+                    contParam = 0;
+                    foreach (Simb sim in dec.listaID)
+                    {
+                        Expr exp = valores.ElementAt(contParam);
+                        contParam++;
+                        (new Asig(sim.id, exp, sim.lin, sim.col)).ejecutar(tabL, arbol);
+                    }
+
                 }
+                
 
 
                 foreach (Instruc e in instrucciones)
                 {
-                    Object resultado = e.ejecutar(tabL, tabS);
+                    Object resultado = e.ejecutar(tabL, arbol);
 
-                    if (resultado != null)
+                    /*if (resultado != null)
                     {
                         return resultado;
-                    }
+                    }*/
                 }
             }
             else
@@ -79,7 +100,7 @@ namespace P1.Instruccion
             return null;
         }
         //tiene que ver con la llamada a funcion
-        public void setValoresParametros(LinkedList<Expr> a)
+        public void setValParam(LinkedList<Expr> a)
         {
             valParam = a;
         }

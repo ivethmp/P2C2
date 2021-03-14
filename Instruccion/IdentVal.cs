@@ -20,7 +20,7 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public Simb.Tipo getTipo(Entor en, TabS arbol)
+        public Simb.Tipo getTipo(Entor en, AST arbol)
         {
             if (en.buscar(ide))
             {
@@ -34,7 +34,7 @@ namespace P1.Instruccion
             }
         }
 
-        public object getValImp(Entor en, TabS arbol)
+        public object getValImp(Entor en, AST arbol)
         {
             if (en.buscar(ide))
             {
