@@ -86,6 +86,11 @@ namespace P1.Instruccion
                     Object res = e.ejecutar(tabL, arbol);
       //              return res;
 
+                    if( e is ExitR)
+                    {
+                        return res;
+                    }
+
                      if (res != null )//casos donde la funcion retorna un valor
                     {
                         //return res;
