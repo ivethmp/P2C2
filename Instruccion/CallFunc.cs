@@ -7,7 +7,7 @@ using System.Text;
 
 namespace P1.Instruccion
 {
-    class CallFunc : Instruc
+    class CallFunc : Instruc, Expr
     {
         public int lin { get ; set ; }
         public int col { get ; set ; }
@@ -22,10 +22,7 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, TabS tabS)
-        {
-            return null;
-        }
+       
 
         public Simb.Tipo getTipo(Entor ent, AST arbol)
         {
@@ -41,36 +38,37 @@ namespace P1.Instruccion
             }
         }
 
-        public object getValorImplicito(Entor ent, AST arbol)
+        
+
+        public object ejecutar(Entor ent, AST arbol)
+        {
+            return getValImp(ent, arbol);
+        }
+
+        public object getValImp(Entor en, AST arbol)
         {
             Func f = arbol.getFuncion(id);//IDE.getFunction(id);
             if (null != f)
             {
                 f.setValParam(valoresP);
-                Object rFuncion = f.ejecutar(ent, arbol);
+                Object resul = f.ejecutar(en, arbol);
 
                 //si viene un return dentro
-                return rFuncion;
-                /* if (rFuncion is Return)
+                
+                  if (resul is ExitR)
                  {
                      return null;
                  }
                  else
                  {
-                     return rFuncion;
+                     return resul;
                  }
-                */
             }
             else
             {
                 Form1.error.AppendText("La func/procedure " + id + " no existen, lin:" + lin + " col: " + col + "\n");
             }
             return null;
-        }
-
-        public object ejecutar(Entor ent, AST arbol)
-        {
-            return getValorImplicito(ent, arbol);
         }
     }
 }

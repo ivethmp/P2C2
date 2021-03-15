@@ -27,14 +27,14 @@ namespace P1.Instruccion
             this.lin = lin;
             this.col = col;
         }
-        public Func(String id, LinkedList<Instruc> instrucciones, Simb.Tipo tipoF, int lin, int col)
+        /*public Func(String id, LinkedList<Instruc> instrucciones, Simb.Tipo tipoF, int lin, int col)
         {
             this.id = id;
             this.instrucciones = instrucciones;
             this.tipoF = tipoF;
             this.lin = lin;
             this.col = col;
-        }
+        }*/
 
         public object ejecutar(Entor en, AST arbol)
         {
@@ -54,52 +54,52 @@ namespace P1.Instruccion
 
 
             int contParam = 0;
-            foreach (Declara dec in param)
+            foreach (Declara dec in param)//cada declaracion en parametros
             {
-                foreach(Simb sim in dec.listaID)
+                foreach(Simb sim in dec.listaID)//cada simbolo en la declaracion 
                 {
                     contParam++;
                 }
                 dec.ejecutar(tabL, arbol);
             }
 
-            if (contParam == valores.Count)
+            if (contParam == valores.Count)// verifica que las variables son el mismo numero de la enviada por la llamada
             {
                 //declaracion de variables
                 
-
-                foreach (Declara dec in param)
+                foreach (Declara dec in param)//vuelvo a evaluar en cada declaracion para obtener los simbolos de cada una
                 {
                     contParam = 0;
-                    foreach (Simb sim in dec.listaID)
+                    foreach (Simb sim in dec.listaID)// evaluo cada simbolo
                     {
-                        Expr exp = valores.ElementAt(contParam);
-                        contParam++;
-                        (new Asig(sim.id, exp, sim.lin, sim.col)).ejecutar(tabL, arbol);
+                        Expr exp = valores.ElementAt(contParam);//obtengo el valor en el orden del la llama a funcion o procedimiento
+                        contParam++;//aumento contador para el siguiente parametro en la llamada a funcion 
+                        (new Asig(sim.id, exp, sim.lin, sim.col)).ejecutar(tabL, arbol);// actualizo los valores, para evaluar bien los envio a asignacion 
                     }
 
                 }
                 
 
 
-                foreach (Instruc e in instrucciones)
+                foreach (Instruc e in instrucciones)//ejecuto cada instruccion dentro de la funcion o procedimiento
                 {
-                    Object resultado = e.ejecutar(tabL, arbol);
+                    Object res = e.ejecutar(tabL, arbol);
+      //              return res;
 
-                    /*if (resultado != null)
+                     if (res != null )//casos donde la funcion retorna un valor
                     {
-                        return resultado;
-                    }*/
+                        //return res;
+                    }
                 }
             }
-            else
+            else// significa que no contiene el mismo numero de parametro la funcion con la llamada a esta
             {
                 Form1.error.AppendText("Error semantico en ejecutar " + this.id + ", lin:"+ lin + " y col:" + col + ", no se tienen los mismos parametros!!\n");
                 return null;
             }
             return null;
         }
-        //tiene que ver con la llamada a funcion
+        //tiene que ver con la llamada a funcion, actualiza los valores de esta lista para poder evaluar al ejecutar la funcion 
         public void setValParam(LinkedList<Expr> a)
         {
             valParam = a;

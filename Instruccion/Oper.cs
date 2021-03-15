@@ -29,6 +29,9 @@ namespace P1.Instruccion
             MAYIOQ,
             IGUAL,
             NOT,
+            DIF,
+            AND,
+            OR,
             OTRO
         }
 
@@ -65,6 +68,10 @@ namespace P1.Instruccion
                 case ">=": return tipOper.MAYIOQ;
                 case "<=": return tipOper.MENIQ;
                 case "=": return tipOper.IGUAL;
+                case "<>": return tipOper.DIF;
+                case "and": return tipOper.AND;
+                case "or": return tipOper.OR;
+                case "not": return tipOper.NOT;
                 default: return tipOper.OTRO;
             }
 
@@ -97,12 +104,7 @@ namespace P1.Instruccion
                         {
                             return Convert.ToDecimal(op1) + Convert.ToDecimal(op2);
                         }
-                        else if (op1 is String || op2 is String)
-                        {
-                            if (op1 == null) op1 = "null";
-                            if (op2 == null) op2 = "null";
-                            return op1.ToString() + op2.ToString();
-                        }
+                        
                         else
                         {
                             Form1.error.AppendText("Error, datos incorrectos para realizar Suma");
@@ -214,11 +216,28 @@ namespace P1.Instruccion
                         }
                     }
                     #endregion
+                    #region MayorIgualQue
+                    if (operador == tipOper.MAYIOQ)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 >= (int)op2;
+
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) >= Convert.ToDecimal(op2);
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
+                            return null;
+                        }
+                    }
+                    #endregion
                     #region MenorQue
                     if (operador == tipOper.MENORQ)
                     {
                         if (op1 is int && op2 is int)
-                            return (int)op1 > (int)op2;
+                            return (int)op1 < (int)op2;
 
                         else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
                         {
@@ -231,14 +250,99 @@ namespace P1.Instruccion
                         }
                     }
                     #endregion
+                    #region MenorIgualQue
+                    if (operador == tipOper.MENIQ)
+                    {
+                        if (op1 is int && op2 is int)
+                            return (int)op1 <= (int)op2;
 
+                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                        {
+                            return Convert.ToDecimal(op1) <= Convert.ToDecimal(op2);
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region igual
+                    if (operador == tipOper.IGUAL)
+                    {
+                        return (op1.Equals(op2)) ;
+                    }
+                    #endregion
+                    #region diferente
+                    if (operador == tipOper.IGUAL)
+                    {
+                        return !(op1.Equals(op2));
+                    }
+                    #endregion
+                    #region and
+                    else if (operador == tipOper.AND)
+                    {
+                        if (op1 is bool && op2 is bool)
+                        {
+                            return (bool)op1 && (bool)op2;
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error, no se permiten datos que no sean boolean");
+                            return null;
+                        }
+                    }
+                    #endregion
+                    #region or
+                    else if (operador == tipOper.OR)
+                    {
+                        if (op1 is bool && op2 is bool)
+                        {
+                            return (bool)op1 || (bool)op2;
+                        }
+                        else
+                        {
+                            Form1.error.AppendText("Error, no se permiten datos que no sean boolean");
+                            return null;
+                        }
+                    }
+                    #endregion
 
                 }
+                else
+                {
+                    #region unario
+                    object operUn = operUna.getValImp(en, arbol);
+                    if (this.operador == tipOper.MENOSU)
+                    {
+                        if (operUn is Decimal || operUn is double) return -1 * (Decimal)operUn;
+                        
+                        else if (operUn is int) return -1 * (int)operUn;
+                        
+                        else
+                        {
+                            Form1.error.AppendText("Error,No se puede operar menos unario con este tipo de datos");
+                            return null;
+                        }
+                    }
+                    else if (operador == tipOper.NOT)
+                    {
+                        if (operUn is bool) return !(bool)operUn;
+                        
+                        else
+                        {
+                            Form1.error.AppendText("Error, no se puede negar este tipo de datos");
+                            return null;
+                        }
+                    }
+                    #endregion
+                }
+
 
             }
             catch
             {
-
+                Form1.error.AppendText("Error, imposible realizar operacion ");
             }
             return val;
         }

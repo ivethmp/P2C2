@@ -214,16 +214,18 @@ namespace P1.Analizador
                 // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
                 case "call_func-proc":
                     {
-                        if(nodoA.ChildNodes[2].ChildNodes.Count > 0)
+                        LinkedList<Expr> valParam = new LinkedList<Expr>();
+                        if (nodoA.ChildNodes[2].ChildNodes.Count > 0)//significa que tiene parametros de entrada
                         {
-                            LinkedList<Expr> valParam = new LinkedList<Expr>();
+                            
                             foreach(ParseTreeNode hijo in nodoA.ChildNodes[2].ChildNodes)
                             {
                                 valParam.AddLast(expresion(hijo));
                             }
                             return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
                         }
-                        return null;
+                        return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
+                        
                     }
                 case "bloq_if":
                     {
@@ -259,6 +261,10 @@ namespace P1.Analizador
                         return new If(cond, insIfS, insElse, listIfElse, nodoA.ChildNodes[0].ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].ChildNodes[0].Token.Location.Column);
                     }
 
+                case "exit":
+                    {
+                        return new ExitR(expresion(nodoA.ChildNodes[2]),nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                    }
                  case "numero":
                      string tokenValor = nodoA.ChildNodes.ElementAt(1).ToString().Split(' ')[0];
                     return null;
@@ -269,18 +275,21 @@ namespace P1.Analizador
                         if (nodoA.ChildNodes[0].Token.Text == "function" || nodoA.ChildNodes[0].Token.Text == "procedure")
                         {
                             Simb.Tipo tipoA;
-                            if (nodoA.ChildNodes[0].Token.Text == "procedure")
+                            if (nodoA.ChildNodes[0].Token.Text == "procedure")//es un procedimiento
                                 tipoA = Simb.Tipo.VOID;
-                            else    tipoA = tipoVar(nodoA.ChildNodes[3].ChildNodes[0]);
+                            else    tipoA = tipoVar(nodoA.ChildNodes[3].ChildNodes[0]);//funcion
 
-                            
-                            if(nodoA.ChildNodes[1].ChildNodes.Count == 3)//no tiene parametros
+                            LinkedList<Declara> param = new LinkedList<Declara>();
+                            LinkedList<Instruc> ins = new LinkedList<Instruc>();
+                            if (nodoA.ChildNodes[1].ChildNodes.Count == 3)//no tiene parametros
                             {
-                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, instrucs(nodoA.ChildNodes[5]), tipoA, nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                                if(nodoA.ChildNodes[3].ChildNodes.Count>1) ins = bloques(nodoA.ChildNodes[3], ins);//VARIABLES
+                                ins = bloques(nodoA.ChildNodes[4], ins);//BEGIN
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text,param,ins, tipoA, nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
                             }
                             else//tiene parametros
                             {
-                                LinkedList<Declara> param = new LinkedList<Declara>();
+                                
                                 foreach (ParseTreeNode parametro in nodoA.ChildNodes[1].ChildNodes[2].ChildNodes)
                                 {
                                     if (parametro.ChildNodes.Count == 2)
@@ -302,8 +311,10 @@ namespace P1.Analizador
                                         param.AddLast((Declara)instruc(parametro.ChildNodes[0]));
                                     }
                                 }
-                                LinkedList<Instruc> instruciones = instrucs(nodoA.ChildNodes[5]);
-                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, param, instrucs(nodoA.ChildNodes[5]),tipoA,nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                                if(nodoA.ChildNodes[5].ChildNodes.Count >1) ins = bloques(nodoA.ChildNodes[5], ins);//VARIABLES
+                                ins = bloques(nodoA.ChildNodes[6], ins);//BEGIN
+
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, param, ins,tipoA,nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
                             }
                             
                         }
@@ -330,6 +341,10 @@ namespace P1.Analizador
             }*/
           switch (nodoA.ChildNodes[0].Term.Name)
             {
+                case "CALL_FUNC-PROC":
+                    {
+                        return (Expr)instruc(nodoA.ChildNodes[0]);
+                    }
                 case "EXPR_ARIT":
                     {
                         if(nodoA.ChildNodes[0].ChildNodes.Count == 3)

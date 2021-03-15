@@ -48,6 +48,7 @@ namespace P1.Analizador
             var IF = ToTerm("if");
             var ELSE = ToTerm("else");
             var THEN = ToTerm("then");
+            var EXIT = ToTerm("exit");
 
             //MarkReservedWords
 
@@ -76,10 +77,12 @@ namespace P1.Analizador
             RegisterOperators(2, Associativity.Left, COMA);
             RegisterOperators(3, Associativity.Left, OOR);
             RegisterOperators(4, Associativity.Left, AAND);
-            RegisterOperators(5, Associativity.Left, MAS, MENOS);
-            RegisterOperators(6, Associativity.Left, POR, DIVIDIDO);
-            RegisterOperators(8, Associativity.Right, NOT);
-            RegisterOperators(9, Associativity.Left, PARIZQ, PARDER);
+            RegisterOperators(5, Associativity.Left, IGUAL, DIF);
+            RegisterOperators(6, Associativity.Neutral, MAYIQ, MAYORQ, MENIQ, MENORQ);
+            RegisterOperators(7, Associativity.Left, MAS, MENOS);
+            RegisterOperators(8, Associativity.Left, POR, DIVIDIDO);
+            RegisterOperators(9, Associativity.Right, NOT);
+            RegisterOperators(10, Associativity.Left, PARIZQ, PARDER);
 
 
             NonGrammarTerminals.Add(comLinea);
@@ -115,17 +118,18 @@ namespace P1.Analizador
             NonTerminal CallFunProc = new NonTerminal("CALL_FUNC-PROC");
             NonTerminal pntComa = new NonTerminal("PUNTO-PTCOMA");
             NonTerminal ExpWrite = new NonTerminal("ExpWrite");
-            NonTerminal ifE = new NonTerminal("IF");
             NonTerminal listElse = new NonTerminal("LIST_ELSE");
             NonTerminal bloqIF = new NonTerminal("BLOQ_IF");
             NonTerminal ifSimp = new NonTerminal("IF_SIM");
             NonTerminal ifElse = new NonTerminal("IF_ELSE");
-            NonTerminal ifComp = new NonTerminal("IF_COMP");
             NonTerminal ElseIf = new NonTerminal("ELSE_IF");
             NonTerminal ElseS = new NonTerminal("ELSE");
             NonTerminal instBegin = new NonTerminal("INSTRS_BEGIN");
             NonTerminal parIzq = new NonTerminal("op_parIzq");
             NonTerminal parDer = new NonTerminal("op_parDer");
+            NonTerminal insFunProc = new NonTerminal("INS_FUNC-PROC");
+            NonTerminal insFuPr = new NonTerminal("INS_FUN-PRO");
+            NonTerminal retorno = new NonTerminal("EXIT");
 
 
             #endregion
@@ -142,10 +146,15 @@ namespace P1.Analizador
 
             instr.Rule = //BLOQUE INSTRUCCIONES VAR, BEGIN
                           OpcVar + bloqVar + PTCOMA
-                        | BBEGIN + bloqBegin + END + pntComa
-                        | FUNC + funcProc + DOSPTS + tipo + PTCOMA + instrs
-                        | PROC + funcProc + PTCOMA + instrs
+                        | BBEGIN + bloqBegin + END + PUNTO
+                        | FUNC + funcProc + DOSPTS + tipo + PTCOMA + insFunProc + instBegin + PTCOMA  
+                        | PROC + funcProc + PTCOMA + insFunProc + instBegin + PTCOMA
                         | error;
+
+            insFunProc.Rule = OpcVar + bloqVar + PTCOMA 
+                            | Empty
+                            | error;
+
 
             pntComa.Rule = PUNTO
                            | PTCOMA;
@@ -190,7 +199,10 @@ namespace P1.Analizador
                             | print + PTCOMA
                             | CallFunProc + PTCOMA
                             | bloqIF
+                            | retorno + PTCOMA
                             ;
+
+            retorno.Rule = EXIT + PARIZQ + expr + PARDER;
 
             bloqIF.Rule = ifSimp + PTCOMA+ ifElse;
 
@@ -241,7 +253,8 @@ namespace P1.Analizador
                        | exprAritmetica
                        | exprRelacional
                        | exprLogica
-                       | PARIZQ + expr + PARDER;
+                       | PARIZQ + expr + PARDER
+                       | CallFunProc;
 
             exprAritmetica.Rule = //EXPRESIONES ARITMETICAS
                           MENOS + expr
