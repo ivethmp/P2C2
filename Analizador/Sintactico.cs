@@ -227,6 +227,12 @@ namespace P1.Analizador
                         return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
                         
                     }
+                case "bloq_while":
+                    {
+                        Expr cond = expresion(nodoA.ChildNodes[1]);
+                        LinkedList<Instruc> list = new LinkedList<Instruc>();
+                        return new While(cond, bloques(nodoA.ChildNodes[3], list), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                    }
                 case "bloq_if":
                     {
                         Expr cond = expresion(nodoA.ChildNodes[0].ChildNodes[2]);

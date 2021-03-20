@@ -49,6 +49,8 @@ namespace P1.Analizador
             var ELSE = ToTerm("else");
             var THEN = ToTerm("then");
             var EXIT = ToTerm("exit");
+            var WHILE = ToTerm("while");
+            var DO = ToTerm("do");
 
             //MarkReservedWords
 
@@ -130,6 +132,8 @@ namespace P1.Analizador
             NonTerminal insFunProc = new NonTerminal("INS_FUNC-PROC");
             NonTerminal insFuPr = new NonTerminal("INS_FUN-PRO");
             NonTerminal retorno = new NonTerminal("EXIT");
+            NonTerminal whileL = new NonTerminal("WHILE");
+            NonTerminal BloqWhile = new NonTerminal("BLOQ_WHILE");
 
 
             #endregion
@@ -200,6 +204,7 @@ namespace P1.Analizador
                             | CallFunProc + PTCOMA
                             | bloqIF
                             | retorno + PTCOMA
+                            | BloqWhile + PTCOMA
                             ;
 
             retorno.Rule = EXIT + PARIZQ + expr + PARDER;
@@ -210,6 +215,8 @@ namespace P1.Analizador
                           | listElse + PTCOMA
                           | listElse + PTCOMA + ElseS + PTCOMA
                           | Empty;
+
+            BloqWhile.Rule = WHILE + expr + DO + instBegin;
 
 
 
