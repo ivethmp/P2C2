@@ -15,7 +15,7 @@ namespace P1.Generacion
         int cont = 0;
         int numero;
 
-        Temp( LinkedList<Instruc> inter)
+        public Temp( LinkedList<Instruc> inter)
         {
             temp = "t";
             

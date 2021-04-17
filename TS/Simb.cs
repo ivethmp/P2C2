@@ -13,14 +13,22 @@ namespace P1.TS
         public Tipo tip;
         public String id;
         public Object val;
+        public String ambito;
+        public String rol;
+        public int apuntador;
+        public int param;
 
         public int lin { get ; set ; }
         public int col { get ; set ; }
 
-        public Simb(String id, Tipo tip, int lin, int col)
+        public Simb(String id, Tipo tip, String ambito, String rol, int apuntador, int param, int lin, int col)
         {
             this.tip = tip;
             this.id = id;
+            this.ambito = ambito;
+            this.rol = rol;
+            this.apuntador = apuntador;
+            this.param = param;
             this.lin = lin;
             this.col = col;
         }
@@ -48,6 +56,15 @@ namespace P1.TS
             return val;
         }
 
+        public int getApuntador()
+        {
+            return apuntador;
+        }
+
+        public int getParam()
+        {
+            return param;
+        }
         public void setVal(object valor)
         {
             val = valor;

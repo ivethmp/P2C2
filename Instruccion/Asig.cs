@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.Generacion;
 using P1.Interfaz;
 using P1.TS;
 using System;
@@ -33,6 +34,12 @@ namespace P1.Instruccion
                 if (actual.getTipo(en, arbol,inter) == tipoA)//valida que el tipo obtenido sea el mismo que el tipo del valor
                 {
                     actual.val = valor;//se asigna el valor antes de ser agregado
+                    
+                    Temp newTemp = new Temp(inter);//genero el nuevo temporal
+                    inter.AddLast(newTemp);//agrego el temporal a la lista de temporales
+                    String temp = (String)newTemp.ejecutar(en, arbol, inter);//obtengo el temporal
+                    inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp, "", ""));
+                    inter.AddLast(new GenCod(temp, "" + valor, "", "STACK", "", ""));
                     en.actualizar(actual.id, actual);//se ha actualizado el valor de la variable
                 }
                 else

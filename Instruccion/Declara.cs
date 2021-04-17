@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.Generacion;
 using P1.Interfaz;
 using P1.TS;
 using System;
@@ -35,15 +36,18 @@ namespace P1.Instruccion
 
         public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
+            bool inicializado = false;
             object valor;
             Simb.Tipo tipoA;
             if (val != null)//se verifica si la variable esta inicializada o no y el tipo 
             {
+                inicializado = true;
                 valor = val.getValImp(en, arbol, inter);
                 tipoA = val.getTipo(en, arbol,inter);
             }
             else
             {//como no esta inicializada se toma el tipo de variable tal cual y se inicializa
+
                 tipoA = tipoD;
                 if (tipoD == Simb.Tipo.BOOL)
                     valor = false;
@@ -65,7 +69,20 @@ namespace P1.Instruccion
                     if(tipoD == tipoA)//esta declarado segun el tipo que se inicializo
                     {
                         sim.val = valor;//se asigna el valor antes de ser agregado
+                        //AGREGO EL VALOR DE LA VARIABLE PARA ESTABLECER SU POSICION RELATIVA O APUNTADOR EN LA PILA
+                        Stack nuevo = new Stack(0);
+                        int apuntador = (int)nuevo.ejecutar(en, arbol, inter);
+                        inter.AddLast(nuevo);//el valor realmente no importa 
+                        sim.apuntador = apuntador;
                         en.Agregar(sim.id, sim);
+                        if(inicializado == true)//quiere decir que se inicializo la variable con un valor concreto y no con 0, por lo que debo guardar el valor en la pila 
+                        {
+                            Temp newTemp = new Temp(inter);
+                            inter.AddLast(newTemp);//agrego el temporal a la lista de temporales
+                            String temp = (String)newTemp.ejecutar(en, arbol, inter);
+                            inter.AddLast(new GenCod("sp", "" + apuntador, "+", temp, "", ""));
+                            inter.AddLast(new GenCod(temp, "" + valor, "", "STACK", "", ""));
+                        }
                     }
                     else
                     {

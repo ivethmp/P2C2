@@ -20,7 +20,10 @@ namespace P1.Reportes
                 "<tr>" +
                 "<td> ID() </td>" +
                 "<td> TIPO </td>" +
-                "<td> VALOR </td>" +
+                "<td> AMBITO </td>" +
+                "<td> ROL </td>" +
+                "<td> APUNTADOR </td>" +
+                "<td> PARAMETROS </td>" +
                 "<td> LINEA </td>" +
                 "<td > COL </td>" +
                 "</tr>\n";
@@ -33,7 +36,10 @@ namespace P1.Reportes
                     "<tr>\n" +
                     "<td> " + aux.id + " </td>\n" +
                     "<td> " + aux.tip + " </td>\n" +
-                    "<td> " + aux.val + " </td>\n" +
+                    "<td> " + aux.ambito + " </td>\n" +
+                    "<td> " + aux.rol + " </td>\n" +
+                    "<td> " + aux.apuntador + " </td>\n" +
+                    "<td> " + aux.param + " </td>\n" +
                     "<td> " + aux.lin + " </td>\n" +
                     "<td> " + aux.col + " </td>\n" +
                     "</tr>\n";

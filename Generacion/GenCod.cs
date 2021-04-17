@@ -71,6 +71,18 @@ namespace P1.Generacion
                 Form1.salir.AppendText(etiqFalse);
                 return 0;
             }
+            else if(this.res == "STACK")
+            {
+                Form1.salir.AppendText("Stack["+temp1+"] = "+temp2 +"; \n");
+            }
+            else
+            {
+                if(this.oper == "+")
+                {
+                    Form1.salir.AppendText(res+"="+temp1+oper+temp2+"; \n");
+                    return 0;
+                }
+            }
             return null;
         }
     }
