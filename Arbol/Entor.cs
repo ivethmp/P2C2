@@ -6,7 +6,7 @@ using System.Text;
 
 namespace P1.Arbol
 {
-    class Entor
+    class Entor : ICloneable
     {
         private Hashtable tabS;
         private Entor anterior;
@@ -99,12 +99,21 @@ namespace P1.Arbol
             {
                 Simb simbolo = (Simb)(e.tabS[id]);
                 if (simbolo != null)
+                {
                     e.tabS[id] = val;//los nuevos valores para dicho id
+                    return;
+                }
+                    
 
 
             }
             Console.WriteLine("El id no ha sido declarado");
 
+        }
+
+        public object Clone()
+        {
+            return new Entor(this);
         }
 
         public Hashtable TabSimb

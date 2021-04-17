@@ -13,6 +13,7 @@ using P1.Instruccion;
 using System.Runtime.Serialization;
 using Irony;
 using P1.Reportes;
+using P1.Generacion;
 
 namespace P1.Analizador
 {
@@ -47,30 +48,25 @@ namespace P1.Analizador
                 return;
             }
 
-
-            LinkedList<Instruc> AST = instrucs( raiz.ChildNodes.ElementAt(3));
-
-            arb = new Arbol.AST(AST);
-
-
-
-            //arbol = (TabS)instrucs(raiz.ChildNodes.ElementAt(3));
-            //ins = AST;
-            //TabS global = new TabS();
+                LinkedList<Instruc> AST = instrucs(raiz);
+                arb = new Arbol.AST(AST);
+           
             Entor entorno = new Entor(null);
-            /*foreach (Instruc inst in AST)
-            {
-                if(inst is Func)
-                {
-                    inst.ejecutar(entorno, arb);
-                }
-            }
-            */
+            LinkedList<Instruc> inter = new LinkedList<Instruc>();
+          
             foreach (Instruc inst in AST)
             {
                 if (!(inst is Func))
                 {
-                    inst.ejecutar(entorno, arb);
+                    inst.ejecutar(entorno, arb, inter);
+                }
+            }
+
+            foreach (Instruc inst in inter)
+            {
+                if( inst is GenCod)
+                {
+                    inst.ejecutar(entorno, arb, inter);
                 }
             }
             RepTabS reporte = new RepTabS();
@@ -91,19 +87,40 @@ namespace P1.Analizador
 
         public LinkedList<Instruc> instrucs( ParseTreeNode nodoA)
         {
-            if (nodoA.ChildNodes.Count ==2 )
+            LinkedList<Instruc> lista = new LinkedList<Instruc>();
+            // if (nodoA.ChildNodes[3].Term.Name == "BLOQ_VAR-GLOB")
+            //bloque de var en pascal
+            if (nodoA.ChildNodes[3].ChildNodes.Count >0)
+                {
+                    foreach (ParseTreeNode son in nodoA.ChildNodes[3].ChildNodes)
+                    {
+                         bloques(son, lista);
+                    }
+                }
+           
+            //bloque de procedimiento o funcion 
+            if (nodoA.ChildNodes[4].ChildNodes.Count > 0)
             {
-                LinkedList<Instruc> lista = instrucs (nodoA.ChildNodes.ElementAt(0));
-              
-               // lista.AddLast(instruc ( nodoA.ChildNodes.ElementAt(1)));
-                return bloques(nodoA.ChildNodes.ElementAt(1), lista);
+                foreach(ParseTreeNode son in nodoA.ChildNodes[4].ChildNodes)
+                {
+                      bloques(son, lista);
+                }
             }
-            else
+            //bloque de begin del main en pascal
+            if(nodoA.ChildNodes[5].ChildNodes.Count > 0)
             {
-                LinkedList<Instruc> lista = new LinkedList<Instruc>();
-                //lista.AddLast(instruc( nodoA.ChildNodes.ElementAt(3)));
-                return bloques(nodoA.ChildNodes.ElementAt(0),lista);
+                 bloques(nodoA.ChildNodes[5], lista);
             }
+            //bloque de procedimiento o funcion, si viene despues del begin end del metodo principal
+            if (nodoA.ChildNodes[7].ChildNodes.Count > 0)
+            {
+                foreach (ParseTreeNode son in nodoA.ChildNodes[7].ChildNodes)
+                {
+                     bloques(son, lista);
+                }
+            }
+            return lista;
+
         }
 
         private LinkedList<Instruc> bloques(ParseTreeNode bloque, LinkedList<Instruc> lista)
@@ -113,20 +130,20 @@ namespace P1.Analizador
                 
                 foreach (ParseTreeNode declarar in bloque.ChildNodes[1].ChildNodes)
                 {
-                    System.Diagnostics.Debug.WriteLine("entre al for");
-                    lista.AddLast(instruc(declarar));
+                    System.Diagnostics.Debug.WriteLine("entre al for");//le mando el tipo de variable global
+                    lista.AddLast(instruc(declarar, bloque.ChildNodes[0].ChildNodes[0].Token.Text));
                 }
                 return lista;
             }else if (bloque.ChildNodes[1].Term.Name == "BLOQ_BEGIN")
             {
                 foreach (ParseTreeNode instbegin in bloque.ChildNodes[1].ChildNodes)
                 {
-                    lista.AddLast(instruc(instbegin.ChildNodes[0]));
+                    lista.AddLast(instruc(instbegin.ChildNodes[0],""));
                 }
                 return lista;
             }else if (bloque.ChildNodes[1].Term.Name == "BLOQ_FUNC-PROC")
             {
-                lista.AddLast(instruc(bloque));
+                lista.AddLast(instruc(bloque,"Funcion"));
                 return lista;
             }
             return null;
@@ -143,7 +160,7 @@ namespace P1.Analizador
                 default: return Simb.Tipo.INVAL;
             }
         }
-        private Instruc instruc( ParseTreeNode nodoA)
+        private Instruc instruc( ParseTreeNode nodoA, String VarG)
         {
             //(1) ES EL BLOQUE VAR/BEGIN (0) YA ES LA INSTRUCCION EN SI
             //string tokenOp = nodoA.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).ToString().Split(' ')[0];
@@ -183,7 +200,7 @@ namespace P1.Analizador
                                 return new Declara(ides, tipoA, null, 0, 0);
                             else//quiere decir que tiene valor inicializado
                             {
-                                return new Declara(ides, tipoA, expresion(nodoA.ChildNodes[4]), 0, 0);
+                                return new Declara(ides, tipoA, expresion(nodoA.ChildNodes[4], VarG), 0, 0);
                             }
 
                         }
@@ -194,7 +211,7 @@ namespace P1.Analizador
                 
                 case "asigna":
                     {
-                        return new Asig(nodoA.ChildNodes[0].Token.Text,expresion(nodoA.ChildNodes[2]),0,0);
+                        return new Asig(nodoA.ChildNodes[0].Token.Text,expresion(nodoA.ChildNodes[2], VarG),0,0);
                     }
                 case "writel":
                     {//El primer if es de writeln
@@ -206,9 +223,9 @@ namespace P1.Analizador
                         if (nodoA.ChildNodes[0].ChildNodes[0].Term.Name == "writeln")
                         {//significa que es un salto de linea 
 
-                            return new Print(expresion(nodoA.ChildNodes[2]),nodoA.ChildNodes[1].Token.Location.Line,nodoA.ChildNodes[1].Token.Location.Column,true);
+                            return new Print(expresion(nodoA.ChildNodes[2], VarG),nodoA.ChildNodes[1].Token.Location.Line,nodoA.ChildNodes[1].Token.Location.Column,true);
                         }//significa que es un write sin salto de linea por lo que la bandera es false
-                        return new Print((Expr)expresion(nodoA.ChildNodes[2]), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
+                        return new Print((Expr)expresion(nodoA.ChildNodes[2], VarG), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
                         //(Expr)analizr(nodoA, linea,columna)
                     }
                 // return new Print(expresion_cadena(actual.ChildNodes.ElementAt(2)));
@@ -220,7 +237,7 @@ namespace P1.Analizador
                             
                             foreach(ParseTreeNode hijo in nodoA.ChildNodes[2].ChildNodes)
                             {
-                                valParam.AddLast(expresion(hijo));
+                                valParam.AddLast(expresion(hijo, VarG));
                             }
                             return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
                         }
@@ -229,13 +246,13 @@ namespace P1.Analizador
                     }
                 case "bloq_while":
                     {
-                        Expr cond = expresion(nodoA.ChildNodes[1]);
+                        Expr cond = expresion(nodoA.ChildNodes[1], VarG);
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
                         return new While(cond, bloques(nodoA.ChildNodes[3], list), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
                     }
                 case "bloq_if":
                     {
-                        Expr cond = expresion(nodoA.ChildNodes[0].ChildNodes[2]);
+                        Expr cond = expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG);
                         LinkedList<Instruc> insIfS = new LinkedList<Instruc>();
                         insIfS = bloques(nodoA.ChildNodes[0].ChildNodes[5], insIfS);
                         LinkedList<Instruc> insElse = new LinkedList<Instruc>();
@@ -250,7 +267,7 @@ namespace P1.Analizador
                                 foreach (ParseTreeNode ifs in nodoA.ChildNodes[2].ChildNodes[0].ChildNodes)
                                 {
                                     LinkedList<Instruc> list = new LinkedList<Instruc>();
-                                    listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3]), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
+                                    listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3], VarG), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
                                 }
                                 
                             }
@@ -260,7 +277,7 @@ namespace P1.Analizador
                             foreach (ParseTreeNode ifs in nodoA.ChildNodes[2].ChildNodes[0].ChildNodes)
                             {
                                 LinkedList<Instruc> list = new LinkedList<Instruc>();
-                                listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3]), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
+                                listIfElse.AddLast(new If(expresion(ifs.ChildNodes[3], VarG), bloques(ifs.ChildNodes[6], list), null, null, ifs.ChildNodes[0].Token.Location.Line, ifs.ChildNodes[0].Token.Location.Column));
                             }//else 
                             insElse = bloques(nodoA.ChildNodes[2].ChildNodes[2].ChildNodes[1], insElse);
                         }
@@ -269,7 +286,7 @@ namespace P1.Analizador
 
                 case "exit":
                     {
-                        return new ExitR(expresion(nodoA.ChildNodes[2]),nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                        return new ExitR(expresion(nodoA.ChildNodes[2], VarG),nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
                     }
                  case "numero":
                      string tokenValor = nodoA.ChildNodes.ElementAt(1).ToString().Split(' ')[0];
@@ -305,7 +322,7 @@ namespace P1.Analizador
                                             Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Column);
                                             return null;
                                         }
-                                        param.AddLast((Declara)instruc(parametro.ChildNodes[1]));
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[1], VarG));
                                     }
                                     else
                                     {
@@ -314,7 +331,7 @@ namespace P1.Analizador
                                             Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Column);
                                             return null;
                                         }
-                                        param.AddLast((Declara)instruc(parametro.ChildNodes[0]));
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[0], VarG));
                                     }
                                 }
                                 if(nodoA.ChildNodes[5].ChildNodes.Count >1) ins = bloques(nodoA.ChildNodes[5], ins);//VARIABLES
@@ -331,7 +348,7 @@ namespace P1.Analizador
             
         }
 
-        private Expr expresion(ParseTreeNode nodoA)
+        private Expr expresion(ParseTreeNode nodoA, String VarG)
         {
           /*  case "exprs":
                     {
@@ -349,29 +366,29 @@ namespace P1.Analizador
             {
                 case "CALL_FUNC-PROC":
                     {
-                        return (Expr)instruc(nodoA.ChildNodes[0]);
+                        return (Expr)instruc(nodoA.ChildNodes[0], VarG);
                     }
                 case "EXPR_ARIT":
                     {
                         if(nodoA.ChildNodes[0].ChildNodes.Count == 3)
                         {
                             //return new Oper((Expr)nodoA.ChildNodes[0].ChildNodes[0], (Expr)nodoA.ChildNodes[0].ChildNodes[2], Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
-                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2]), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
+                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0], VarG), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                         }//else if (nodoA.ChildNodes.Count == 2)
                         
                         return new Oper((Expr)nodoA.ChildNodes[1], Oper.tipOper.MENOSU);  
                     }
                 case "EXPR_REL":
                     {
-                        return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2]),Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
+                        return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0], VarG), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG),Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                     }
                 case "EXPR_LOG":
                     {
-                        if(nodoA.ChildNodes.Count == 3)
+                        if(nodoA.ChildNodes[0].ChildNodes.Count == 3)
                         {
-                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2]), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
+                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0], VarG), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                         }else
-                            return new Oper((Expr)nodoA.ChildNodes[1], Oper.tipOper.NOT);
+                            return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[1], VarG), Oper.tipOper.NOT);
 
                     }
                 case "PRIMITIVOS":
@@ -418,14 +435,14 @@ namespace P1.Analizador
                             {
                                 if (nodoA.ChildNodes[1].Token.Text == ",")
                                 {
-                                    return new Oper((Expr)expresion(nodoA.ChildNodes[0]), (Expr)expresion(nodoA.ChildNodes[2]), Oper.getOperador(nodoA.ChildNodes[1].Token.Text));
+                                    return new Oper((Expr)expresion(nodoA.ChildNodes[0], VarG), (Expr)expresion(nodoA.ChildNodes[2], VarG), Oper.getOperador(nodoA.ChildNodes[1].Token.Text));
 
                                 }
                             }
-                            return (expresion(nodoA.ChildNodes[0]));
+                            return (expresion(nodoA.ChildNodes[0], VarG));
                         }
 
-                        return expresion(nodoA.ChildNodes[1]);
+                        return expresion(nodoA.ChildNodes[1], VarG);
                     }
             }
             

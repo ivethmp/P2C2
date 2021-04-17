@@ -14,9 +14,9 @@ namespace P1.Interfaz
         public int lin { get; set; }
         public int col { get; set; }
 
-        Tipo getTipo(Entor en, AST arbol);
+        Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter);
 
-        object getValImp(Entor en, AST arbol);
+        object getValImp(Entor en, AST arbol, LinkedList<Instruc> inter);
 
     }
 }

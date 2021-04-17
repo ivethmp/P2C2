@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.Generacion;
 using P1.Interfaz;
 using P1.TS;
 using System;
@@ -76,9 +77,9 @@ namespace P1.Instruccion
             }
 
         }
-        public Simb.Tipo getTipo(Entor en, AST arbol)
+        public Simb.Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
         {//retorna el tipo de dato que se esta utilizando
-            object val = this.getValImp(en, arbol);
+            object val = this.getValImp(en, arbol,inter);
             if (val is bool) return Tipo.BOOL;
             else if (val is int) return Tipo.INT;
             else if (val is Double) return Tipo.REAL;
@@ -86,14 +87,26 @@ namespace P1.Instruccion
             return Tipo.OBJ;
         }
 
-        public object getValImp(Entor en, AST arbol)
+        public String getEtiq(LinkedList<Instruc> inter, String cond)
+        {
+            String etiqueta = "";
+            foreach (Etiq ins in inter)
+            {
+                if (ins.cond == cond) etiqueta = etiqueta + "L" + ins.numero + ":\n";
+            }
+            return etiqueta;
+        }
+
+
+        public object getValImp(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             try
             {
                 if (operUna == null)
                 {
-                    object op1 = operIzq.getValImp(en, arbol);
-                    object op2 = operDer.getValImp(en, arbol);
+                    //la variable tendria que retornar el temporal donde se asigna el valor de la variable en el stack
+                    object op1 = operIzq.getValImp(en, arbol, inter);
+                    object op2 = operDer.getValImp(en, arbol, inter);
                     #region Sum
                     if (operador == tipOper.SUMA)
                     {
@@ -202,7 +215,17 @@ namespace P1.Instruccion
                     #region MayorQue
                     if (operador == tipOper.MAYORQ)
                     {
-                        if (op1 is int && op2 is int)
+                        LinkedList <Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1),Convert.ToString(op2),">","REL",Convert.ToString(eti.ejecutar(en,arbol,inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        
+                        return etiquetas;
+                        /* if (op1 is int && op2 is int)
                             return (int)op1 > (int)op2;
 
                         else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
@@ -213,13 +236,22 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                     #region MayorIgualQue
                     if (operador == tipOper.MAYIOQ)
                     {
-                        if (op1 is int && op2 is int)
+                        LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), ">=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        return etiquetas;
+                        /*if (op1 is int && op2 is int)
                             return (int)op1 >= (int)op2;
 
                         else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
@@ -230,13 +262,22 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                     #region MenorQue
                     if (operador == tipOper.MENORQ)
                     {
-                        if (op1 is int && op2 is int)
+                        LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        return etiquetas;
+                        /*if (op1 is int && op2 is int)
                             return (int)op1 < (int)op2;
 
                         else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
@@ -247,13 +288,22 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error Sintactico, No se pueden Comparar \"<\" datos No numericos");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                     #region MenorIgualQue
                     if (operador == tipOper.MENIQ)
                     {
-                        if (op1 is int && op2 is int)
+                        LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        return etiquetas;
+                        /*if (op1 is int && op2 is int)
                             return (int)op1 <= (int)op2;
 
                         else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
@@ -264,24 +314,57 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                     #region igual
                     if (operador == tipOper.IGUAL)
                     {
-                        return (op1.Equals(op2)) ;
+                        LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "==", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        return etiquetas;
+                        //return (op1.Equals(op2)) ;
                     }
                     #endregion
                     #region diferente
                     if (operador == tipOper.IGUAL)
                     {
-                        return !(op1.Equals(op2));
+                        LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+                        Etiq eti = new Etiq(inter, "true");
+                        inter.AddLast(eti);
+                        etiquetas.AddLast(eti);
+                        Etiq etiF = new Etiq(inter, "false");
+                        inter.AddLast(etiF);
+                        etiquetas.AddLast(etiF);
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "!=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        return etiquetas;
+                        //return !(op1.Equals(op2));
                     }
                     #endregion
                     #region and
                     else if (operador == tipOper.AND)
                     {
+                        LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
+                        LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
+                        
+                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "true"), ""));
+                        //obtengo las etiquetas falsas derecho para asi agregagarla a a lista de salida de etiquetas
+                        foreach (Etiq eti in etider)
+                        {
+                            if(eti.cond == "false")
+                            {
+                                etiizq.AddLast(eti);
+                            }
+                        }
+                        return etiizq;
+
+/*
                         if (op1 is bool && op2 is bool)
                         {
                             return (bool)op1 && (bool)op2;
@@ -290,13 +373,27 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error, no se permiten datos que no sean boolean");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                     #region or
                     else if (operador == tipOper.OR)
                     {
-                        if (op1 is bool && op2 is bool)
+                        LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
+                        LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
+
+                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "false"), ""));
+                        //obtengo las etiquetas verdaderaas derecho para asi agregagarla a a lista de salida de etiquetas
+                        foreach (Etiq eti in etider)
+                        {
+                            if (eti.cond == "true")
+                            {
+                                etiizq.AddLast(eti);
+                            }
+                        }
+                        //retorno las etiquetas falsas y verdaderas del lado izquierdo y la verdadera del lado derecho
+                        return etiizq;
+                        /*if (op1 is bool && op2 is bool)
                         {
                             return (bool)op1 || (bool)op2;
                         }
@@ -304,7 +401,7 @@ namespace P1.Instruccion
                         {
                             Form1.error.AppendText("Error, no se permiten datos que no sean boolean");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
 
@@ -312,7 +409,7 @@ namespace P1.Instruccion
                 else
                 {
                     #region unario
-                    object operUn = operUna.getValImp(en, arbol);
+                    object operUn = operUna.getValImp(en, arbol, inter);
                     if (this.operador == tipOper.MENOSU)
                     {
                         if (operUn is Decimal || operUn is double) return -1 * (Decimal)operUn;
@@ -326,14 +423,24 @@ namespace P1.Instruccion
                         }
                     }
                     else if (operador == tipOper.NOT)
-                    {
+                    {//lo unico que se hace es un intercambio de etiquetas las true pasan a ser false y las false a true
+                        LinkedList<Instruc> etiq = (LinkedList<Instruc>)operUn;
+
+                        foreach(Etiq eti in etiq)
+                        {
+                            if (eti.cond == "true") eti.cond = "false";
+                            else if (eti.cond == "false") eti.cond = "true";
+                        }
+
+                        return etiq;
+                        /*
                         if (operUn is bool) return !(bool)operUn;
                         
                         else
                         {
                             Form1.error.AppendText("Error, no se puede negar este tipo de datos");
                             return null;
-                        }
+                        }*/
                     }
                     #endregion
                 }

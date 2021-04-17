@@ -36,9 +36,10 @@ namespace P1.Instruccion
             this.col = col;
         }*/
 
-        public object ejecutar(Entor en, AST arbol)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             Entor tabL = new Entor(en);
+            tabL.Clone();
 
             if (valParam == null)//cuando no tiene parametros inicializados
             {
@@ -49,7 +50,7 @@ namespace P1.Instruccion
             LinkedList<Expr> valores = new LinkedList<Expr>();
             foreach (Expr e in valParam)//valParam son de la llamada a funcion 
             {
-                valores.AddLast(new Prim(e.getValImp(en, arbol), 0, 0));
+                valores.AddLast(new Prim(e.getValImp(en, arbol, inter), 0, 0));
             }
 
 
@@ -60,21 +61,21 @@ namespace P1.Instruccion
                 {
                     contParam++;
                 }
-                dec.ejecutar(tabL, arbol);
+                dec.ejecutar(tabL, arbol, inter);
             }
 
             if (contParam == valores.Count)// verifica que las variables son el mismo numero de la enviada por la llamada
             {
                 //declaracion de variables
-                
+                contParam = 0;
                 foreach (Declara dec in param)//vuelvo a evaluar en cada declaracion para obtener los simbolos de cada una
                 {
-                    contParam = 0;
+                    //contParam = 0;
                     foreach (Simb sim in dec.listaID)// evaluo cada simbolo
                     {
                         Expr exp = valores.ElementAt(contParam);//obtengo el valor en el orden del la llama a funcion o procedimiento
                         contParam++;//aumento contador para el siguiente parametro en la llamada a funcion 
-                        (new Asig(sim.id, exp, sim.lin, sim.col)).ejecutar(tabL, arbol);// actualizo los valores, para evaluar bien los envio a asignacion 
+                        (new Asig(sim.id, exp, sim.lin, sim.col)).ejecutar(tabL, arbol,inter);// actualizo los valores, para evaluar bien los envio a asignacion 
                     }
 
                 }
@@ -83,7 +84,7 @@ namespace P1.Instruccion
 
                 foreach (Instruc e in instrucciones)//ejecuto cada instruccion dentro de la funcion o procedimiento
                 {
-                    Object res = e.ejecutar(tabL, arbol);
+                    Object res = e.ejecutar(tabL, arbol, inter);
       //              return res;
 
                     if( e is ExitR)

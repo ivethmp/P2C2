@@ -33,14 +33,14 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, AST arbol)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             object valor;
             Simb.Tipo tipoA;
             if (val != null)//se verifica si la variable esta inicializada o no y el tipo 
             {
-                valor = val.getValImp(en, arbol);
-                tipoA = val.getTipo(en, arbol);
+                valor = val.getValImp(en, arbol, inter);
+                tipoA = val.getTipo(en, arbol,inter);
             }
             else
             {//como no esta inicializada se toma el tipo de variable tal cual y se inicializa
@@ -60,7 +60,7 @@ namespace P1.Instruccion
             {
                 lin = sim.lin;
                 col = sim.col;
-                if (!en.buscar(sim.id))
+                if (!en.buscarActual(sim.id))
                 {
                     if(tipoD == tipoA)//esta declarado segun el tipo que se inicializo
                     {

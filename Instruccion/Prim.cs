@@ -15,9 +15,9 @@ namespace P1.Instruccion
         
         private object val;
        // se obtiene el valor del simbolo
-        public Tipo getTipo(Entor en, AST arbol)
+        public Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
         {
-            object valor = this.getValImp(en, arbol);
+            object valor = this.getValImp(en, arbol, inter);
             if (valor is int)
                 return Tipo.INT;
             else if (valor is Double || valor is Decimal)
@@ -31,7 +31,7 @@ namespace P1.Instruccion
             return Tipo.OBJ;
         }
 
-        public object getValImp(Entor en, AST arbol)
+        public object getValImp(Entor en, AST arbol, LinkedList<Instruc>inter)
         { 
             return val;
         }

@@ -134,24 +134,40 @@ namespace P1.Analizador
             NonTerminal retorno = new NonTerminal("EXIT");
             NonTerminal whileL = new NonTerminal("WHILE");
             NonTerminal BloqWhile = new NonTerminal("BLOQ_WHILE");
+            NonTerminal BloqGVar = new NonTerminal("BLOQ_VAR-GLOB");
+            NonTerminal GLVar = new NonTerminal("VAR-GLOBAL");
+            NonTerminal BloqGBegin = new NonTerminal("BLOQ_BEG-GLOB");
 
 
             #endregion
 
             #region Gramatica
-            ini.Rule = PROG + IDENT + PTCOMA + instrs 
+
+            ini.Rule = PROG + IDENT + PTCOMA + BloqGVar + instrs + BloqGBegin + PUNTO + instrs //6 HIJOS
                      | error;
 
-            instrs.Rule = instrs + instr 
+            BloqGVar.Rule = MakeStarRule(BloqGVar, GLVar);
+            /*BloqGVar.Rule = BloqGVar + GLVar
+                        | GLVar
+                        | Empty;
+            */
+            GLVar.Rule = OpcVar + bloqVar + PTCOMA;
+
+            BloqGBegin.Rule = BBEGIN + bloqBegin + END;
+
+            instrs.Rule = MakeStarRule(instrs, instr);
+            //CUANTAS FUNCIONES Y PROCEDIMIENTOS QUIERA
+            /*instrs.Rule = instrs + instr 
                 | instr
-                | error;
+                | Empty
+                | error;*/
 
             //iniProg.Rule = PROG + IDENT + PTCOMA;
 
             instr.Rule = //BLOQUE INSTRUCCIONES VAR, BEGIN
-                          OpcVar + bloqVar + PTCOMA
-                        | BBEGIN + bloqBegin + END + PUNTO
-                        | FUNC + funcProc + DOSPTS + tipo + PTCOMA + insFunProc + instBegin + PTCOMA  
+                        //  OpcVar + bloqVar + PTCOMA
+                       // | BBEGIN + bloqBegin + END + PUNTO
+                          FUNC + funcProc + DOSPTS + tipo + PTCOMA + insFunProc + instBegin + PTCOMA  
                         | PROC + funcProc + PTCOMA + insFunProc + instBegin + PTCOMA
                         | error;
 

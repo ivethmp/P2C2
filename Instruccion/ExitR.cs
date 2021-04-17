@@ -21,20 +21,20 @@ namespace P1.Instruccion
             this.retorno = retorno;
         }
 
-        public object ejecutar(Entor en, AST arbol)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
-            return retorno.getValImp(en, arbol);
+            return retorno.getValImp(en, arbol, inter);
         }
 
-        public Simb.Tipo getTipo(Entor en, AST arbol)
+        public Simb.Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             
             throw new NotImplementedException();
         }
 
-        public object getValImp(Entor en, AST arbol)
+        public object getValImp(Entor en, AST arbol, LinkedList<Instruc>inter)
         {
-            return retorno.getValImp(en, arbol);
+            return retorno.getValImp(en, arbol, inter);
         }
     }
 }

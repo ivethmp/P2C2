@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.Generacion;
 using P1.Interfaz;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,19 @@ namespace P1.Instruccion
 
         }
 
-        public object ejecutar(Entor en, AST arbol)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             //se evalua la condicion// true o false
-            if ((bool)cond.getValImp(en, arbol))//primer if true
-            {
+            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)cond.getValImp(en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
+            String etiqV= "";
+            String etiqF = "";
+                foreach (Etiq eti in etiquetas)
+                {
+                    if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero+":\n";
+                    if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero + ":\n";
+                 }
+            inter.AddLast(new GenCod("", "", "", "IF", etiqV,""));
+
                 Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instrucciones)
                 {
@@ -43,16 +52,17 @@ namespace P1.Instruccion
                      {
                          return ins.ejecutar(local, arbol);
                      }*/
-                    ins.ejecutar(tabLoc, arbol);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
+                    ins.ejecutar(tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
 
                 }
-                return null;
-            }
+            inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else
+            return null;
+         /*   
             else
             {
                 foreach (If ifElse in listaIfElse)
                 {
-                    if((bool)ifElse.cond.getValImp(en,arbol))//se evaluan las condiciones de cada if 
+                    if((bool)ifElse.cond.getValImp(en,arbol, inter))//se evaluan las condiciones de cada if 
                     {
                         Entor tabLoc = new Entor(en);//nueva tabla para el if
                         foreach(Instruc ins in ifElse.instrucciones)//instrucciones dentro del if actual
@@ -65,7 +75,7 @@ namespace P1.Instruccion
                             {
                                 return ins.ejecutar(tabLoc, arbol);
                             }*/
-                            ins.ejecutar(tabLoc, arbol);
+   /*                         ins.ejecutar(tabLoc, arbol, inter);
                         }
                     }
                 }
@@ -83,11 +93,11 @@ namespace P1.Instruccion
                         {
                             return ins.ejecutar(local, arbol);
                         }*/
-                        ins.ejecutar(tabLoc, arbol);
+             /*           ins.ejecutar(tabLoc, arbol, inter);
                     }
                 }
             }
-            return null;
+            return null;*/
         }
     }
  }

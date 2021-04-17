@@ -22,18 +22,18 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, AST arbol)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             Entor TabWhile = new Entor(en);// nuevo entornno para el while
             //TabWhile.NewEntor(en);
             //TabWhile = en;
             
             siguiente:
-            if ((bool)condi.getValImp(TabWhile, arbol))
+            if ((bool)condi.getValImp(TabWhile, arbol,inter))
             {
                 foreach (Instruc ins in instrucciones)
                 {
-                    ins.ejecutar(TabWhile, arbol);
+                    ins.ejecutar(TabWhile, arbol,inter);
                 }
                 goto siguiente;
             }
