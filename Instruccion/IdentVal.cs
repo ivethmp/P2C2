@@ -1,4 +1,5 @@
 ﻿using P1.Arbol;
+using P1.Generacion;
 using P1.Interfaz;
 using P1.TS;
 using System;
@@ -39,7 +40,18 @@ namespace P1.Instruccion
             if (en.buscar(ide))
             {
                 Simb simbol = en.getSimb(ide);
-                return simbol.val;
+                //genero un nuevo temporal 
+                Instruc temp1 = new Temp(inter);
+                inter.AddLast(temp1);//agrego el temporal
+                String temp11 = (String)temp1.ejecutar(en, arbol, inter);
+                //asigno el temporal con su apuntador y posicion relativa
+                inter.AddLast(new GenCod("sp", ""+ simbol.apuntador, "+", temp11, "", ""));
+                Instruc temp2 = new Temp(inter);
+                inter.AddLast(temp2);
+                String temp22 = (String)temp2.ejecutar(en, arbol, inter);
+                inter.AddLast(new GenCod(temp11,temp22,"","GETSTACK","",""));
+                //retorno el temporal que contiene el valor de la variable
+                return temp22;
             }
             else
             {

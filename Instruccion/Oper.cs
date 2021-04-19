@@ -110,19 +110,14 @@ namespace P1.Instruccion
                     #region Sum
                     if (operador == tipOper.SUMA)
                     {
-                        if (op1 is int && op2 is int)
-                            return (int)op1 + (int)op2;
 
-                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
-                        {
-                            return Convert.ToDecimal(op1) + Convert.ToDecimal(op2);
-                        }
+                        Instruc temp = new Temp(inter);
+                        String tempo = (String)temp.ejecutar(en,arbol,inter);
+                        inter.AddLast(temp);//agrego el nuevo temporal
+
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "+", tempo, "", ""));
+                        return tempo;
                         
-                        else
-                        {
-                            Form1.error.AppendText("Error, datos incorrectos para realizar Suma");
-                            return null;
-                        }
                     }
                     #endregion
                     #region Concatenar
@@ -134,58 +129,64 @@ namespace P1.Instruccion
                     #region Resta
                     else if (operador == tipOper.RESTA)
                     {
-                        if (op1 is int && op2 is int)
-                            return (int)op1 - (int)op2;
+                        Instruc temp = new Temp(inter);
+                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        inter.AddLast(temp);//agrego el nuevo temporal
 
-                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
-                        {
-                            return Convert.ToDecimal(op1) - Convert.ToDecimal(op2);
-                        }
-                        else if (op1 is String || op2 is String)
-                        {
-                            Form1.error.AppendText("Error, datos incorrectos para realizar Resta");
-                            return null;
-                        }
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "-", tempo, "", ""));
+                        return tempo;
+                        
                     }
                     #endregion
                     #region Multi
                     else if (operador == tipOper.POR)
                     {
-                        if (op1 is int && op2 is int)
-                            return (int)op1 * (int)op2;
+                        Instruc temp = new Temp(inter);
+                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        inter.AddLast(temp);//agrego el nuevo temporal
 
-                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
-                        {
-                            return Convert.ToDecimal(op1) * Convert.ToDecimal(op2);
-                        }
-                        else if (op1 is String || op2 is String)
-                        {
-                            Form1.error.AppendText("Error, datos incorrectos para realizar Multiplicacion");
-                            return null;
-                        }
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "*", tempo, "", ""));
+                        return tempo;
+
                     }
                     #endregion
                     #region Division
                     else if (operador == tipOper.DIVISION)
                     {
-                        if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                       if(op2 is int)
                         {
-                            if((int)op2 == 0)
+                            if((int)op2 ==0 )
                             {
                                 Form1.salir.AppendText("Error, No se puede dividir por 0, infinito");
                                 return null;
                             }
-                            if (op1 is int && op2 is int)
-                            {
-                                return (int)op1 / (int)op2;
-                            }
-                                return Convert.ToDecimal(op1) / Convert.ToDecimal(op2);
                         }
-                        else 
-                        {
-                            Form1.error.AppendText("Error, datos incorrectos para realizar Division");
-                            return null;
-                        }
+
+                        Instruc temp = new Temp(inter);
+                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        inter.AddLast(temp);//agrego el nuevo temporal
+
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "/", tempo, "", ""));
+                        return tempo;
+                        /*
+                         if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
+                         {
+                             if((int)op2 == 0)
+                             {
+                                 Form1.salir.AppendText("Error, No se puede dividir por 0, infinito");
+                                 return null;
+                             }
+                             if (op1 is int && op2 is int)
+                             {
+                                 return (int)op1 / (int)op2;
+                             }
+                                 return Convert.ToDecimal(op1) / Convert.ToDecimal(op2);
+                         }
+                         else 
+                         {
+                             Form1.error.AppendText("Error, datos incorrectos para realizar Division");
+                             return null;
+                         }*/
                     }
                     #endregion
                     #region MOD
@@ -225,18 +226,7 @@ namespace P1.Instruccion
                         inter.AddLast(new GenCod(Convert.ToString(op1),Convert.ToString(op2),">","REL",Convert.ToString(eti.ejecutar(en,arbol,inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
                         
                         return etiquetas;
-                        /* if (op1 is int && op2 is int)
-                            return (int)op1 > (int)op2;
-
-                        else if ((op1 is int || op1 is double || op1 is Decimal) && (op2 is int || op2 is double || op2 is Decimal))
-                        {
-                            return Convert.ToDecimal(op1) > Convert.ToDecimal(op2);
-                        }
-                        else
-                        {
-                            Form1.error.AppendText("Error Sintactico, No se pueden Comparar \">\" datos No numericos");
-                            return null;
-                        }*/
+                        
                     }
                     #endregion
                     #region MayorIgualQue
