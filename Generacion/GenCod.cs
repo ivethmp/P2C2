@@ -73,7 +73,7 @@ namespace P1.Generacion
             }
             else if(res == "GOTO")
             {
-                Form1.salir.AppendText("goto "+etiqTrue+ "; \n");
+                Form1.salir.AppendText("goto "+etiqTrue+ "; \n\n");
             }
             else if(this.res == "STACK")
             {

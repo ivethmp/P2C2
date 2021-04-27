@@ -42,7 +42,7 @@ namespace P1.Instruccion
             inter.AddLast(NewEtiq);
             String EtiqNueva = (String)NewEtiq.ejecutar(en, arbol, inter);
             //genero codigo de la etiqueta del ciclo while
-            inter.AddLast(new GenCod("", "", "", "IF", EtiqNueva+":\n", ""));
+            inter.AddLast(new GenCod("", "", "", "IF", "\n"+EtiqNueva+":\n", ""));
             //Retorna las etiquetas verdaderas y falsas del condicional del while
             LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)condi.getValImp(en, arbol, inter);
             String etiqV = "";

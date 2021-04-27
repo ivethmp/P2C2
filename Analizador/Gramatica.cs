@@ -50,6 +50,8 @@ namespace P1.Analizador
             var THEN = ToTerm("then");
             var EXIT = ToTerm("exit");
             var WHILE = ToTerm("while");
+            var FOR = ToTerm("for");
+            var TO = ToTerm("to");
             var DO = ToTerm("do");
 
             //MarkReservedWords
@@ -134,6 +136,8 @@ namespace P1.Analizador
             NonTerminal retorno = new NonTerminal("EXIT");
             NonTerminal whileL = new NonTerminal("WHILE");
             NonTerminal BloqWhile = new NonTerminal("BLOQ_WHILE");
+            NonTerminal BloqFor = new NonTerminal("BLOQ_FOR");
+
             NonTerminal BloqGVar = new NonTerminal("BLOQ_VAR-GLOB");
             NonTerminal GLVar = new NonTerminal("VAR-GLOBAL");
             NonTerminal BloqGBegin = new NonTerminal("BLOQ_BEG-GLOB");
@@ -221,6 +225,7 @@ namespace P1.Analizador
                             | bloqIF
                             | retorno + PTCOMA
                             | BloqWhile + PTCOMA
+                            | BloqFor + PTCOMA
                             ;
 
             retorno.Rule = EXIT + PARIZQ + expr + PARDER;
@@ -233,6 +238,8 @@ namespace P1.Analizador
                           | Empty;
 
             BloqWhile.Rule = WHILE + expr + DO + instBegin;
+            
+            BloqFor.Rule = FOR + asig + TO + expr + DO + instBegin;
 
 
 

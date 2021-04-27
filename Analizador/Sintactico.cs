@@ -61,6 +61,11 @@ namespace P1.Analizador
                     inst.ejecutar(entorno, arb, inter);
                 }
             }
+            RepTabS reporte = new RepTabS();
+            reporte.GenHTML(entorno);
+            //GenGraphviz g = new GenGraphviz();
+            //g.graficar(raiz);
+            GenG.Run(GenGraphviz.getDot(raiz));
 
             foreach (Instruc inst in inter)
             {
@@ -69,11 +74,7 @@ namespace P1.Analizador
                     inst.ejecutar(entorno, arb, inter);
                 }
             }
-            RepTabS reporte = new RepTabS();
-            reporte.GenHTML(entorno);
-            //GenGraphviz g = new GenGraphviz();
-            //g.graficar(raiz);
-            GenG.Run(GenGraphviz.getDot(raiz));
+            
 
 
         }
@@ -249,6 +250,14 @@ namespace P1.Analizador
                         Expr cond = expresion(nodoA.ChildNodes[1], VarG, ambito);
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
                         return new While(cond, bloques(nodoA.ChildNodes[3], list,ambito), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                    }
+                case "bloq_for":
+                    {
+                        Instruc Asignar = new Asig(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, expresion(nodoA.ChildNodes[1].ChildNodes[2], VarG, ambito), 0, 0);
+                        
+                        Expr final = expresion(nodoA.ChildNodes[3], VarG, ambito);
+                        LinkedList<Instruc> list = new LinkedList<Instruc>();
+                        return new For(Asignar, nodoA.ChildNodes[1].ChildNodes[0].Token.Text, final, bloques(nodoA.ChildNodes[5], list, ambito),nodoA.ChildNodes[0].Token.Location.Line,nodoA.ChildNodes[0].Token.Location.Column);
                     }
                 case "bloq_if":
                     {
