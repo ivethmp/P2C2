@@ -53,7 +53,8 @@ namespace P1.Analizador
             var FOR = ToTerm("for");
             var TO = ToTerm("to");
             var DO = ToTerm("do");
-
+            var REPET = ToTerm("repeat");
+            var UNTIL = ToTerm("Until");
             //MarkReservedWords
 
             var IGUAL = ToTerm("=");
@@ -137,6 +138,7 @@ namespace P1.Analizador
             NonTerminal whileL = new NonTerminal("WHILE");
             NonTerminal BloqWhile = new NonTerminal("BLOQ_WHILE");
             NonTerminal BloqFor = new NonTerminal("BLOQ_FOR");
+            NonTerminal BloqRepeat = new NonTerminal("BLOQ_REPEAT");
 
             NonTerminal BloqGVar = new NonTerminal("BLOQ_VAR-GLOB");
             NonTerminal GLVar = new NonTerminal("VAR-GLOBAL");
@@ -226,6 +228,7 @@ namespace P1.Analizador
                             | retorno + PTCOMA
                             | BloqWhile + PTCOMA
                             | BloqFor + PTCOMA
+                            | BloqRepeat + PTCOMA
                             ;
 
             retorno.Rule = EXIT + PARIZQ + expr + PARDER;
@@ -241,6 +244,7 @@ namespace P1.Analizador
             
             BloqFor.Rule = FOR + asig + TO + expr + DO + instBegin;
 
+            BloqRepeat.Rule = REPET + bloqBegin + UNTIL + expr;
 
 
             listElse.Rule = MakePlusRule(listElse, PTCOMA, ElseIf);

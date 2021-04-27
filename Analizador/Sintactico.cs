@@ -259,6 +259,11 @@ namespace P1.Analizador
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
                         return new For(Asignar, nodoA.ChildNodes[1].ChildNodes[0].Token.Text, final, bloques(nodoA.ChildNodes[5], list, ambito),nodoA.ChildNodes[0].Token.Location.Line,nodoA.ChildNodes[0].Token.Location.Column);
                     }
+                case "bloq_repeat":
+                    {
+                        LinkedList<Instruc> list = new LinkedList<Instruc>();
+                        return new Repeat(bloques(nodoA, list, ambito), expresion(nodoA.ChildNodes[3], VarG, ambito),nodoA.ChildNodes[0].Token.Location.Line,nodoA.ChildNodes[0].Token.Location.Column);
+                    }
                 case "bloq_if":
                     {
                         Expr cond = expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG, ambito);

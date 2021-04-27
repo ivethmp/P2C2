@@ -7,32 +7,34 @@ using System.Text;
 
 namespace P1.Instruccion
 {
-    class While : Instruc
+    class Repeat : Instruc
     {
         public int lin { get; set; }
         public int col { get; set; }
-
-        Expr condi;
         LinkedList<Instruc> instrucciones;
+        Expr Condicion;
 
-        public While(Expr condi,LinkedList<Instruc>instrucciones, int lin, int col)
+        public Repeat(LinkedList<Instruc>instrucciones, Expr Condicion, int lin, int col)
         {
-            this.condi = condi;
             this.instrucciones = instrucciones;
+            this.Condicion = Condicion;
             this.lin = lin;
             this.col = col;
         }
-
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
         {
-           
-            Instruc NewEtiq = new Etiq(inter,"");
+            Instruc NewEtiq = new Etiq(inter, "");
             inter.AddLast(NewEtiq);
             String EtiqNueva = (String)NewEtiq.ejecutar(en, arbol, inter);
-            //genero codigo de la etiqueta del ciclo while
-            inter.AddLast(new GenCod("", "", "", "IF", "\n"+EtiqNueva+":\n", ""));
-            //Retorna las etiquetas verdaderas y falsas del condicional del while
-            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)condi.getValImp(en, arbol, inter);
+            //genero codigo de la etiqueta del ciclo repeat
+            inter.AddLast(new GenCod("", "", "", "IF", "\n" + EtiqNueva + ":\n", ""));
+
+            foreach (Instruc ins in instrucciones)
+            {//ejecuto cada instruccion dentro del repeat
+                ins.ejecutar(en, arbol, inter);
+            }
+            //genero el 3D del condicional Until
+            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)Condicion.getValImp(en, arbol, inter);
             String etiqV = "";
             String etiqF = "";
 
@@ -41,16 +43,12 @@ namespace P1.Instruccion
                 if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero + ":\n";
                 if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero + ":\n";
             }
+            
             //generno el codigo para la intruccion verdadera
             inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
-                foreach (Instruc ins in instrucciones)
-                {
-                    ins.ejecutar(en, arbol, inter);
-                }
-            //GENERO EL goto del la etiqueta verdadera para generar el ciclo
+            //salto al bucle del ciclo repeat
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
-            // goto siguiente;
-            //genero la etiqueta de la condicion falsa
+            //etiqueta de condicion falsa
             inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));
 
             return null;
