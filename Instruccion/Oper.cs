@@ -110,7 +110,6 @@ namespace P1.Instruccion
                     #region Sum
                     if (operador == tipOper.SUMA)
                     {
-
                         Instruc temp = new Temp(inter);
                         String tempo = (String)temp.ejecutar(en,arbol,inter);
                         inter.AddLast(temp);//agrego el nuevo temporal

@@ -260,7 +260,7 @@ namespace P1.Analizador
 
                         if (nodoA.ChildNodes[2].ChildNodes.Count == 2)//es if else
                         {
-                            if(nodoA.ChildNodes[2].ChildNodes[0].ChildNodes[0].Term.Name == "ELSE")//ELSE SIMPLE
+                            if(nodoA.ChildNodes[2].ChildNodes[0].Term.Name == "ELSE")//ELSE SIMPLE
                                 insElse = bloques(nodoA.ChildNodes[2].ChildNodes[0].ChildNodes[1], insElse, ambito);
                             else //if else if else if else sin else al final
                             {

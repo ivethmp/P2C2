@@ -71,6 +71,10 @@ namespace P1.Generacion
                 Form1.salir.AppendText(etiqFalse);
                 return 0;
             }
+            else if(res == "GOTO")
+            {
+                Form1.salir.AppendText("goto "+etiqTrue+ "; \n");
+            }
             else if(this.res == "STACK")
             {
                 Form1.salir.AppendText("Stack["+temp1+"] = "+temp2 +"; \n");
