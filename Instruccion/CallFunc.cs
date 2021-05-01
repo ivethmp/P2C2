@@ -24,7 +24,7 @@ namespace P1.Instruccion
 
        
 
-        public Simb.Tipo getTipo(Entor ent, AST arbol, LinkedList<Instruc>inter)
+        public Simb.Tipo getTipo(Entor gen,Entor ent, AST arbol, LinkedList<Instruc>inter)
         {
             Func f = arbol.getFuncion(id);//IDE.getFunction(id);
             if (null != f)
@@ -40,18 +40,21 @@ namespace P1.Instruccion
 
         
 
-        public object ejecutar(Entor ent, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor ent, AST arbol, LinkedList<Instruc> inter)
         {
-            return getValImp(ent, arbol, inter);
+            return getValImp(gen,ent, arbol, inter);
         }
 
-        public object getValImp(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
+            
             Func f = arbol.getFuncion(id);//IDE.getFunction(id);
+            //encuentro la funcion 
+            //recorro la funcion primero para obtener el tamaño de la funcion
             if (null != f)
             {
                 f.setValParam(valoresP);
-                Object resul = f.ejecutar(en, arbol,inter);
+                Object resul = f.ejecutar(gen,en, arbol,inter);
 
                 //si viene un return dentro
                 

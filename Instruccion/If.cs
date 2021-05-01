@@ -29,10 +29,10 @@ namespace P1.Instruccion
         }
         
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             //se evalua la condicion// true o false
-            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)cond.getValImp(en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
+            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)cond.getValImp(gen,en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
             String etiqV= "";
             String etiqF = "";
             
@@ -54,7 +54,7 @@ namespace P1.Instruccion
                      {
                          return ins.ejecutar(local, arbol);
                      }*/
-                    ins.ejecutar(tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
+                    ins.ejecutar(gen,tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
 
                 }
 
@@ -72,14 +72,14 @@ namespace P1.Instruccion
                 
                 //agrego el salto, para luego generar la etiqueta de condicion del if else
                 inter.AddLast(salto);
-                saltos = (String)salto.ejecutar(en, arbol, inter);
+                saltos = (String)salto.ejecutar(gen,en, arbol, inter);
                 inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                 inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else si no se cumple la condicion 
 
                 foreach (If ifElse in listaIfElse)
                 {
                     //ifElse.ejecutar(en, arbol, inter);
-                    LinkedList<Instruc> etiquetas2 = (LinkedList<Instruc>)ifElse.cond.getValImp(en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
+                    LinkedList<Instruc> etiquetas2 = (LinkedList<Instruc>)ifElse.cond.getValImp(gen,en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
                     String etiqV2 = "";
                     String etiqF2 = "";
 
@@ -101,7 +101,7 @@ namespace P1.Instruccion
                          {
                              return ins.ejecutar(local, arbol);
                          }*/
-                        ins.ejecutar(tabLoc2, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
+                        ins.ejecutar(gen,tabLoc2, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
 
                     }
                     //agrego el salto en cada if ya que indica que se cumplio esta condicion y debe salir del if
@@ -130,7 +130,7 @@ namespace P1.Instruccion
             else if (instElse != null)//no venia else if solo else
             {
                 inter.AddLast(salto);
-                saltos = (String)salto.ejecutar(en, arbol, inter);
+                saltos = (String)salto.ejecutar(gen,en, arbol, inter);
                 inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                 inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else si no se cumple la condicion 
             }else
@@ -151,7 +151,7 @@ namespace P1.Instruccion
                         {
                             return ins.ejecutar(local, arbol);
                         }*/
-                        ins.ejecutar(tabLoc, arbol, inter);
+                        ins.ejecutar(gen,tabLoc, arbol, inter);
                     }
                 }
             //}

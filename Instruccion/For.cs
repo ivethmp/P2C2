@@ -26,22 +26,22 @@ namespace P1.Instruccion
             this.instrucciones = instrucciones;
         }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             //genero el 3d del la asignacion del valor inicial 
-            Asignar.ejecutar(en, arbol, inter);
+            Asignar.ejecutar(gen,en, arbol, inter);
             
            //creo la etiqueta para iniciar el bucle
             Instruc NewEtiq = new Etiq(inter, "");
             inter.AddLast(NewEtiq);//agrego la etiqueta a la lista de etiquetas
-            String EtiqNueva = (String)NewEtiq.ejecutar(en, arbol, inter);
+            String EtiqNueva = (String)NewEtiq.ejecutar(gen,en, arbol, inter);
             //genero codigo de la etiqueta para el ciclo for
             inter.AddLast(new GenCod("", "", "", "IF", "\n" + EtiqNueva + ":\n", ""));
             //genero la condicion para el for
             Expr Condicion = new Oper(new IdentVal(id, Asignar.lin, Asignar.col), final, Oper.getOperador("<="));
            
             //obtengo las etiquetas verdaderas y falsas de acuerdo a la condicion del for
-            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)Condicion.getValImp(en, arbol, inter);
+            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)Condicion.getValImp(gen,en, arbol, inter);
             String etiqV = "";
             String etiqF = "";
 
@@ -54,12 +54,12 @@ namespace P1.Instruccion
             inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
             foreach (Instruc ins in instrucciones)
             {
-                ins.ejecutar(en, arbol, inter);
+                ins.ejecutar(gen,en, arbol, inter);
             }
             //genero la operacion de aumento del valor de la variable 
             Expr contador = new Oper(new IdentVal(id, Asignar.lin, Asignar.col), new Prim(1,0,0), Oper.getOperador("+"));
             Asig AsignoN = new Asig(id, contador, Asignar.lin, Asignar.col);
-            AsignoN.ejecutar(en, arbol,inter);
+            AsignoN.ejecutar(gen,en, arbol,inter);
             //GENERO EL goto del la etiqueta verdadera para generar el ciclo
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
             // goto siguiente;

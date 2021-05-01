@@ -48,13 +48,14 @@ namespace P1.Generacion
             this.etiqFalse = etiqFalse;
             this.etiqTrue = etiqTrue;
         }
+        
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             
             if(this.res == "REL")
             {
-                Form1.salir.AppendText("if("+this.temp1+this.oper + this.temp2 +") goto "+ etiqTrue + "\n" + "goto "+etiqFalse+ "\n");
+                Form1.salir.AppendText("if("+this.temp1+this.oper + this.temp2 +") goto "+ etiqTrue + ";\n" + "goto "+etiqFalse+ ";\n");
                 return 0;
             }
             else if(this.res == "LOG")
@@ -80,7 +81,7 @@ namespace P1.Generacion
                 Form1.salir.AppendText("Stack["+temp1+"] = "+temp2 +"; \n");
             }else if(this.res == "GETSTACK")
             {
-                Form1.salir.AppendText(temp2+"= Stack["+temp1+"]\n");
+                Form1.salir.AppendText(temp2+"= Stack["+temp1+"];\n");
             }
             else
             {

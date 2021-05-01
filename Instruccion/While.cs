@@ -23,16 +23,16 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
            
             Instruc NewEtiq = new Etiq(inter,"");
             inter.AddLast(NewEtiq);
-            String EtiqNueva = (String)NewEtiq.ejecutar(en, arbol, inter);
+            String EtiqNueva = (String)NewEtiq.ejecutar(gen,en, arbol, inter);
             //genero codigo de la etiqueta del ciclo while
             inter.AddLast(new GenCod("", "", "", "IF", "\n"+EtiqNueva+":\n", ""));
             //Retorna las etiquetas verdaderas y falsas del condicional del while
-            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)condi.getValImp(en, arbol, inter);
+            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)condi.getValImp(gen,en, arbol, inter);
             String etiqV = "";
             String etiqF = "";
 
@@ -45,7 +45,7 @@ namespace P1.Instruccion
             inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
                 foreach (Instruc ins in instrucciones)
                 {
-                    ins.ejecutar(en, arbol, inter);
+                    ins.ejecutar(gen,en, arbol, inter);
                 }
             //GENERO EL goto del la etiqueta verdadera para generar el ciclo
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));

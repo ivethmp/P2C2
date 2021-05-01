@@ -55,6 +55,8 @@ namespace P1.Analizador
             var DO = ToTerm("do");
             var REPET = ToTerm("repeat");
             var UNTIL = ToTerm("Until");
+            var CASE = ToTerm("case");
+            var OF = ToTerm("of");
             //MarkReservedWords
 
             var IGUAL = ToTerm("=");
@@ -139,6 +141,10 @@ namespace P1.Analizador
             NonTerminal BloqWhile = new NonTerminal("BLOQ_WHILE");
             NonTerminal BloqFor = new NonTerminal("BLOQ_FOR");
             NonTerminal BloqRepeat = new NonTerminal("BLOQ_REPEAT");
+            NonTerminal BloqCase = new NonTerminal("BLOQ_CASE");
+            NonTerminal CaseG = new NonTerminal("CASE-G");
+            NonTerminal Sentencia = new NonTerminal("Sentencia");
+            NonTerminal listSentecia = new NonTerminal("LIST_SENTENCIA");
 
             NonTerminal BloqGVar = new NonTerminal("BLOQ_VAR-GLOB");
             NonTerminal GLVar = new NonTerminal("VAR-GLOBAL");
@@ -229,6 +235,7 @@ namespace P1.Analizador
                             | BloqWhile + PTCOMA
                             | BloqFor + PTCOMA
                             | BloqRepeat + PTCOMA
+                            | BloqCase + PTCOMA
                             ;
 
             retorno.Rule = EXIT + PARIZQ + expr + PARDER;
@@ -246,6 +253,13 @@ namespace P1.Analizador
 
             BloqRepeat.Rule = REPET + bloqBegin + UNTIL + expr;
 
+            BloqCase.Rule = CASE + expr + OF + listSentecia + PTCOMA + CaseG;
+
+            CaseG.Rule = ElseS + PTCOMA + END
+                        | END;
+
+            listSentecia.Rule = MakePlusRule(listSentecia, PTCOMA, Sentencia);
+            Sentencia.Rule = expr + DOSPTS + instBegin;
 
             listElse.Rule = MakePlusRule(listElse, PTCOMA, ElseIf);
 

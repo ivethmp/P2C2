@@ -34,7 +34,7 @@ namespace P1.Generacion
             return cuenta;
         }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             return temp + numero;
         }

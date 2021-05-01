@@ -23,9 +23,9 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
-            Object valor = val.getValImp(en, arbol, inter);
+            Object valor = val.getValImp(gen,en, arbol, inter);
           //  Simb.Tipo tipoA = val.getTipo(en, arbol,inter);
 
             if (en.buscar(ide))//id encontrada
@@ -37,7 +37,7 @@ namespace P1.Instruccion
                     
                     Temp newTemp = new Temp(inter);//genero el nuevo temporal
                     inter.AddLast(newTemp);//agrego el temporal a la lista de temporales
-                    String temp = (String)newTemp.ejecutar(en, arbol, inter);//obtengo el temporal
+                    String temp = (String)newTemp.ejecutar(gen,en, arbol, inter);//obtengo el temporal
                     inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp, "", ""));
                     inter.AddLast(new GenCod(temp, "" + valor, "", "STACK", "", ""));
                     en.actualizar(actual.id, actual);//se ha actualizado el valor de la variable

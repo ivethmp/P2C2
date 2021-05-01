@@ -48,30 +48,60 @@ namespace P1.Analizador
                 return;
             }
 
-                LinkedList<Instruc> AST = instrucs(raiz,"Global");
+                LinkedList<Instruc> AST = instrucs(raiz,"Global-"+ raiz.ChildNodes[1].Token.Text);
                 arb = new Arbol.AST(AST);
            
             Entor entorno = new Entor(null);
+             Entor General = new Entor(null);
             LinkedList<Instruc> inter = new LinkedList<Instruc>();
-          
+            Simb inicio = new Simb("Global-" + raiz.ChildNodes[1].Token.Text,Simb.Tipo.VOID, "Global-"+ raiz.ChildNodes[1].Token.Text, "Procedimiento", 0, 0, raiz.ChildNodes[1].Token.Location.Line, raiz.ChildNodes[1].Token.Location.Column);
+            entorno.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
+            General.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
+            string Encabezado = "#include <stdio.h>\n\n" +
+                "Float Heap[100000];\n" +
+                "Float Stack[100000];\n\n" +
+                "Float sp;\n" +
+                "Float hp;\n\n";
+            String temporales = "";
+            
+
+            
+
             foreach (Instruc inst in AST)
             {
                 if (!(inst is Func))
                 {
-                    inst.ejecutar(entorno, arb, inter);
+                    inst.ejecutar(General,entorno, arb, inter);
                 }
             }
             RepTabS reporte = new RepTabS();
-            reporte.GenHTML(entorno);
+            reporte.GenHTML(entorno,"TablaSimb-Global");
+            RepTabS reporte2 = new RepTabS();
+            reporte.GenHTML(General,"TablaSimb-General");
             //GenGraphviz g = new GenGraphviz();
             //g.graficar(raiz);
             GenG.Run(GenGraphviz.getDot(raiz));
+
+
+            foreach (Instruc inst in inter)
+            {
+                if (inst is Temp)
+                {
+                    temporales = temporales + (String)inst.ejecutar(General,entorno, arb, inter) + ",";
+                }
+            }
+            if (temporales != "")
+            {
+                temporales = "Float " + temporales.TrimEnd(',') + ";\n\n";
+            }
+            //agrego encabezado y temporales en la salida de texto
+            Form1.salir.AppendText(Encabezado + temporales);
 
             foreach (Instruc inst in inter)
             {
                 if( inst is GenCod)
                 {
-                    inst.ejecutar(entorno, arb, inter);
+                    inst.ejecutar(General,entorno, arb, inter);
                 }
             }
             
@@ -91,6 +121,7 @@ namespace P1.Analizador
             LinkedList<Instruc> lista = new LinkedList<Instruc>();
             // if (nodoA.ChildNodes[3].Term.Name == "BLOQ_VAR-GLOB")
             //bloque de var en pascal
+           
             if (nodoA.ChildNodes[3].ChildNodes.Count >0)
                 {
                     foreach (ParseTreeNode son in nodoA.ChildNodes[3].ChildNodes)
@@ -173,7 +204,7 @@ namespace P1.Analizador
             System.Diagnostics.Debug.WriteLine("el token es " +tokenOp);
             //System.Diagnostics.Debug.WriteLine("el token es 2 " + actual2);
             switch (tokenOp.ToLower())
-             {
+            {
                 case "declara":
                     {
                         LinkedList<Simb> ides = new LinkedList<Simb>();
@@ -184,8 +215,8 @@ namespace P1.Analizador
                             System.Diagnostics.Debug.WriteLine("el valor en lista es");
                             foreach (ParseTreeNode son in nodoA.ChildNodes[0].ChildNodes)
                             {
-                                System.Diagnostics.Debug.WriteLine("el valor es" + son.Token.Text);
-                                Simb simbol = new Simb(son.Token.Text, tipoA,ambito,"Variable",0,0, son.Token.Location.Line, son.Token.Location.Column);
+                                System.Diagnostics.Debug.WriteLine("el valor es" + son.Token.Text,"el ambito es"+ambito);
+                                Simb simbol = new Simb(son.Token.Text, tipoA, ambito, "Variable", 0, 0, son.Token.Location.Line, son.Token.Location.Column);
                                 ides.AddLast(simbol);
                             }
 
@@ -194,8 +225,9 @@ namespace P1.Analizador
                         else // solo es una variable declarada
                         {
                             System.Diagnostics.Debug.WriteLine("entre a declara 1");
+                            //System.Diagnostics.Debug.WriteLine("el ambito es" + ambito);
                             tipoA = tipoVar(nodoA.ChildNodes[2].ChildNodes[0]);
-                            Simb simbol = new Simb(nodoA.ChildNodes[0].Token.Text, tipoA,"","Variable",0,0, nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                            Simb simbol = new Simb(nodoA.ChildNodes[0].Token.Text, tipoA,ambito, "Variable", 0, 0, nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
                             ides.AddLast(simbol);
                             if (nodoA.ChildNodes.Count == 3)//significa que no tiene valor
                                 return new Declara(ides, tipoA, null, 0, 0);
@@ -205,14 +237,14 @@ namespace P1.Analizador
                             }
 
                         }
-                        
+
                     }
 
-                
-                
+
+
                 case "asigna":
                     {
-                        return new Asig(nodoA.ChildNodes[0].Token.Text,expresion(nodoA.ChildNodes[2], VarG, ambito),0,0);
+                        return new Asig(nodoA.ChildNodes[0].Token.Text, expresion(nodoA.ChildNodes[2], VarG, ambito), 0, 0);
                     }
                 case "writel":
                     {//El primer if es de writeln
@@ -224,7 +256,7 @@ namespace P1.Analizador
                         if (nodoA.ChildNodes[0].ChildNodes[0].Term.Name == "writeln")
                         {//significa que es un salto de linea 
 
-                            return new Print(expresion(nodoA.ChildNodes[2], VarG, ambito),nodoA.ChildNodes[1].Token.Location.Line,nodoA.ChildNodes[1].Token.Location.Column,true);
+                            return new Print(expresion(nodoA.ChildNodes[2], VarG, ambito), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, true);
                         }//significa que es un write sin salto de linea por lo que la bandera es false
                         return new Print((Expr)expresion(nodoA.ChildNodes[2], VarG, ambito), nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column, false);
                         //(Expr)analizr(nodoA, linea,columna)
@@ -235,34 +267,53 @@ namespace P1.Analizador
                         LinkedList<Expr> valParam = new LinkedList<Expr>();
                         if (nodoA.ChildNodes[2].ChildNodes.Count > 0)//significa que tiene parametros de entrada
                         {
-                            
-                            foreach(ParseTreeNode hijo in nodoA.ChildNodes[2].ChildNodes)
+
+                            foreach (ParseTreeNode hijo in nodoA.ChildNodes[2].ChildNodes)
                             {
                                 valParam.AddLast(expresion(hijo, VarG, ambito));
                             }
                             return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
                         }
                         return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
-                        
+
                     }
                 case "bloq_while":
                     {
                         Expr cond = expresion(nodoA.ChildNodes[1], VarG, ambito);
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
-                        return new While(cond, bloques(nodoA.ChildNodes[3], list,ambito), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                        return new While(cond, bloques(nodoA.ChildNodes[3], list, ambito), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
                     }
                 case "bloq_for":
                     {
                         Instruc Asignar = new Asig(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, expresion(nodoA.ChildNodes[1].ChildNodes[2], VarG, ambito), 0, 0);
-                        
+
                         Expr final = expresion(nodoA.ChildNodes[3], VarG, ambito);
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
-                        return new For(Asignar, nodoA.ChildNodes[1].ChildNodes[0].Token.Text, final, bloques(nodoA.ChildNodes[5], list, ambito),nodoA.ChildNodes[0].Token.Location.Line,nodoA.ChildNodes[0].Token.Location.Column);
+                        return new For(Asignar, nodoA.ChildNodes[1].ChildNodes[0].Token.Text, final, bloques(nodoA.ChildNodes[5], list, ambito), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
                     }
                 case "bloq_repeat":
                     {
                         LinkedList<Instruc> list = new LinkedList<Instruc>();
-                        return new Repeat(bloques(nodoA, list, ambito), expresion(nodoA.ChildNodes[3], VarG, ambito),nodoA.ChildNodes[0].Token.Location.Line,nodoA.ChildNodes[0].Token.Location.Column);
+                        return new Repeat(bloques(nodoA, list, ambito), expresion(nodoA.ChildNodes[3], VarG, ambito), nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);
+                    }
+
+                case "bloq_case":
+                    {
+                        Expr valor1 = expresion(nodoA.ChildNodes[1], VarG, ambito);
+                        LinkedList<Case_Instr> listCase = new LinkedList<Case_Instr>();
+                        LinkedList<Instruc> instElse = new LinkedList<Instruc>();
+                        foreach (ParseTreeNode caso in nodoA.ChildNodes[3].ChildNodes)
+                        {
+                            LinkedList<Instruc> list = new LinkedList<Instruc>();
+                            listCase.AddLast(new Case_Instr(expresion(caso.ChildNodes[0],VarG,ambito),bloques(caso.ChildNodes[2],list,ambito),caso.ChildNodes[1].Token.Location.Line,caso.ChildNodes[1].Token.Location.Column));
+                        }
+                        if(nodoA.ChildNodes[5].ChildNodes.Count > 1)
+                        {
+                            return new Case(valor1, listCase, bloques(nodoA.ChildNodes[5].ChildNodes[0].ChildNodes[1], instElse, ambito), nodoA.ChildNodes[4].Token.Location.Line, nodoA.ChildNodes[4].Token.Location.Column);
+
+                        }
+                        return new Case(valor1, listCase,null, nodoA.ChildNodes[4].Token.Location.Line, nodoA.ChildNodes[4].Token.Location.Column);
+
                     }
                 case "bloq_if":
                     {

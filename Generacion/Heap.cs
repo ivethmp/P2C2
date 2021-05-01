@@ -13,7 +13,7 @@ namespace P1.Generacion
 
 
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             throw new NotImplementedException();
         }

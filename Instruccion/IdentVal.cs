@@ -21,7 +21,7 @@ namespace P1.Instruccion
             this.col = col;
         }
 
-        public Simb.Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public Simb.Tipo getTipo(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             if (en.buscar(ide))
             {
@@ -35,7 +35,7 @@ namespace P1.Instruccion
             }
         }
 
-        public object getValImp(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             if (en.buscar(ide))
             {
@@ -43,12 +43,12 @@ namespace P1.Instruccion
                 //genero un nuevo temporal 
                 Instruc temp1 = new Temp(inter);
                 inter.AddLast(temp1);//agrego el temporal
-                String temp11 = (String)temp1.ejecutar(en, arbol, inter);
+                String temp11 = (String)temp1.ejecutar(gen,en, arbol, inter);
                 //asigno el temporal con su apuntador y posicion relativa
                 inter.AddLast(new GenCod("sp", ""+ simbol.apuntador, "+", temp11, "", ""));
                 Instruc temp2 = new Temp(inter);
                 inter.AddLast(temp2);
-                String temp22 = (String)temp2.ejecutar(en, arbol, inter);
+                String temp22 = (String)temp2.ejecutar(gen,en, arbol, inter);
                 inter.AddLast(new GenCod(temp11,temp22,"","GETSTACK","",""));
                 //retorno el temporal que contiene el valor de la variable
                 return temp22;

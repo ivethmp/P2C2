@@ -111,6 +111,26 @@ namespace P1.Arbol
 
         }
 
+        public void actParam(String id, Simb param)
+        {
+            id = id.ToLower();
+
+            for (Entor e = this; e != null; e = e.anterior)
+            {
+                Simb simbolo = (Simb)(e.tabS[id]);
+                if (simbolo != null)
+                {
+                    e.tabS[id] = param;//los nuevos valores para dicho id
+                    return;
+                }
+
+
+
+            }
+            Console.WriteLine("El id no ha sido declarado");
+
+        }
+
         public object Clone()
         {
             return new Entor(this);

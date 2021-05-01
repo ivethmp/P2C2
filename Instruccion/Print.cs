@@ -23,9 +23,9 @@ namespace P1.Instruccion
         public int lin { get ; set ; }
         public int col { get ; set ; }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
-            object val = imprimir.getValImp(en, arbol,inter);
+            object val = imprimir.getValImp(gen,en, arbol,inter);
             if (val != null)
             {
                 if (bandera == true)//significa que es con salto de lines writeln

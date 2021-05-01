@@ -19,7 +19,7 @@ namespace P1.Generacion
             this.val = val;
         }
 
-        public object ejecutar(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             int posicion = 0;
             foreach(Instruc pila in inter)

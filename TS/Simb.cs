@@ -70,12 +70,12 @@ namespace P1.TS
             val = valor;
         }
 
-        public Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public Tipo getTipo(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {
             return tip;
         }
 
-        public object getValImp(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             return val;
         }

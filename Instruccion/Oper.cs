@@ -77,9 +77,9 @@ namespace P1.Instruccion
             }
 
         }
-        public Simb.Tipo getTipo(Entor en, AST arbol, LinkedList<Instruc>inter)
+        public Simb.Tipo getTipo(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         {//retorna el tipo de dato que se esta utilizando
-            object val = this.getValImp(en, arbol,inter);
+            object val = this.getValImp(gen,en, arbol,inter);
             if (val is bool) return Tipo.BOOL;
             else if (val is int) return Tipo.INT;
             else if (val is Double) return Tipo.REAL;
@@ -98,20 +98,20 @@ namespace P1.Instruccion
         }
 
 
-        public object getValImp(Entor en, AST arbol, LinkedList<Instruc> inter)
+        public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             try
             {
                 if (operUna == null)
                 {
                     //la variable tendria que retornar el temporal donde se asigna el valor de la variable en el stack
-                    object op1 = operIzq.getValImp(en, arbol, inter);
-                    object op2 = operDer.getValImp(en, arbol, inter);
+                    object op1 = operIzq.getValImp(gen,en, arbol, inter);
+                    object op2 = operDer.getValImp(gen,en, arbol, inter);
                     #region Sum
                     if (operador == tipOper.SUMA)
                     {
                         Instruc temp = new Temp(inter);
-                        String tempo = (String)temp.ejecutar(en,arbol,inter);
+                        String tempo = (String)temp.ejecutar(gen,en,arbol,inter);
                         inter.AddLast(temp);//agrego el nuevo temporal
 
                         inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "+", tempo, "", ""));
@@ -129,7 +129,7 @@ namespace P1.Instruccion
                     else if (operador == tipOper.RESTA)
                     {
                         Instruc temp = new Temp(inter);
-                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        String tempo = (String)temp.ejecutar(gen,en, arbol, inter);
                         inter.AddLast(temp);//agrego el nuevo temporal
 
                         inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "-", tempo, "", ""));
@@ -141,7 +141,7 @@ namespace P1.Instruccion
                     else if (operador == tipOper.POR)
                     {
                         Instruc temp = new Temp(inter);
-                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        String tempo = (String)temp.ejecutar(gen,en, arbol, inter);
                         inter.AddLast(temp);//agrego el nuevo temporal
 
                         inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "*", tempo, "", ""));
@@ -162,7 +162,7 @@ namespace P1.Instruccion
                         }
 
                         Instruc temp = new Temp(inter);
-                        String tempo = (String)temp.ejecutar(en, arbol, inter);
+                        String tempo = (String)temp.ejecutar(gen,en, arbol, inter);
                         inter.AddLast(temp);//agrego el nuevo temporal
 
                         inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "/", tempo, "", ""));
@@ -222,7 +222,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1),Convert.ToString(op2),">","REL",Convert.ToString(eti.ejecutar(en,arbol,inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1),Convert.ToString(op2),">","REL",Convert.ToString(eti.ejecutar(gen,en,arbol,inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         
                         return etiquetas;
                         
@@ -238,7 +238,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), ">=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), ">=", "REL", Convert.ToString(eti.ejecutar(gen,en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         return etiquetas;
                         /*if (op1 is int && op2 is int)
                             return (int)op1 >= (int)op2;
@@ -264,7 +264,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<", "REL", Convert.ToString(eti.ejecutar(gen,en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         return etiquetas;
                         /*if (op1 is int && op2 is int)
                             return (int)op1 < (int)op2;
@@ -290,7 +290,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "<=", "REL", Convert.ToString(eti.ejecutar(gen,en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         return etiquetas;
                         /*if (op1 is int && op2 is int)
                             return (int)op1 <= (int)op2;
@@ -316,7 +316,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "==", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "==", "REL", Convert.ToString(eti.ejecutar(gen,en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         return etiquetas;
                         //return (op1.Equals(op2)) ;
                     }
@@ -331,7 +331,7 @@ namespace P1.Instruccion
                         Etiq etiF = new Etiq(inter, "false");
                         inter.AddLast(etiF);
                         etiquetas.AddLast(etiF);
-                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "!=", "REL", Convert.ToString(eti.ejecutar(en, arbol, inter)), Convert.ToString(etiF.ejecutar(en, arbol, inter))));
+                        inter.AddLast(new GenCod(Convert.ToString(op1), Convert.ToString(op2), "!=", "REL", Convert.ToString(eti.ejecutar(gen,en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen,en, arbol, inter))));
                         return etiquetas;
                         //return !(op1.Equals(op2));
                     }
@@ -398,7 +398,7 @@ namespace P1.Instruccion
                 else
                 {
                     #region unario
-                    object operUn = operUna.getValImp(en, arbol, inter);
+                    object operUn = operUna.getValImp(gen,en, arbol, inter);
                     if (this.operador == tipOper.MENOSU)
                     {
                         if (operUn is Decimal || operUn is double) return -1 * (Decimal)operUn;

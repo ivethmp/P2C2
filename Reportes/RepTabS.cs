@@ -11,7 +11,7 @@ namespace P1.Reportes
     class RepTabS
     {
 
-        public void GenHTML(Entor en)
+        public void GenHTML(Entor en,String nombre)
         {
             String celdas = "";
             Simb aux;
@@ -58,7 +58,7 @@ namespace P1.Reportes
                 "</html>";
 
 
-            string output = "ReporteTablaS.html";
+            string output = nombre+".html";
 
             File.WriteAllText(output, html);
         }
