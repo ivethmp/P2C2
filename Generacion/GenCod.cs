@@ -82,6 +82,9 @@ namespace P1.Generacion
             }else if(this.res == "GETSTACK")
             {
                 Form1.salir.AppendText(temp2+"= Stack["+temp1+"];\n");
+            }else if(res == "TEXTO")
+            {
+                Form1.salir.AppendText(temp1);
             }
             else
             {

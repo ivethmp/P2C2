@@ -71,15 +71,24 @@ namespace P1.Instruccion
                         sim.val = valor;//se asigna el valor antes de ser agregado
                         //AGREGO EL VALOR DE LA VARIABLE PARA ESTABLECER SU POSICION RELATIVA O APUNTADOR EN LA PILA
                         Stack nuevo = new Stack(0);
-                        int apuntador = (int)nuevo.ejecutar(gen,en, arbol, inter);
+                        int apuntador = (int)nuevo.ejecutar(gen, en, arbol, inter);
+                        Simb ambiGen = en.getSimb(sim.ambito);
+                        if (ambiGen.ambito != "Global")
+                        {
+                            apuntador = ambiGen.param;
+                        }
+                        ambiGen.param = ambiGen.param + 1;
+
+                        en.actParam(sim.ambito, ambiGen);
+                        gen.actParam(sim.ambito, ambiGen);
+
+                        
+                        
                         inter.AddLast(nuevo);//el valor realmente no importa 
                         sim.apuntador = apuntador;
                         en.Agregar(sim.id, sim);
-                        gen.Agregar(sim.id, sim);
-                        Simb ambiGen = en.getSimb(sim.ambito);
-                        ambiGen.param = ambiGen.param + 1;
-                        en.actParam(sim.ambito, ambiGen);
-                        gen.actParam(sim.ambito, ambiGen);
+                        gen.Agregar(sim.id+sim.ambito+en.TabSimb.Count, sim);
+                        
 
                         if(inicializado == true)//quiere decir que se inicializo la variable con un valor concreto y no con 0, por lo que debo guardar el valor en la pila 
                         {

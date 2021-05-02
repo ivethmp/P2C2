@@ -19,9 +19,17 @@ namespace P1.Arbol
 
         public void Agregar(String id, Simb sim) 
         {
-            id = id.ToLower();
-            sim.id = sim.id.ToLower();
-            tabS.Add(id,sim);
+            try
+            {
+                id = id.ToLower();
+                sim.id = sim.id.ToLower();
+                tabS.Add(id, sim);
+            }
+            catch
+            {
+
+            }
+            
         }
 
         public Entor eliminar(String id)
@@ -127,7 +135,7 @@ namespace P1.Arbol
 
 
             }
-            Console.WriteLine("El id no ha sido declarado");
+            System.Diagnostics.Debug.WriteLine("El id no ha sido declarado");
 
         }
 

@@ -54,7 +54,7 @@ namespace P1.Analizador
             Entor entorno = new Entor(null);
              Entor General = new Entor(null);
             LinkedList<Instruc> inter = new LinkedList<Instruc>();
-            Simb inicio = new Simb("Global-" + raiz.ChildNodes[1].Token.Text,Simb.Tipo.VOID, "Global-"+ raiz.ChildNodes[1].Token.Text, "Procedimiento", 0, 0, raiz.ChildNodes[1].Token.Location.Line, raiz.ChildNodes[1].Token.Location.Column);
+            Simb inicio = new Simb("Global-" + raiz.ChildNodes[1].Token.Text,Simb.Tipo.VOID, "Global", "Procedimiento", 0, 0, raiz.ChildNodes[1].Token.Location.Line, raiz.ChildNodes[1].Token.Location.Column);
             entorno.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
             General.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
             string Encabezado = "#include <stdio.h>\n\n" +
@@ -66,7 +66,7 @@ namespace P1.Analizador
             
 
             
-
+            //primera pasada para el main
             foreach (Instruc inst in AST)
             {
                 if (!(inst is Func))
@@ -74,6 +74,16 @@ namespace P1.Analizador
                     inst.ejecutar(General,entorno, arb, inter);
                 }
             }
+            inter.AddLast(new GenCod("Return;\n}\n\n", "", "", "TEXTO", "", ""));
+            //segunda pasada para funciones y procedimientos
+            foreach (Instruc inst in AST)
+            {
+                if (inst is Func)
+                {
+                    inst.ejecutar(General, entorno, arb, inter);
+                }
+            }
+
             RepTabS reporte = new RepTabS();
             reporte.GenHTML(entorno,"TablaSimb-Global");
             RepTabS reporte2 = new RepTabS();
@@ -95,7 +105,9 @@ namespace P1.Analizador
                 temporales = "Float " + temporales.TrimEnd(',') + ";\n\n";
             }
             //agrego encabezado y temporales en la salida de texto
-            Form1.salir.AppendText(Encabezado + temporales);
+           
+            Form1.salir.AppendText(Encabezado + temporales+ "\n\nVoid main(){\n");
+            
 
             foreach (Instruc inst in inter)
             {
@@ -104,7 +116,8 @@ namespace P1.Analizador
                     inst.ejecutar(General,entorno, arb, inter);
                 }
             }
-            
+            //Form1.salir.AppendText("Return;\n}\n\n");
+
 
 
         }
@@ -371,11 +384,21 @@ namespace P1.Analizador
                             LinkedList<Instruc> ins = new LinkedList<Instruc>();
                             if (nodoA.ChildNodes[1].ChildNodes.Count == 3)//no tiene parametros
                             {
-                                if(nodoA.ChildNodes[3].ChildNodes.Count>1) ins = bloques(nodoA.ChildNodes[3], ins,"Funcion-"+ nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
-                                ins = bloques(nodoA.ChildNodes[4], ins, "Funcion-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
-                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text,param,ins, tipoA, nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                                //el primero es para procedimiento
+                                if(tipoA== Simb.Tipo.VOID)
+                                {//verifico si tiene variables declaradas para el bloque var
+                                    if (nodoA.ChildNodes[3].ChildNodes.Count > 1) ins = bloques(nodoA.ChildNodes[3], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
+                                    ins = bloques(nodoA.ChildNodes[4], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
+                                }
+                                else
+                                {//verifico si tiene variables declaradas paraa enviar al bloque var
+                                    if (nodoA.ChildNodes[5].ChildNodes.Count > 1) ins = bloques(nodoA.ChildNodes[5], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
+                                    ins = bloques(nodoA.ChildNodes[6], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
+                                }
+                                
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text,ambito,param,ins, tipoA, nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
                             }
-                            else//tiene parametros
+                            else//tiene parametros de entrada
                             {
                                 
                                 foreach (ParseTreeNode parametro in nodoA.ChildNodes[1].ChildNodes[2].ChildNodes)
@@ -387,7 +410,7 @@ namespace P1.Analizador
                                             Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[0].Token.Location.Column);
                                             return null;
                                         }
-                                        param.AddLast((Declara)instruc(parametro.ChildNodes[1], VarG, "Funcion-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text));
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[1], VarG, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text));
                                     }
                                     else
                                     {
@@ -396,13 +419,21 @@ namespace P1.Analizador
                                             Form1.error.AppendText("Error de Sintaxis, no se puede inicializar un parametro, lin:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Line + " col:" + parametro.ChildNodes[0].ChildNodes[2].Token.Location.Column);
                                             return null;
                                         }
-                                        param.AddLast((Declara)instruc(parametro.ChildNodes[0], VarG, "Funcion-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text));
+                                        param.AddLast((Declara)instruc(parametro.ChildNodes[0], VarG, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text));
                                     }
                                 }
-                                if(nodoA.ChildNodes[5].ChildNodes.Count >1) ins = bloques(nodoA.ChildNodes[5], ins, "Funcion-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
-                                ins = bloques(nodoA.ChildNodes[6], ins, "Funcion-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
+                                if (tipoA == Simb.Tipo.VOID)
+                                {//verifico si tiene variables declaradas para el bloque var
+                                    if (nodoA.ChildNodes[3].ChildNodes.Count > 1) ins = bloques(nodoA.ChildNodes[3], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
+                                    ins = bloques(nodoA.ChildNodes[4], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
+                                }
+                                else
+                                {//verifico si tiene variables declaradas paraa enviar al bloque var
+                                    if (nodoA.ChildNodes[5].ChildNodes.Count > 1) ins = bloques(nodoA.ChildNodes[5], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//VARIABLES
+                                    ins = bloques(nodoA.ChildNodes[6], ins, "FunProc-" + nodoA.ChildNodes[1].ChildNodes[0].Token.Text);//BEGIN
+                                }
 
-                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text, param, ins,tipoA,nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                                return new Func(nodoA.ChildNodes[1].ChildNodes[0].Token.Text,ambito, param, ins,tipoA,nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
                             }
                             
                         }
