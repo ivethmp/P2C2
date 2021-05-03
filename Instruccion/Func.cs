@@ -51,7 +51,7 @@ namespace P1.Instruccion
             gen.Agregar("FunProc-"+id+ en.TabSimb.Count, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
             tabL.Agregar("FunProc-"+id, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
 
-            inter.AddLast(new GenCod("Void"+id+"(){\n\n", "", "", "TEXTO", "", ""));
+            inter.AddLast(new GenCod("void "+id+"(){\n\n", "", "", "TEXTO", "", ""));
             /*Etiq etiqueta = new Etiq(inter, "");
             String salida = (String)etiqueta.ejecutar(gen, en, arbol, inter);
             
@@ -131,7 +131,7 @@ namespace P1.Instruccion
                 return null;
             }*/
 
-            inter.AddLast(new GenCod("Return;\n}\n\n", "", "", "TEXTO", "", ""));
+            inter.AddLast(new GenCod("return;\n}\n\n", "", "", "TEXTO", "", ""));
 
                int totales = tabL.getSimb("FunProc-" + id).param;
 

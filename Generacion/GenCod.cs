@@ -78,10 +78,10 @@ namespace P1.Generacion
             }
             else if(this.res == "STACK")
             {
-                Form1.salir.AppendText("Stack["+temp1+"] = "+temp2 +"; \n");
+                Form1.salir.AppendText("Stack[(int)"+temp1+"] = "+temp2 +"; \n");
             }else if(this.res == "GETSTACK")
             {
-                Form1.salir.AppendText(temp2+"= Stack["+temp1+"];\n");
+                Form1.salir.AppendText(temp2+"= Stack[(int)"+temp1+"];\n");
             }else if(res == "TEXTO")
             {
                 Form1.salir.AppendText(temp1);

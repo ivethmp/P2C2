@@ -46,7 +46,15 @@ namespace P1.Instruccion
                 foreach (Instruc ins in instrucciones)
                 {
                     ins.ejecutar(gen,en, arbol, inter);
-                }
+                    if (ins is Continue)
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
+                    }
+                    else if (ins is Break)
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", etiqF, ""));
+                    }
+            }
             //GENERO EL goto del la etiqueta verdadera para generar el ciclo
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
             // goto siguiente;

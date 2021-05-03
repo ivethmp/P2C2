@@ -47,6 +47,13 @@ namespace P1.Instruccion
                 foreach (Instruc ins in caso.instruccion)
                 {
                     ins.ejecutar(gen,en, arbol, inter);
+                    if(ins is Continue)
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", etiqF, ""));
+                    }else if (ins is Break)
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                    }
                 }
                 //agrego el salto en cada if ya que indica que se cumplio esta condicion y debe salir del if
                 inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
@@ -58,6 +65,10 @@ namespace P1.Instruccion
                 foreach(Instruc ins in listaElse)
                 {
                     ins.ejecutar(gen,en, arbol, inter);
+                    if (ins is Continue || ins is Break)
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                    }
                 }
 
             }

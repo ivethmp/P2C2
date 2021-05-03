@@ -32,6 +32,7 @@ namespace P1.Instruccion
             foreach (Instruc ins in instrucciones)
             {//ejecuto cada instruccion dentro del repeat
                 ins.ejecutar(gen,en, arbol, inter);
+               
             }
             //genero el 3D del condicional Until
             LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)Condicion.getValImp(gen,en, arbol, inter);

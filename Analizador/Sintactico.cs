@@ -58,10 +58,10 @@ namespace P1.Analizador
             entorno.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
             General.Agregar("Global-" + raiz.ChildNodes[1].Token.Text, inicio);
             string Encabezado = "#include <stdio.h>\n\n" +
-                "Float Heap[100000];\n" +
-                "Float Stack[100000];\n\n" +
-                "Float sp;\n" +
-                "Float hp;\n\n";
+                "float Heap[100000];\n" +
+                "float Stack[100000];\n\n" +
+                "float sp;\n" +
+                "float hp;\n\n";
             String temporales = "";
             
 
@@ -74,7 +74,7 @@ namespace P1.Analizador
                     inst.ejecutar(General,entorno, arb, inter);
                 }
             }
-            inter.AddLast(new GenCod("Return;\n}\n\n", "", "", "TEXTO", "", ""));
+            inter.AddLast(new GenCod("return;\n}\n\n", "", "", "TEXTO", "", ""));
             //segunda pasada para funciones y procedimientos
             foreach (Instruc inst in AST)
             {
@@ -102,11 +102,11 @@ namespace P1.Analizador
             }
             if (temporales != "")
             {
-                temporales = "Float " + temporales.TrimEnd(',') + ";\n\n";
+                temporales = "float " + temporales.TrimEnd(',') + ";\n\n";
             }
             //agrego encabezado y temporales en la salida de texto
            
-            Form1.salir.AppendText(Encabezado + temporales+ "\n\nVoid main(){\n");
+            Form1.salir.AppendText(Encabezado + temporales+ "\n\nvoid main(){\n");
             
 
             foreach (Instruc inst in inter)
@@ -289,6 +289,14 @@ namespace P1.Analizador
                         }
                         return new CallFunc(nodoA.ChildNodes[0].Token.Text, valParam, nodoA.ChildNodes[1].Token.Location.Line, nodoA.ChildNodes[1].Token.Location.Column);
 
+                    }
+                case "break":
+                    {
+                        return (new Break(nodoA.Token.Location.Line, nodoA.Token.Location.Column));
+                    }
+                case "continue":
+                    {
+                        return new Continue(nodoA.Token.Location.Line, nodoA.Token.Location.Column);
                     }
                 case "bloq_while":
                     {

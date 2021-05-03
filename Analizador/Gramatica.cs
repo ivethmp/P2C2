@@ -57,6 +57,8 @@ namespace P1.Analizador
             var UNTIL = ToTerm("Until");
             var CASE = ToTerm("case");
             var OF = ToTerm("of");
+            var BREAK = ToTerm("break");
+            var CONTI = ToTerm("continue");
             //MarkReservedWords
 
             var IGUAL = ToTerm("=");
@@ -236,6 +238,8 @@ namespace P1.Analizador
                             | BloqFor + PTCOMA
                             | BloqRepeat + PTCOMA
                             | BloqCase + PTCOMA
+                            | BREAK + PTCOMA
+                            | CONTI + PTCOMA
                             ;
 
             retorno.Rule = EXIT + PARIZQ + expr + PARDER;
