@@ -57,6 +57,7 @@ namespace P1.Instruccion
 
         public static tipOper getOperador(string oper)
         {//retorna el tipo de operacion que se realiza
+            oper = oper.ToLower();
             switch (oper)
             {
                 case "+": return tipOper.SUMA;

@@ -107,7 +107,7 @@ namespace P1.Instruccion
                     inter.AddLast(new GenCod("", "", "", "IF", etiqV2 , ""));
 
                     Entor tabLoc2 = new Entor(en);
-                    foreach (Instruc ins in instrucciones)
+                    foreach (Instruc ins in ifElse.instrucciones)
                     {
                        
                         if (ins is Continue || ins is Break)

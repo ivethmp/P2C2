@@ -483,7 +483,7 @@ namespace P1.Analizador
                             return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[0], VarG, ambito), (Expr)expresion(nodoA.ChildNodes[0].ChildNodes[2], VarG, ambito), Oper.getOperador(nodoA.ChildNodes[0].ChildNodes[1].Token.Text));
                         }//else if (nodoA.ChildNodes.Count == 2)
                         
-                        return new Oper((Expr)nodoA.ChildNodes[1], Oper.tipOper.MENOSU);  
+                        return new Oper((Expr)expresion(nodoA.ChildNodes[0].ChildNodes[1],VarG,ambito), Oper.tipOper.MENOSU);  
                     }
                 case "EXPR_REL":
                     {
