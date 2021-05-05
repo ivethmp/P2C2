@@ -46,11 +46,11 @@ namespace P1.Instruccion
             }
             
             //generno el codigo para la intruccion verdadera
-            inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
+            inter.AddLast(new GenCod("", "", "", "IF", etiqF, ""));
             //salto al bucle del ciclo repeat
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
             //etiqueta de condicion falsa
-            inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));
+            inter.AddLast(new GenCod("", "", "", "IF", "", etiqV));
 
             return null;
         }

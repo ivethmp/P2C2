@@ -33,6 +33,9 @@ namespace P1.Analizador
             ParseTree arbol = parser.Parse(cad);
             ParseTreeNode raiz = arbol.Root;
             bool error = arbol.HasErrors();
+            P.apu = 0;
+            P.Heap = new LinkedList<int>();
+            P. Stack0 = new LinkedList<P>();
             
             
             if (arbol.HasErrors())

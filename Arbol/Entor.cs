@@ -78,6 +78,7 @@ namespace P1.Arbol
                 {
                     local.anterior = entorno;
                     band = true;
+                    
                 }
                 else
                     local = local.anterior;

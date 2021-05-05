@@ -33,6 +33,7 @@ namespace P1.Instruccion
 
         public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc>inter)
         { //retorna el valor tal cual, ya que es un numero, letra etc..
+            
 
             return val;
         }

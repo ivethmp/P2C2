@@ -32,28 +32,53 @@ namespace P1.Instruccion
         public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             //se evalua la condicion// true o false
-            LinkedList<Instruc> etiquetas = (LinkedList<Instruc>)cond.getValImp(gen,en, arbol, inter);//retorna lista con etiquetas verdaderas y falsas
+            Object condicional = cond.getValImp(gen, en, arbol, inter);
+            LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
+            object salida =null;
+            if (condicional is string)//significa que es un temporal y otra cosa disti
+            {
+                
+                Etiq eti = new Etiq(inter, "true");
+                inter.AddLast(eti);
+                etiquetas.AddLast(eti);
+
+                Etiq etiF = new Etiq(inter, "false");
+                inter.AddLast(etiF);
+                etiquetas.AddLast(etiF);
+
+                inter.AddLast(new GenCod("", condicional+"","", "UNO", (String)eti.ejecutar(gen, en, arbol, inter), (String)eti.ejecutar(gen, en, arbol, inter)));
+            }
+            else
+            {
+                etiquetas = (LinkedList<Instruc>)condicional;//retorna lista con etiquetas verdaderas y falsas
+            }
+           
             String etiqV= "";
             String etiqF = "";
-            
+            String gotoF = "";
                 foreach (Etiq eti in etiquetas)
                 {
-                    if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero+":\n";
-                    if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero + ":\n";
+                    if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero +":\n";
+                if (eti.cond == "false")
+                {
+                    etiqF = etiqF + "L" + eti.numero + ":\n";
+                    gotoF = etiqF + "L" + eti.numero;
+                }
                  }
-            inter.AddLast(new GenCod("", "", "", "IF", etiqV,""));
+            inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
             Instruc salto = new Etiq(inter, "");//genero nueva etiqueta de salto al finalizar instruccion del if
             //Obtengo la etiqueta, pero no genero su codigo
             String saltos = etiqF;
             Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instrucciones)
                 {
-                    ins.ejecutar(gen,tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
+                    
                     if (ins is Continue || ins is Break)
                     {
                         inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                    //salida = "break";
                     }
-
+                ins.ejecutar(gen, tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
             }
 
             //else
@@ -76,19 +101,20 @@ namespace P1.Instruccion
 
                     foreach (Etiq eti in etiquetas2)
                     {
-                        if (eti.cond == "true") etiqV2 = etiqV2 + "L" + eti.numero + ":\n";
-                        if (eti.cond == "false") etiqF2 = etiqF2 + "L" + eti.numero + ":\n";
+                        if (eti.cond == "true") etiqV2 = etiqV2 + "L" + eti.numero +":\n";
+                        if (eti.cond == "false") etiqF2 = etiqF2 + "L" + eti.numero  +":\n";
                     }
-                    inter.AddLast(new GenCod("", "", "", "IF", etiqV2, ""));
+                    inter.AddLast(new GenCod("", "", "", "IF", etiqV2 , ""));
 
                     Entor tabLoc2 = new Entor(en);
                     foreach (Instruc ins in instrucciones)
                     {
-                        ins.ejecutar(gen,tabLoc2, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
+                       
                         if (ins is Continue || ins is Break)
                         {
                             inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                         }
+                        ins.ejecutar(gen, tabLoc2, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
                     }
                     //agrego el salto en cada if ya que indica que se cumplio esta condicion y debe salir del if
                     inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
@@ -118,7 +144,7 @@ namespace P1.Instruccion
                 inter.AddLast(salto);
                 saltos = (String)salto.ejecutar(gen,en, arbol, inter);
                 inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
-                inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else si no se cumple la condicion 
+                inter.AddLast(new GenCod("", "", "", "IF", "", etiqF+ ":\n"));//seria como el else si no se cumple la condicion 
             }else
             {
                // inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else si no se cumple la condicion 
@@ -129,11 +155,12 @@ namespace P1.Instruccion
             {                                                       // Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instElse)
                     {
-                        ins.ejecutar(gen,tabLoc, arbol, inter);
+                        
                         if (ins is Continue || ins is Break)
                         {
                             inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                         }
+                    ins.ejecutar(gen, tabLoc, arbol, inter);
                 }
                 }
             //}

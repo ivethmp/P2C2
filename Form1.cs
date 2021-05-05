@@ -16,12 +16,14 @@ namespace P1
     {
         public static RichTextBox error;
         public static RichTextBox salir;
+        public static int sp;
 
         public Form1()
         {
             InitializeComponent();
             error = errores;
             salir = salida;
+            sp = 0;
     }
         //boton analizaar
         private void button1_Click(object sender, EventArgs e)

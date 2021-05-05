@@ -38,15 +38,15 @@ namespace P1.Instruccion
                 String etiqF = "";
                 foreach (Etiq eti in etiquetas)
                 {
-                    if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero + ":\n";
-                    if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero + ":\n";
+                    if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero;
+                    if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero ;
                 }
                 //Agregamos la etiqueta verdadera
-                inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
+                inter.AddLast(new GenCod("", "", "", "IF", etiqV + ":\n", ""));
                 //ejecutamos las instrucciones dentro del caso
                 foreach (Instruc ins in caso.instruccion)
                 {
-                    ins.ejecutar(gen,en, arbol, inter);
+                    
                     if(ins is Continue)
                     {
                         inter.AddLast(new GenCod("", "", "", "GOTO", etiqF, ""));
@@ -54,21 +54,23 @@ namespace P1.Instruccion
                     {
                         inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                     }
+                    ins.ejecutar(gen, en, arbol, inter);
                 }
                 //agrego el salto en cada if ya que indica que se cumplio esta condicion y debe salir del if
                 inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
-                inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));//seria como el else si no se cumple la condicion 
+                inter.AddLast(new GenCod("", "", "", "IF", "", etiqF+ ":\n"));//seria como el else si no se cumple la condicion 
 
             }
             if(listaElse != null)//quiere decir que hay contenido en el else
             {
                 foreach(Instruc ins in listaElse)
                 {
-                    ins.ejecutar(gen,en, arbol, inter);
+                    
                     if (ins is Continue || ins is Break)
                     {
                         inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                     }
+                    ins.ejecutar(gen, en, arbol, inter);
                 }
 
             }

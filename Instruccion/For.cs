@@ -47,14 +47,14 @@ namespace P1.Instruccion
 
             foreach (Etiq eti in etiquetas)
             {
-                if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero + ":\n";
-                if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero + ":\n";
+                if (eti.cond == "true") etiqV = etiqV + "L" + eti.numero;
+                if (eti.cond == "false") etiqF = etiqF + "L" + eti.numero ;
             }
             //generno el codigo para la intruccion verdadera
-            inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
+            inter.AddLast(new GenCod("", "", "", "IF", etiqV+ ":\n", ""));
             foreach (Instruc ins in instrucciones)
             {
-                ins.ejecutar(gen,en, arbol, inter);
+                
                 if (ins is Continue)
                 {
                     inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
@@ -62,7 +62,9 @@ namespace P1.Instruccion
                 else if (ins is Break)
                 {
                     inter.AddLast(new GenCod("", "", "", "GOTO", etiqF, ""));
+                   
                 }
+                ins.ejecutar(gen, en, arbol, inter);
             }
             //genero la operacion de aumento del valor de la variable 
             Expr contador = new Oper(new IdentVal(id, Asignar.lin, Asignar.col), new Prim(1,0,0), Oper.getOperador("+"));
@@ -72,7 +74,7 @@ namespace P1.Instruccion
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
             // goto siguiente;
             //genero la etiqueta de la condicion falsa
-            inter.AddLast(new GenCod("", "", "", "IF", "", etiqF));
+            inter.AddLast(new GenCod("", "", "", "IF", "", etiqF + ":\n"));
 
             return null;
 

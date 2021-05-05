@@ -9,26 +9,7 @@ namespace P1.Generacion
     class GenCod : Instruc
     {
 
-        /*
-        //genera del codigo, a traves de cuadruples
-        void genCod(String oper, String t1, String t2, String res)
-        {
-
-        }
-
-        String newEtiq(LinkedList<String> etiqNew)
-        {
-            string etiq = "";
-            return etiq;
-        }
-        
-        //genera un nuevo temporal
-        String newTemp(LinkedList<String> tempNew) 
-        {
-            String temp = "t" + tempNew.Count;
-            tempNew.AddLast(temp);
-            return temp;
-        }*/
+       
         public int lin { get ; set ; }
         public int col { get ; set ; }
 
@@ -53,7 +34,12 @@ namespace P1.Generacion
         public object ejecutar(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
             
-            if(this.res == "REL")
+            if(this.res == "UNO")
+            {
+                Form1.salir.AppendText("if("+ this.temp2 + ") goto " + etiqTrue + ";\n" + "goto " + etiqFalse + ";\n");
+                return 0;
+            }
+            else if(this.res == "REL")
             {
                 Form1.salir.AppendText("if("+this.temp1+this.oper + this.temp2 +") goto "+ etiqTrue + ";\n" + "goto "+etiqFalse+ ";\n");
                 return 0;
@@ -86,9 +72,17 @@ namespace P1.Generacion
             {
                 Form1.salir.AppendText(temp1);
             }
+            else if(res == "SETHEAP")
+            {
+                Form1.salir.AppendText(temp1 + "= hp;\n");
+            }
+            else if (res == "HEAP")
+            {
+                Form1.salir.AppendText("Heap[(int)hp]=" + temp1 + ";\n");
+            }
             else
             {
-                if(this.oper == "+" || oper == "-" || oper == "*" || oper == "/")
+                if(this.oper == "+" || oper == "-" || oper == "*" || oper == "/" || oper == "")
                 {
                     Form1.salir.AppendText(res+"="+temp1+oper+temp2+"; \n");
                     return 0;

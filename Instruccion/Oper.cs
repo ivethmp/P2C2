@@ -100,8 +100,8 @@ namespace P1.Instruccion
 
         public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
-            try
-            {
+          //  try
+            //{
                 if (operUna == null)
                 {
                     //la variable tendria que retornar el temporal donde se asigna el valor de la variable en el stack
@@ -322,7 +322,7 @@ namespace P1.Instruccion
                     }
                     #endregion
                     #region diferente
-                    if (operador == tipOper.IGUAL)
+                    if (operador == tipOper.DIF)
                     {
                         LinkedList<Instruc> etiquetas = new LinkedList<Instruc>();
                         Etiq eti = new Etiq(inter, "true");
@@ -339,10 +339,111 @@ namespace P1.Instruccion
                     #region and
                     else if (operador == tipOper.AND)
                     {
-                        LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
-                        LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
-                        
+                       // LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
+                     //   LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
+
+
+                        LinkedList<Instruc> etider = new LinkedList<Instruc>();
+                    if (op1 is LinkedList<Instruc>) etider = (LinkedList<Instruc>)op1;
+                    else
+                    {
+                        if (op1 != null)
+                        {
+                            if (op1 is bool)
+                            {
+                                if ((bool)op1 == true) op1 = 1;
+                                else op1 = 0;
+                            }
+                            Etiq eti = new Etiq(inter, "true");
+                            inter.AddLast(eti);
+                            etider.AddLast(eti);
+                            Etiq etiF = new Etiq(inter, "false");
+                            inter.AddLast(etiF);
+                            etider.AddLast(etiF);
+                            inter.AddLast(new GenCod("", Convert.ToString(op1), "", "REL", Convert.ToString(eti.ejecutar(gen, en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen, en, arbol, inter))));
+                            //etider;
+                        }else return null;
+                    }
+                    LinkedList<Instruc> etiizq = new LinkedList<Instruc>();
+                    if (!(op1 is LinkedList<Instruc>) && op2 is LinkedList<Instruc>)
+                    {
+                        etiizq = (LinkedList<Instruc>)op2;
+                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etiizq, "true"), ""));
+
+                        foreach (Etiq eti in etiizq)
+                        {
+                            if (eti.cond == "false")
+                            {
+                                etider.AddLast(eti);
+                            }
+                        }
+                        //retorno las etiquetas falsas y verdaderas del lado izquierdo y la verdadera del lado derecho
+                        return etider;
+                    }
+                    else
                         inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "true"), ""));
+
+                    
+                    if (op2 is LinkedList<Instruc>)
+                    {
+                        etiizq = (LinkedList<Instruc>)op2;
+
+                    }
+
+                    else
+                    {
+                        if (op2 != null)
+                        {
+                            if (op2 is bool)
+                            {
+                                if ((bool)op2 == true) op2 = 1;
+                                else op2 = 0;
+                            }
+                            Etiq eti = new Etiq(inter, "true");
+                            inter.AddLast(eti);
+                            etiizq.AddLast(eti);
+                            Etiq etiF = new Etiq(inter, "false");
+                            inter.AddLast(etiF);
+                            etiizq.AddLast(etiF);
+                            inter.AddLast(new GenCod("", Convert.ToString(op2), "", "REL", Convert.ToString(eti.ejecutar(gen, en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen, en, arbol, inter))));
+
+                        }else  return null;
+
+
+                    }
+
+                    /*if (etider == null)
+                    {
+                        etider = new LinkedList<Instruc>();
+                        if (op1 is int || op1 is decimal)
+                        {
+                            if (Convert.ToDecimal(op1) == 0)
+                            {
+                                etider.AddLast(new Etiq(inter, "false"));
+                                inter.AddLast(new Etiq(inter, "false"));
+                            }
+                            etider.AddLast(new Etiq(inter, "true"));
+                            inter.AddLast(new Etiq(inter, "true"));
+                        }
+                    }*/
+
+
+                    /*if (etiizq == null)
+                        {
+                            etiizq = new LinkedList<Instruc>();
+                            if (op2 is int || op2 is decimal)
+                            {
+                                if (Convert.ToDecimal(op2) == 0)
+                                {
+                                    etiizq.AddLast(new Etiq(inter, "false"));
+                                    inter.AddLast(new Etiq(inter, "false"));
+                                }
+                                etiizq.AddLast(new Etiq(inter, "true"));
+                                inter.AddLast(new Etiq(inter, "true"));
+                            }
+                        }*/
+
+                        
                         //obtengo las etiquetas falsas derecho para asi agregagarla a a lista de salida de etiquetas
                         foreach (Etiq eti in etider)
                         {
@@ -368,10 +469,123 @@ namespace P1.Instruccion
                     #region or
                     else if (operador == tipOper.OR)
                     {
-                        LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
-                        LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
+                    /* LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
+                     LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
 
+                     if (etider == null)
+                     {
+                         etider = new LinkedList<Instruc>();
+                         if (op1 is int || op1 is decimal)
+                         {
+                             if (Convert.ToDecimal(op1) == 0)
+                             {
+                                 etider.AddLast(new Etiq(inter, "false"));
+                                 inter.AddLast(new Etiq(inter, "false"));
+                             }
+                             etider.AddLast(new Etiq(inter, "true"));
+                             inter.AddLast(new Etiq(inter, "true"));
+                         }
+                     }
+
+                     if (etiizq == null)
+                     {
+                         etiizq = new LinkedList<Instruc>();
+                         if (op2 is int || op2 is decimal)
+                         {
+                             if (Convert.ToDecimal(op2) == 0)
+                             {
+                                 etiizq.AddLast(new Etiq(inter, "false"));
+                                 inter.AddLast(new Etiq(inter, "false"));
+                             }
+                             etiizq.AddLast(new Etiq(inter, "true"));
+                             inter.AddLast(new Etiq(inter, "true"));
+                         }
+                     }*/
+
+                    LinkedList<Instruc> etider = new LinkedList<Instruc>();
+                    LinkedList<Instruc> etiizq = new LinkedList<Instruc>();
+                    if (op1 is LinkedList<Instruc>)
+                    {
+                        etider = (LinkedList<Instruc>)op1;
+                        
+                    }
+                    else
+                    {
+                        if (op1 != null)
+                        {
+                            
+                            if (op1 is bool)
+                            {
+                                if ((bool)op1 == true) op1 = 1;
+                                else op1 = 0;
+                            }
+                            Etiq eti = new Etiq(inter, "true");
+                            inter.AddLast(eti);
+                            etider.AddLast(eti);
+                            Etiq etiF = new Etiq(inter, "false");
+                            inter.AddLast(etiF);
+                            etider.AddLast(etiF);
+                            inter.AddLast(new GenCod("", Convert.ToString(op1), "", "REL", Convert.ToString(eti.ejecutar(gen, en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen, en, arbol, inter))));
+                           // if(op2 is LinkedList<Instruc>)//quiere decir que trae etiquetas
+                            //inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "false"), ""));
+                            //etider;
+                        }
+                        else return null;
+                    }
+
+                    if(!(op1 is LinkedList<Instruc>) && op2 is LinkedList<Instruc>)
+                    {
+                        etiizq = (LinkedList<Instruc>)op2;
+                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etiizq, "false"), ""));
+
+                        foreach (Etiq eti in etiizq)
+                        {
+                            if (eti.cond == "true")
+                            {
+                                etider.AddLast(eti);
+                            }
+                        }
+                        //retorno las etiquetas falsas y verdaderas del lado izquierdo y la verdadera del lado derecho
+                        return etider;
+                    }
+                    else
                         inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "false"), ""));
+                
+
+                    
+
+                    
+                    if (op2 is LinkedList<Instruc>)
+                    {
+                        etiizq = (LinkedList<Instruc>)op2;
+
+                    }
+
+                    else
+                    {
+                        if (op2 != null)
+                        {
+                            if (op2 is bool)
+                            {
+                                if ((bool)op2 == true) op2 = 1;
+                                else op2 = 0;
+                            }
+                            Etiq eti = new Etiq(inter, "true");
+                            inter.AddLast(eti);
+                            etiizq.AddLast(eti);
+                            Etiq etiF = new Etiq(inter, "false");
+                            inter.AddLast(etiF);
+                            etiizq.AddLast(etiF);
+                            inter.AddLast(new GenCod("", Convert.ToString(op2), "", "REL", Convert.ToString(eti.ejecutar(gen, en, arbol, inter)), Convert.ToString(etiF.ejecutar(gen, en, arbol, inter))));
+                            
+
+                        }
+                        else return null;
+
+
+                    }
+
+
                         //obtengo las etiquetas verdaderaas derecho para asi agregagarla a a lista de salida de etiquetas
                         foreach (Etiq eti in etider)
                         {
@@ -401,25 +615,46 @@ namespace P1.Instruccion
                     object operUn = operUna.getValImp(gen,en, arbol, inter);
                     if (this.operador == tipOper.MENOSU)
                     {
-                        if (operUn is Decimal || operUn is double) return -1 * (Decimal)operUn;
-                        
-                        else if (operUn is int) return -1 * (int)operUn;
-                        
-                        else
-                        {
-                            Form1.error.AppendText("Error,No se puede operar menos unario con este tipo de datos");
-                            return null;
-                        }
+                        Instruc temp = new Temp(inter);
+                        String tempo = (String)temp.ejecutar(gen, en, arbol, inter);
+                        inter.AddLast(temp);//agrego el nuevo temporal
+
+                        inter.AddLast(new GenCod("", Convert.ToString(operUn), "-", tempo, "", ""));
+                        return tempo;
                     }
                     else if (operador == tipOper.NOT)
                     {//lo unico que se hace es un intercambio de etiquetas las true pasan a ser false y las false a true
-                        LinkedList<Instruc> etiq = (LinkedList<Instruc>)operUn;
+                    LinkedList<Instruc> etiq = new LinkedList<Instruc>();
+                         if (operUn is LinkedList<Instruc>) etiq = (LinkedList<Instruc>)operUn;
 
-                        foreach(Etiq eti in etiq)
+                        else  
                         {
+                             etiq = new LinkedList<Instruc>();
+                        if (operUn != null)
+                        {
+                            if (operUn is bool)
+                            {
+                                if ((bool)operUn == true) operUn = 1;
+                                else operUn = 0;
+                            }
+                            Etiq eti = new Etiq(inter, "true");
+                            inter.AddLast(eti);
+                            etiq.AddLast(eti);
+                            Etiq etiF = new Etiq(inter, "false");
+                            inter.AddLast(etiF);
+                            etiq.AddLast(etiF);
+                            inter.AddLast(new GenCod("", Convert.ToString(operUn), "", "REL", Convert.ToString(etiF.ejecutar(gen, en, arbol, inter)), Convert.ToString(eti.ejecutar(gen, en, arbol, inter))));
+                            return etiq;
+                        }
+                        else return val;
+
+                        
+                        }
+                    foreach(Etiq eti in etiq)
+                    {
                             if (eti.cond == "true") eti.cond = "false";
                             else if (eti.cond == "false") eti.cond = "true";
-                        }
+                    }
 
                         return etiq;
                         /*
@@ -435,11 +670,11 @@ namespace P1.Instruccion
                 }
 
 
-            }
-            catch
+         /*   }
+           catch
             {
                 Form1.error.AppendText("Error, imposible realizar operacion ");
-            }
+            }*/
             return val;
         }
     }

@@ -50,6 +50,7 @@ namespace P1.Instruccion
 
             gen.Agregar("FunProc-"+id+ en.TabSimb.Count, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
             tabL.Agregar("FunProc-"+id, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
+            
 
             inter.AddLast(new GenCod("void "+id+"(){\n\n", "", "", "TEXTO", "", ""));
             /*Etiq etiqueta = new Etiq(inter, "");
@@ -58,6 +59,8 @@ namespace P1.Instruccion
             inter.AddLast(new GenCod("", "", "", "GOTO", salida, ""));
             */
             Simb aux = en.getSimb(ambito);
+            P.apu = P.apu+ aux.apuntador;
+       
             if (valParam == null)//cuando no tiene parametros inicializados//posible procedimiento
             {
                 valParam = new LinkedList<Expr>();
@@ -137,20 +140,22 @@ namespace P1.Instruccion
 
                for (int i = 0; i < totales; i++)
                {
-                   foreach(Instruc ins in inter)
+                P.Stack0.RemoveLast();
+                  /* foreach(Instruc ins in inter)
                    {
                        if (ins is Stack)
                        {
                            inter.Remove(ins);
                            break;
                        }
-                   }
+                   }*/
                }
 
-               
+
+            P.apu = P.apu - aux.apuntador;
 
 
-            return null;
+                return null;
         }
         //tiene que ver con la llamada a funcion, actualiza los valores de esta lista para poder evaluar al ejecutar la funcion 
         public void setValParam(LinkedList<Expr> a)
