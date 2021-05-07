@@ -68,7 +68,7 @@ namespace P1.Instruccion
             inter.AddLast(new GenCod("", "", "", "IF", etiqV, ""));
             Instruc salto = new Etiq(inter, "");//genero nueva etiqueta de salto al finalizar instruccion del if
             //Obtengo la etiqueta, pero no genero su codigo
-            String saltos = etiqF;
+            String saltos = etiqF.Replace(":",string.Empty);
             Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instrucciones)
                 {

@@ -1,4 +1,5 @@
 ﻿using P1.Analizador;
+using P1.Optimizacion.Analizador;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace P1
     {
         public static RichTextBox error;
         public static RichTextBox salir;
+        public static RichTextBox coptimizado;
         public static int sp;
 
         public Form1()
@@ -23,6 +25,8 @@ namespace P1
             InitializeComponent();
             error = errores;
             salir = salida;
+            coptimizado = optimizado;
+            
             sp = 0;
     }
         //boton analizaar
@@ -68,6 +72,17 @@ namespace P1
             process.StartInfo.FileName = "salida.jpg";
             process.StartInfo.UseShellExecute = true;
             process.Start();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            optimizado.Clear();
+
+            String texto = salida.Text;//envio el codigo generado en 3d por le codigo anterior
+
+            Sintax sintac = new Sintax();
+
+            sintac.Analizar(texto);
         }
     }
 }

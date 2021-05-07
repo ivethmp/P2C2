@@ -98,15 +98,27 @@ namespace P1.Instruccion
             return etiqueta;
         }
 
-
+        Instruc codigoval = null;
         public object getValImp(Entor gen,Entor en, AST arbol, LinkedList<Instruc> inter)
         {
-          //  try
+            //  try
             //{
-                if (operUna == null)
+            if (codigoval != null)
+            {
+                inter.Remove(codigoval);
+            }
+            if (operUna == null)
                 {
+                
                     //la variable tendria que retornar el temporal donde se asigna el valor de la variable en el stack
+
                     object op1 = operIzq.getValImp(gen,en, arbol, inter);
+                if (operador == tipOper.AND || operador == tipOper.OR)
+                {
+                    codigoval = new GenCod("00001","AAAA","","SABER", "saber","");
+                    inter.AddLast(codigoval);
+                }
+                
                     object op2 = operDer.getValImp(gen,en, arbol, inter);
                     #region Sum
                     if (operador == tipOper.SUMA)
@@ -370,7 +382,9 @@ namespace P1.Instruccion
                     {
                         etiizq = (LinkedList<Instruc>)op2;
                         inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etiizq, "true"), ""));
-
+                        
+                        inter.Remove(codigoval);
+                        codigoval = null;
                         foreach (Etiq eti in etiizq)
                         {
                             if (eti.cond == "false")
@@ -382,7 +396,11 @@ namespace P1.Instruccion
                         return etider;
                     }
                     else
-                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "true"), ""));
+                    {
+                        inter.AddAfter(inter.FindLast(codigoval), new GenCod("", "", "", "LOG", getEtiq(etider, "true"), ""));
+                        inter.Remove(codigoval);
+                    }
+                        
 
                     
                     if (op2 is LinkedList<Instruc>)
@@ -470,39 +488,7 @@ namespace P1.Instruccion
                     #region or
                     else if (operador == tipOper.OR)
                     {
-                    /* LinkedList<Instruc> etider = (LinkedList<Instruc>)op1;
-                     LinkedList<Instruc> etiizq = (LinkedList<Instruc>)op2;
-
-                     if (etider == null)
-                     {
-                         etider = new LinkedList<Instruc>();
-                         if (op1 is int || op1 is decimal)
-                         {
-                             if (Convert.ToDecimal(op1) == 0)
-                             {
-                                 etider.AddLast(new Etiq(inter, "false"));
-                                 inter.AddLast(new Etiq(inter, "false"));
-                             }
-                             etider.AddLast(new Etiq(inter, "true"));
-                             inter.AddLast(new Etiq(inter, "true"));
-                         }
-                     }
-
-                     if (etiizq == null)
-                     {
-                         etiizq = new LinkedList<Instruc>();
-                         if (op2 is int || op2 is decimal)
-                         {
-                             if (Convert.ToDecimal(op2) == 0)
-                             {
-                                 etiizq.AddLast(new Etiq(inter, "false"));
-                                 inter.AddLast(new Etiq(inter, "false"));
-                             }
-                             etiizq.AddLast(new Etiq(inter, "true"));
-                             inter.AddLast(new Etiq(inter, "true"));
-                         }
-                     }*/
-
+                   
                     LinkedList<Instruc> etider = new LinkedList<Instruc>();
                     LinkedList<Instruc> etiizq = new LinkedList<Instruc>();
                     if (op1 is LinkedList<Instruc>)
@@ -534,10 +520,11 @@ namespace P1.Instruccion
                         else return null;
                     }
 
-                    if(!(op1 is LinkedList<Instruc>) && op2 is LinkedList<Instruc>)
+                    if (!(op1 is LinkedList<Instruc>) && op2 is LinkedList<Instruc>)
                     {
                         etiizq = (LinkedList<Instruc>)op2;
                         inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etiizq, "false"), ""));
+                        inter.Remove(codigoval);
 
                         foreach (Etiq eti in etiizq)
                         {
@@ -550,13 +537,16 @@ namespace P1.Instruccion
                         return etider;
                     }
                     else
-                        inter.AddBefore(inter.Last, new GenCod("", "", "", "LOG", getEtiq(etider, "false"), ""));
-                
+                    {
+                        inter.AddBefore(inter.FindLast(codigoval), new GenCod("", "", "", "LOG", getEtiq(etider, "false"), ""));
+                        inter.Remove(codigoval);
+                    }
 
-                    
 
-                    
-                    if (op2 is LinkedList<Instruc>)
+
+
+
+                        if (op2 is LinkedList<Instruc>)
                     {
                         etiizq = (LinkedList<Instruc>)op2;
 
