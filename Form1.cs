@@ -59,7 +59,7 @@ namespace P1
             Process process = new Process();
             //process.StartInfo.Arguments = "chrome.exe";
             process.StartInfo.FileName = "chrome.exe";
-            process.StartInfo.Arguments = "ReporteTablaS.html";
+            process.StartInfo.Arguments = "C:\\compiladores2\\Proyecto\\P2\\bin\\Debug\\netcoreapp3.1\\ReporteTablaS.html";
             //process.StartInfo.FileName = output;
             //debo usar userShellExecute en net core
             process.StartInfo.UseShellExecute = true;
@@ -69,7 +69,7 @@ namespace P1
         private void astG_Click(object sender, EventArgs e)
         {
             Process process = new Process();
-            process.StartInfo.FileName = "salida.jpg";
+            process.StartInfo.FileName = "C:\\compiladores2\\Proyecto\\P2\\bin\\Debug\\netcoreapp3.1\\salida.jpg";
             process.StartInfo.UseShellExecute = true;
             process.Start();
         }
@@ -83,6 +83,21 @@ namespace P1
             Sintax sintac = new Sintax();
 
             sintac.Analizar(texto);
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "chrome.exe";
+            process.StartInfo.Arguments = "C:\\compiladores2\\Proyecto\\P2\\bin\\Debug\\netcoreapp3.1\\Reporte-Optimizacion.html";
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
+            
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

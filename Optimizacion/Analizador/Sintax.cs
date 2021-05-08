@@ -7,6 +7,7 @@ using Irony.Parsing;
 using P1.Optimizacion.Arbol;
 using P1.Optimizacion.Instrucciones;
 using P1.Optimizacion.Interfaz;
+using P1.Optimizacion.Reporte;
 
 namespace P1.Optimizacion.Analizador
 {
@@ -36,6 +37,24 @@ namespace P1.Optimizacion.Analizador
 
             LinkedList<Instr2> AST = instrucs(raiz);
             arb = new Arbol.AST2(AST);
+            LinkedList<CodigoC> report = new LinkedList<CodigoC>();
+            LinkedList<String> temps = new LinkedList<string>();
+            LinkedList<Instr2> nuevo = new LinkedList<Instr2>();
+            int cont = 0;
+            foreach (Instr2 inst in AST)
+            {
+
+                System.Diagnostics.Debug.WriteLine(cont+" la salida de la instrucciones " + inst);
+                inst.getOptimizar(arb,nuevo, report, temps);
+                cont++;
+            }
+            foreach(Instr2 ins in nuevo)
+            {
+                ins.getOptimizar(arb,nuevo,report,temps);
+            }
+
+            GenTabla reporte = new GenTabla();
+            reporte.GenHTML2(report, "Reporte-Optimizacion");
 
 
         }

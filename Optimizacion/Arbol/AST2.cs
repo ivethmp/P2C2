@@ -15,11 +15,12 @@ namespace P1.Optimizacion.Arbol
         {
             this.instrucciones = instrucciones;
         }
-        /*
-        public LinkedList<Instruc> Instrucciones { 
+        
+        /*public LinkedList<Instr2> Instrucciones { 
             get => instrucciones; 
-            set => instrucciones = value; }
-        */
+            set => instrucciones = value; 
+        }*/
+        
         public void addObject(Object a)
         {
             objs.AddLast(a);

@@ -11,7 +11,7 @@ namespace P1.Optimizacion.Instrucciones
     {
         public int lin { get ; set ; }
         public int col { get ; set ; }
-        String id;
+        public String id;
         public ETIQUETA(String id, int lin, int col)
         {
             this.id = id;
@@ -19,9 +19,9 @@ namespace P1.Optimizacion.Instrucciones
             this.col = col;
         }
 
-        public object getOptimizar(AST2 arbol, LinkedList<CodigoC> reporte, LinkedList<string> temp)
+        public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo, LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

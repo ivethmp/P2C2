@@ -67,7 +67,7 @@ namespace P1.Analizador
                 "float hp;\n\n";
             String temporales = "";
             
-
+            
             
             //primera pasada para el main
             foreach (Instruc inst in AST)

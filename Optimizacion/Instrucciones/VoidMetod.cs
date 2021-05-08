@@ -24,9 +24,18 @@ namespace P1.Optimizacion.Instrucciones
             this.col = col;
         }
 
-        public object getOptimizar(AST2 arbol, LinkedList<CodigoC> reporte, LinkedList<string> temp)
+        public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo,LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-          return null;
+            AST2 ASTEMP  = new Arbol.AST2(instruccion);
+            System.Diagnostics.Debug.WriteLine("las instrucciones son: " + instruccion.Count);
+            foreach (Instr2 ins in instruccion)
+            {
+                ins.getOptimizar(ASTEMP, nuevo, reporte, temp);
+                System.Diagnostics.Debug.Write("la instruccion es: " + ins + " la linea es: " + ins.lin);
+                //ASTEMP.Instrucciones.Remove(ins);
+            }
+            System.Diagnostics.Debug.WriteLine("las instrucciones2 son: " + instruccion.Count);
+            return null;
         }
     }
 }

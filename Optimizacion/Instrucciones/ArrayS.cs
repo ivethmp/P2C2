@@ -29,9 +29,9 @@ namespace P1.Optimizacion.Instrucciones
             this.col = col;
         }
 
-        public object getOptimizar(AST2 arbol, LinkedList<CodigoC> reporte, LinkedList<string> temp)
+        public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo,LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

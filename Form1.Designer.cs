@@ -40,11 +40,12 @@ namespace P1
             this.astG = new System.Windows.Forms.Button();
             this.optimizar = new System.Windows.Forms.Button();
             this.optimizado = new System.Windows.Forms.RichTextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(30, 464);
+            this.button1.Location = new System.Drawing.Point(30, 415);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(146, 44);
             this.button1.TabIndex = 0;
@@ -54,7 +55,7 @@ namespace P1
             // 
             // entrada
             // 
-            this.entrada.Location = new System.Drawing.Point(12, 61);
+            this.entrada.Location = new System.Drawing.Point(12, 12);
             this.entrada.Multiline = true;
             this.entrada.Name = "entrada";
             this.entrada.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -63,7 +64,7 @@ namespace P1
             // 
             // errores
             // 
-            this.errores.Location = new System.Drawing.Point(496, 294);
+            this.errores.Location = new System.Drawing.Point(496, 245);
             this.errores.Name = "errores";
             this.errores.ReadOnly = true;
             this.errores.Size = new System.Drawing.Size(413, 139);
@@ -73,7 +74,7 @@ namespace P1
             // 
             // salida
             // 
-            this.salida.Location = new System.Drawing.Point(496, 61);
+            this.salida.Location = new System.Drawing.Point(496, 12);
             this.salida.Name = "salida";
             this.salida.Size = new System.Drawing.Size(413, 227);
             this.salida.TabIndex = 4;
@@ -81,7 +82,7 @@ namespace P1
             // 
             // tabSimbol
             // 
-            this.tabSimbol.Location = new System.Drawing.Point(384, 464);
+            this.tabSimbol.Location = new System.Drawing.Point(288, 415);
             this.tabSimbol.Name = "tabSimbol";
             this.tabSimbol.Size = new System.Drawing.Size(146, 26);
             this.tabSimbol.TabIndex = 5;
@@ -91,7 +92,7 @@ namespace P1
             // 
             // astG
             // 
-            this.astG.Location = new System.Drawing.Point(384, 496);
+            this.astG.Location = new System.Drawing.Point(288, 447);
             this.astG.Name = "astG";
             this.astG.Size = new System.Drawing.Size(146, 26);
             this.astG.TabIndex = 6;
@@ -102,7 +103,7 @@ namespace P1
             // optimizar
             // 
             this.optimizar.AutoSize = true;
-            this.optimizar.Location = new System.Drawing.Point(655, 464);
+            this.optimizar.Location = new System.Drawing.Point(655, 415);
             this.optimizar.Name = "optimizar";
             this.optimizar.Size = new System.Drawing.Size(146, 44);
             this.optimizar.TabIndex = 7;
@@ -112,18 +113,30 @@ namespace P1
             // 
             // optimizado
             // 
-            this.optimizado.Location = new System.Drawing.Point(63, 538);
+            this.optimizado.Location = new System.Drawing.Point(63, 489);
             this.optimizado.Name = "optimizado";
             this.optimizado.Size = new System.Drawing.Size(793, 181);
             this.optimizado.TabIndex = 8;
             this.optimizado.Text = "";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(472, 424);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(146, 26);
+            this.button2.TabIndex = 9;
+            this.button2.Text = "Reporte Optimizacion";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(921, 741);
+            this.ClientSize = new System.Drawing.Size(921, 688);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.optimizado);
             this.Controls.Add(this.optimizar);
             this.Controls.Add(this.astG);
@@ -133,7 +146,8 @@ namespace P1
             this.Controls.Add(this.entrada);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Reporte Optimizacion";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,6 +163,7 @@ namespace P1
         private RichTextBox errores;
         private Button optimizar;
         private RichTextBox optimizado;
+        private Button button2;
     }
 }
 

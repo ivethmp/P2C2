@@ -67,7 +67,7 @@ namespace P1.Optimizacion.Arbol
 
 
 
-        public object getOptimizar(AST2 arbol, LinkedList<CodigoC> reporte, LinkedList<string> temp)
+        public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo, LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
             return null;
         }

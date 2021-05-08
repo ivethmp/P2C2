@@ -12,6 +12,6 @@ namespace P1.Optimizacion.Interfaz
         public int col { get; set; }
 
 
-        object getOptimizar(AST2 arbol, LinkedList<CodigoC> reporte, LinkedList<String> temp);
+        object getOptimizar(AST2 arbol,LinkedList<Instr2>nuevos, LinkedList<CodigoC> reporte, LinkedList<String> temp);
     }
 }
