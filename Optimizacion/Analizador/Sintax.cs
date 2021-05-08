@@ -44,8 +44,6 @@ namespace P1.Optimizacion.Analizador
             int cont = 0;
             foreach (Instr2 inst in AST)
             {
-
-                System.Diagnostics.Debug.WriteLine(cont+" la salida de la instrucciones " + inst);
                 inst.getOptimizar(arb,nuevo, report, temps);
                 cont++;
             }
@@ -61,13 +59,14 @@ namespace P1.Optimizacion.Analizador
             {
                 cadena = "float " + cadena.TrimEnd(',') + ";\n\n";
             }
+            nuevo.AddFirst(new NewCod(cadena));
+            cadena = "#include <stdio.h>\n";
+            nuevo.AddFirst(new NewCod(cadena));
             foreach (Instr2 ins in nuevo)
             {
                 ins.getOptimizar(arb, nuevo, report, temps);
             }
-            nuevo.AddFirst(new NewCod(cadena));
-            cadena = "#include <stdio.h>\n";
-            nuevo.AddFirst(new NewCod(cadena));
+            
             GenTabla reporte = new GenTabla();
             reporte.GenHTML2(report, "Reporte-Optimizacion");
 

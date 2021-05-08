@@ -92,8 +92,42 @@ namespace P1.Optimizacion.Instrucciones
                 #region Sum
                 if (operador == tipOper.SUMA)
                 {
-                       
-                    return null;
+                    if (lin == -10) return op1.ToString() + "+" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else
+                    {
+                        String[] valores = new String[2];
+                        if (op1 is int || op1 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op1)==0)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "+" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = "" + Convert.ToDecimal(op1);
+                    }
+
+                    if (op2 is String) salida = salida + "+" + op2.ToString();
+                    else
+                    {
+
+                        String[] valores = new String[2];
+                        if (op2 is int || op2 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op2) == 0)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "+" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = salida + "+" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
 
                 }
                 #endregion
@@ -102,21 +136,116 @@ namespace P1.Optimizacion.Instrucciones
                 else if (operador == tipOper.RESTA)
                 {
 
-                    return null ;
+                    if (lin == -10) return op1.ToString() + "-" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else
+                    {
+                        /*String[] valores = new String[2];
+                        if (op1 is int || op1 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op1) == 0)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "-" + op2.ToString();
+                                return valores;
+                            }
+                        }*/
+                        salida = "" + Convert.ToDecimal(op1);
+                    }
+
+                    if (op2 is String) salida = salida + "-" + op2.ToString();
+                    else
+                    {
+
+                        String[] valores = new String[2];
+                        if (op2 is int || op2 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op2) == 0)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "-" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = salida + "-" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
 
                 }
                 #endregion
                 #region Multi
                 else if (operador == tipOper.POR)
                 {
-                    
+                    if (lin == -10) return op1.ToString() + "*" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else
+                    {
+                        String[] valores = new String[2];
+                        if (op1 is int || op1 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op1) == 1)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = "" + Convert.ToDecimal(op1);
+                    }
+
+                    if (op2 is String) salida = salida + "*" + op2.ToString();
+                    else
+                    {
+
+                        String[] valores = new String[2];
+                        if (op2 is int || op2 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op2) == 1)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = salida + "*" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
 
                 }
                 #endregion
                 #region Division
                 else if (operador == tipOper.DIVISION)
                 {
-                    
+                    if (lin == -10) return op1.ToString() + "/" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else
+                    {
+                        salida = "" + Convert.ToDecimal(op1);
+                    }
+
+                    if (op2 is String) salida = salida + "/" + op2.ToString();
+                    else
+                    {
+
+                        String[] valores = new String[2];
+                        if (op2 is int || op2 is Decimal)
+                        {
+                            if (Convert.ToDecimal(op2) == 1)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "/" + op2.ToString();
+                                return valores;
+                            }
+                        }
+                        salida = salida + "/" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
                 }
                 #endregion
                 

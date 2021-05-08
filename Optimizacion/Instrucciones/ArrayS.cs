@@ -31,8 +31,9 @@ namespace P1.Optimizacion.Instrucciones
 
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo,LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-            String cadena = id1+"[("+tipo+")"+id2+"]";
-            if (!temp.Contains(id2)) temp.AddLast(id2);
+            String cadena = id1+"[("+tipo.ToString().ToLower()+")"+id2+"]";
+            if (temp.Contains(id2)) System.Diagnostics.Debug.WriteLine("el id dentro del array es " + id2);
+            else temp.AddLast(id2);
             return cadena;
         }
     }
