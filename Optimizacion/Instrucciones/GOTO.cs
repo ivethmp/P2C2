@@ -45,27 +45,27 @@ namespace P1.Optimizacion.Instrucciones
                     {
                         int aux = ins.lin;
                         ins.lin = -10;
-                        agregar = agregar + ins.getOptimizar(arbol,nuevo,reporte,temp);
+                        agregar = agregar+"<br>" + ins.getOptimizar(arbol,nuevo,reporte,temp);
                         ins.lin = aux;
                         if(regla!=0) reporte.AddLast(new CodigoC(optimi, regla, elimi, agregar, fila));
-                        return null;
+                        return cadenagoto;
                     }
                     else
                     {//marcamos el codigo eliminado
                         ins.lin = -10;
                         regla = 1;
-                        elimi = elimi + ins.getOptimizar(arbol, nuevo, reporte, temp);
+                        elimi = elimi +"<br>\n"+ ins.getOptimizar(arbol, nuevo, reporte, temp);
                        
                     }
                 }
 
                 if (ins.lin == lin && ins.col == col && ins is GOTO) {
                     bandera = true;
-                    cadenagoto = "goto" + id + ";";
+                    cadenagoto = "goto " + id + ";";
                     agregar = cadenagoto;
                     optimi = "Eliminación de código muerto";
                     fila = ins.lin;
-                    elimi = elimi + cadenagoto + "\n";
+                    elimi = elimi +"<br>\n"+ cadenagoto + "\n";
 
                     nuevo.AddLast(new NewCod(cadenagoto));
 

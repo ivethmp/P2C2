@@ -26,6 +26,7 @@ namespace P1.Optimizacion.Instrucciones
             MENIQ,
             MAYIOQ,
             IGUAL,
+            IIGUAL,
             NOT,
             DIF,
             AND,
@@ -33,7 +34,8 @@ namespace P1.Optimizacion.Instrucciones
             OTRO
         }
 
-        private tipOper operador;
+        public tipOper operador;
+
         public object val;
         public Expr2 operDer { get; set; }
         public Expr2 operIzq { get; set; }
@@ -53,7 +55,7 @@ namespace P1.Optimizacion.Instrucciones
                 case ">": return tipOper.MAYORQ;
                 case ">=": return tipOper.MAYIOQ;
                 case "<=": return tipOper.MENIQ;
-                case "=": return tipOper.IGUAL;
+                case "==": return tipOper.IIGUAL;
                 case "!=": return tipOper.DIF;
                 default: return tipOper.OTRO;
             }
@@ -75,7 +77,188 @@ namespace P1.Optimizacion.Instrucciones
 
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo,LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-            return null;
+               
+            if (operUna == null)
+            {
+
+                //la variable tendria que retornar el temporal donde se asigna el valor de la variable en el stack
+
+                object op1 = operIzq.getOptimizar(arbol, nuevo, reporte, temp);
+                
+
+                object op2 = operDer.getOptimizar(arbol, nuevo, reporte, temp);
+
+               
+                #region Sum
+                if (operador == tipOper.SUMA)
+                {
+                       
+                    return null;
+
+                }
+                #endregion
+                
+                #region Resta
+                else if (operador == tipOper.RESTA)
+                {
+
+                    return null ;
+
+                }
+                #endregion
+                #region Multi
+                else if (operador == tipOper.POR)
+                {
+                    
+
+                }
+                #endregion
+                #region Division
+                else if (operador == tipOper.DIVISION)
+                {
+                    
+                }
+                #endregion
+                
+
+
+
+                //Aqui tendrian que ir el resto de operaciones RELACIONALES
+                #region MayorQue
+                if (operador == tipOper.MAYORQ)
+                {
+                    if (lin == -10) return op1.ToString() + ">" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else salida = "" + Convert.ToDecimal(op1);
+                    
+                    if (op2 is String) salida = salida + "==" + op2.ToString();
+                    else salida = salida + ">" + Convert.ToDecimal(op2);
+                
+                    return salida;
+                }
+                #endregion
+                #region MayorIgualQue
+                if (operador == tipOper.MAYIOQ)
+                {
+                    if (lin == -10) return op1.ToString() + ">=" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else salida = "" + Convert.ToDecimal(op1);
+
+                    if (op2 is String) salida = salida + ">=" + op2.ToString();
+                    else salida = salida + "==" + Convert.ToDecimal(op2);
+
+                    return salida;
+
+                }
+                #endregion
+                #region MenorQue
+                if (operador == tipOper.MENORQ)
+                {
+                    if (lin == -10) return op1.ToString() + "<" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else salida = "" + Convert.ToDecimal(op1);
+
+                    if (op2 is String) salida = salida + "<=" + op2.ToString();
+                    else salida = salida + "==" + Convert.ToDecimal(op2);
+
+                    return salida;
+
+                }
+                #endregion
+                #region MenorIgualQue
+                if (operador == tipOper.MENIQ)
+                {
+                    if (lin == -10) return op1.ToString() + "<=" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String) salida = op1.ToString();
+                    else salida = "" + Convert.ToDecimal(op1);
+
+                    if (op2 is String) salida = salida + "<=" + op2.ToString();
+                    else salida = salida + "==" + Convert.ToDecimal(op2);
+
+                    return salida;
+
+                }
+                #endregion
+                #region igual
+                if (operador == tipOper.IIGUAL)
+                {
+                    String salida = "";
+                    if(op1 is String)//significa que una variable x
+                    {
+                        salida = op1.ToString();
+                    }else//es un numero
+                    {
+                        if(op2 is Decimal || op2 is int)
+                        {
+                            String[] sal = new string[2];
+                            sal[0] = op1.ToString() + "==" + op2.ToString();
+                            if (Convert.ToDecimal(op1) == Convert.ToDecimal(op2)) sal[1] = "true";
+                            else sal[1] = "false";
+                            return sal;
+                        }
+
+                        salida = ""+Convert.ToDecimal(op1);
+                    }
+                    if (op2 is String) salida = salida +"!="+ op2.ToString();
+                    else
+                    {
+                        salida = salida + "!=" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
+                    //return (op1.Equals(op2)) ;
+                }
+                #endregion
+                #region diferente
+                if (operador == tipOper.DIF)
+                {
+                    if (lin == -10) return op1.ToString() + "!=" + op2.ToString();
+                    String salida = "";
+                    if (op1 is String)//significa que una variable x
+                    {
+                        salida = op1.ToString();
+                    }
+                    else//es un numero
+                    {
+                        salida = "" + Convert.ToDecimal(op1);
+                    }
+                    if (op2 is String) salida = salida + "==" + op2.ToString();
+                    else
+                    {
+                        salida = salida + "==" + Convert.ToDecimal(op2);
+                    }
+
+                    return salida;
+                    //return !(op1.Equals(op2));
+                }
+                #endregion
+              
+             
+
+            }
+            else
+            {
+                #region unario
+                object operUn = operUna.getOptimizar(arbol, nuevo, reporte, temp);
+                if (this.operador == tipOper.MENOSU)
+                {
+                   
+                }
+                
+                #endregion
+            }
+
+
+            /*   }
+              catch
+               {
+                   Form1.error.AppendText("Error, imposible realizar operacion ");
+               }*/
+            return val;
         }
 
     }

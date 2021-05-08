@@ -36,7 +36,7 @@ namespace P1.Optimizacion.Analizador
                 //MarkReservedWords
 
                 var IGUAL = ToTerm("=");
-            
+                var IIGUAL = ToTerm("==");
                 var NUMERAL = ToTerm("#");
                 var PUNTO = ToTerm(".");
                 var PTCOMA = ToTerm(";");
@@ -165,7 +165,7 @@ namespace P1.Optimizacion.Analizador
                        | expr + MENIQ + expr
                        | expr + MENORQ + expr
                        | expr + DIF + expr
-                       | expr + IGUAL + IGUAL + expr;
+                       | expr + IIGUAL  + expr;
 
 
 

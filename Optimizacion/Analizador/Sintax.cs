@@ -5,6 +5,7 @@ using Irony;
 using Irony.Ast;
 using Irony.Parsing;
 using P1.Optimizacion.Arbol;
+using P1.Optimizacion.GenerarN;
 using P1.Optimizacion.Instrucciones;
 using P1.Optimizacion.Interfaz;
 using P1.Optimizacion.Reporte;
@@ -48,11 +49,25 @@ namespace P1.Optimizacion.Analizador
                 inst.getOptimizar(arb,nuevo, report, temps);
                 cont++;
             }
-            foreach(Instr2 ins in nuevo)
-            {
-                ins.getOptimizar(arb,nuevo,report,temps);
-            }
+            String cadena = "";
+            
+            
 
+            foreach (String str in temps)
+            {
+                cadena = cadena + str + ",";
+            }
+            if (cadena != "")
+            {
+                cadena = "float " + cadena.TrimEnd(',') + ";\n\n";
+            }
+            foreach (Instr2 ins in nuevo)
+            {
+                ins.getOptimizar(arb, nuevo, report, temps);
+            }
+            nuevo.AddFirst(new NewCod(cadena));
+            cadena = "#include <stdio.h>\n";
+            nuevo.AddFirst(new NewCod(cadena));
             GenTabla reporte = new GenTabla();
             reporte.GenHTML2(report, "Reporte-Optimizacion");
 

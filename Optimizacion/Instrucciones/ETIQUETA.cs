@@ -21,7 +21,8 @@ namespace P1.Optimizacion.Instrucciones
 
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo, LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
-            return null;
+            if (lin == -10) return id;
+            return id;
         }
     }
 }

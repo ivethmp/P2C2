@@ -1,4 +1,5 @@
 ﻿using P1.Optimizacion.Arbol;
+using P1.Optimizacion.GenerarN;
 using P1.Optimizacion.Interfaz;
 using P1.Optimizacion.Reporte;
 using System;
@@ -28,13 +29,15 @@ namespace P1.Optimizacion.Instrucciones
         {
             AST2 ASTEMP  = new Arbol.AST2(instruccion);
             System.Diagnostics.Debug.WriteLine("las instrucciones son: " + instruccion.Count);
+            nuevo.AddLast(new NewCod("void " + id + "()\n{"));
             foreach (Instr2 ins in instruccion)
             {
                 ins.getOptimizar(ASTEMP, nuevo, reporte, temp);
-                System.Diagnostics.Debug.Write("la instruccion es: " + ins + " la linea es: " + ins.lin);
+                //System.Diagnostics.Debug.Write("la instruccion es: " + ins + " la linea es: " + ins.lin);
                 //ASTEMP.Instrucciones.Remove(ins);
             }
             System.Diagnostics.Debug.WriteLine("las instrucciones2 son: " + instruccion.Count);
+            nuevo.AddLast(new NewCod("\n}\n\n"));
             return null;
         }
     }
