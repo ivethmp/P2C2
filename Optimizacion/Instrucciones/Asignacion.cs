@@ -29,12 +29,16 @@ namespace P1.Optimizacion.Instrucciones
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo, LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
             object sal = val.getOptimizar(arbol, nuevo, reporte, temp);
+            String esuno = "";
             String valFin = "";
+            String variable = "";
             if (sal is String[])
             {
                 Object[] resultado = sal as object[];
                 sal = resultado [1];
                 valFin = sal.ToString();
+                esuno = resultado[0].ToString();
+                variable = resultado[2].ToString();
             }
             else valFin = sal.ToString();
 
@@ -65,7 +69,8 @@ namespace P1.Optimizacion.Instrucciones
                     if(ins is ETIQUETA)
                     {
                         salida = id + "=" + valFin;
-                        nuevo.AddLast(new NewCod(salida));
+                        temporales(id, temp);
+                        nuevo.AddLast(new NewCod(salida+";"));
                         return salida;
                     }
 
@@ -83,11 +88,14 @@ namespace P1.Optimizacion.Instrucciones
                                     elimi = id + "=" + idAux + "<br>" + idAux + "="+ id; //a = b
 
                                     if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, codigosalida, fila));
+                                    temporales(id, temp);
+                                    
                                     nuevo.AddLast(new NewCod(codigosalida+";"));
                                     return codigosalida;
                                 }
                                 else//se le asigno otro balor a b
                                 {
+                                    temporales(id, temp);
                                     nuevo.AddLast(new NewCod(codigosalida+";"));
                                     return codigosalida;
                                 }
@@ -95,15 +103,46 @@ namespace P1.Optimizacion.Instrucciones
                             }
                         }else if(((Asignacion)ins).id == id)//se le asigno otro valor a la primera variable
                         {
+                            temporales(id, temp);
                             nuevo.AddLast(new NewCod(codigosalida+";"));
                             return codigosalida; 
                         }
                     }
                 }
 
-
-                if(ins.lin == lin && ins.col == col && ins is Asignacion)//la que verifica que igual a la entrada
+                /*if(esuno == "uno" && variable!="")
                 {
+                    bandera = 4;
+                    if(ins is Asignacion)
+                    {
+                        if (((Asignacion)ins).id == variable)//encontre la variable
+                        {
+                            object valor2 = ((Asignacion)ins).val;
+                            if (valor2 is string)//quiere decir que es un valor concreto{
+                            {
+                                if (valor2.ToString() == "0")//quiere decir que se asigno con 0
+                                {
+                                    bandera = 4;
+                                }
+                                else bandera = 5;//encontrro el id pero este no esta asignado con 0
+                            }
+                        }
+                    }
+                   // bandera = 4;//significa que no se encontro la variable
+                }*/
+
+
+                else if(ins.lin == lin && ins.col == col && ins is Asignacion)//la que verifica que igual a la entrada
+                {
+                   /* if (bandera == 4)//4 no encontro el valor anterior asignado o el valor es 0
+                    {
+
+                        
+                    }if(bandera == 5)//no se cumplio condicion de que la variable valga 0
+                    {
+                        nuevo.AddLast(new NewCod(codigosalida + ";"));
+                        return codigosalida;
+                    }*/
                     valor = val.getOptimizar(arbol,nuevo,reporte,temp);
                     if (valor is String)
                     {
@@ -118,10 +157,12 @@ namespace P1.Optimizacion.Instrucciones
                         {
                             Object[] resultado = valor as object[];
                             valor = resultado[0];
+                            variable = resultado[2].ToString();
                             opcion = valor.ToString();
                         }
-                        if (opcion == "false")
+                        if (opcion == "false" && variable==id)
                         {
+                            fila = ins.lin;
                             ins.lin = -1;
                             Operacion.tipOper ooper= ((Operacion)val).operador;
                             if (ooper == Operacion.getOperador("-")) regla = 7;
@@ -129,21 +170,86 @@ namespace P1.Optimizacion.Instrucciones
                             else if (ooper == Operacion.getOperador("*")) regla = 8;
                             else if (ooper == Operacion.getOperador("/")) regla = 9;
                             ins.lin = -10;
-                            elimi = id + "=" +valFin; //a = b
+                            elimi = codigosalida; //a = b
 
                             if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, "", fila));
                             
                             return codigosalida;
-                        }else
+                        
+                        }
+                        else if (opcion == "false" && variable != id)
                         {
+                            fila = ins.lin;
+                            ins.lin = -1;
+                            Operacion.tipOper ooper = ((Operacion)val).operador;
+                            //String oper1 = "";
+                            if (ooper == Operacion.getOperador("+")) regla = 10;
+                            else if (ooper == Operacion.getOperador("-")) regla = 11;
+                            else if (ooper == Operacion.getOperador("*")) regla = 12;
+                            else if (ooper == Operacion.getOperador("/")) regla = 13;
+                            ins.lin = -10;
+                            elimi = codigosalida; //a = b
+                            codigosalida = id + " = " + variable;
+                            nuevo.AddLast(new NewCod(codigosalida + ";"));
+                            
+                            if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, codigosalida, fila));
+                            temporales(id, temp);
+                            temporales(variable, temp);
+                            return codigosalida;
+                        }
+
+                        else if (opcion == "xdos")
+                        {
+                            fila = ins.lin;
+                            Operacion.tipOper ooper = ((Operacion)val).operador;
+                            regla = 14;
+                            ins.lin = -10;
+                            elimi = codigosalida; //a = b
+                            codigosalida = id + " = " + variable +"+"+variable;
+                            nuevo.AddLast(new NewCod(codigosalida + ";"));
+
+                            if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, codigosalida, fila));
+                            temporales(id, temp);
+                            temporales(variable, temp);
+                            return codigosalida;
+                        }
+                        else if (opcion == "xcero")
+                        {
+                            fila = ins.lin;
+                            Operacion.tipOper ooper = ((Operacion)val).operador;
+                            if (ooper == Operacion.getOperador("*")) regla = 15;
+                            else if (ooper == Operacion.getOperador("/")) regla = 16;
+                            ins.lin = -10;
+                            elimi = codigosalida; //a = b
+                            codigosalida = id + " = 0";
+                            nuevo.AddLast(new NewCod(codigosalida + ";"));
+
+                            if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, codigosalida, fila));
+                            temporales(id, temp);
+                            return codigosalida;
+                        }
+
+                        else
+                        {
+                            temporales(id, temp);
                             nuevo.AddLast(new NewCod(codigosalida+";"));
                             return codigosalida;
                         }
                     }
                 }
             }
+            temporales(id, temp);
             nuevo.AddLast(new NewCod(codigosalida+";"));
            return codigosalida;
+        }
+
+        public void temporales(String tempo, LinkedList<String>temp)
+        {
+            if (tempo is String)
+            {
+                if (temp.Contains(tempo.ToString())==false) //System.Diagnostics.Debug.WriteLine("el id dentro del array es " + val.ToString());
+                 temp.AddLast(tempo.ToString());
+            }
         }
     }
 }

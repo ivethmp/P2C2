@@ -97,15 +97,23 @@ namespace P1.Optimizacion.Instrucciones
                     if (op1 is String) salida = op1.ToString();
                     else
                     {
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op1 is int || op1 is Decimal)
                         {
                             if (Convert.ToDecimal(op1)==0)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "+" + op2.ToString();
+                                valores[2] = op2.ToString();
                                 return valores;
                             }
+                            /*else if (Convert.ToDecimal(op1) == 1)
+                            {
+                                valores[0] = "uno";
+                                valores[1] = op1.ToString() + "+" + op2.ToString();
+                                valores[2] = op2.ToString();
+                                return valores;
+                            }*/
                         }
                         salida = "" + Convert.ToDecimal(op1);
                     }
@@ -114,15 +122,22 @@ namespace P1.Optimizacion.Instrucciones
                     else
                     {
 
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op2 is int || op2 is Decimal)
                         {
                             if (Convert.ToDecimal(op2) == 0)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "+" + op2.ToString();
+                                valores[2] = op1.ToString();
                                 return valores;
-                            }
+                            }/*else if (Convert.ToDecimal(op2) == 1)
+                                {
+                                    valores[0] = "uno";
+                                    valores[1] = op1.ToString() + "+" + op2.ToString();
+                                    valores[2] = op1.ToString();
+                                    return valores;
+                                }*/
                         }
                         salida = salida + "+" + Convert.ToDecimal(op2);
                     }
@@ -158,13 +173,14 @@ namespace P1.Optimizacion.Instrucciones
                     else
                     {
 
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op2 is int || op2 is Decimal)
                         {
                             if (Convert.ToDecimal(op2) == 0)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "-" + op2.ToString();
+                                valores[2] = op1.ToString();//variable
                                 return valores;
                             }
                         }
@@ -183,13 +199,28 @@ namespace P1.Optimizacion.Instrucciones
                     if (op1 is String) salida = op1.ToString();
                     else
                     {
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op1 is int || op1 is Decimal)
                         {
                             if (Convert.ToDecimal(op1) == 1)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op2.ToString();//variable
+                                return valores;
+                            }
+                            else if (Convert.ToDecimal(op1) == 2)
+                            {
+                                valores[0] = "xdos";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op2.ToString();//variable
+                                return valores;
+                            }
+                            else if (Convert.ToDecimal(op1) == 0)
+                            {
+                                valores[0] = "xcero";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op2.ToString();//variable
                                 return valores;
                             }
                         }
@@ -200,13 +231,28 @@ namespace P1.Optimizacion.Instrucciones
                     else
                     {
 
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op2 is int || op2 is Decimal)
                         {
                             if (Convert.ToDecimal(op2) == 1)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op1.ToString();//variable
+                                return valores;
+                            }
+                            else if (Convert.ToDecimal(op2) == 2)
+                            {
+                                valores[0] = "xdos";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op1.ToString();//variable
+                                return valores;
+                            }
+                            else if (Convert.ToDecimal(op2) == 0)
+                            {
+                                valores[0] = "xcero";
+                                valores[1] = op1.ToString() + "*" + op2.ToString();
+                                valores[2] = op1.ToString();//variable
                                 return valores;
                             }
                         }
@@ -225,6 +271,17 @@ namespace P1.Optimizacion.Instrucciones
                     if (op1 is String) salida = op1.ToString();
                     else
                     {
+                        if (op1 is int || op1 is Decimal)
+                        {
+                            String[] valores = new String[3];
+                            if (Convert.ToDecimal(op1) == 0)
+                            {
+                                valores[0] = "xcero";
+                                valores[1] = op1.ToString() + "/" + op2.ToString();
+                                valores[2] = op2.ToString();//variable
+                                return valores;
+                            }
+                        }
                         salida = "" + Convert.ToDecimal(op1);
                     }
 
@@ -232,13 +289,14 @@ namespace P1.Optimizacion.Instrucciones
                     else
                     {
 
-                        String[] valores = new String[2];
+                        String[] valores = new String[3];
                         if (op2 is int || op2 is Decimal)
                         {
                             if (Convert.ToDecimal(op2) == 1)
                             {
                                 valores[0] = "false";
                                 valores[1] = op1.ToString() + "/" + op2.ToString();
+                                valores[2] = op1.ToString();//variable
                                 return valores;
                             }
                         }
@@ -276,7 +334,7 @@ namespace P1.Optimizacion.Instrucciones
                     else salida = "" + Convert.ToDecimal(op1);
 
                     if (op2 is String) salida = salida + ">=" + op2.ToString();
-                    else salida = salida + "==" + Convert.ToDecimal(op2);
+                    else salida = salida + ">=" + Convert.ToDecimal(op2);
 
                     return salida;
 
@@ -290,8 +348,8 @@ namespace P1.Optimizacion.Instrucciones
                     if (op1 is String) salida = op1.ToString();
                     else salida = "" + Convert.ToDecimal(op1);
 
-                    if (op2 is String) salida = salida + "<=" + op2.ToString();
-                    else salida = salida + "==" + Convert.ToDecimal(op2);
+                    if (op2 is String) salida = salida + "<" + op2.ToString();
+                    else salida = salida + "<" + Convert.ToDecimal(op2);
 
                     return salida;
 
@@ -306,7 +364,7 @@ namespace P1.Optimizacion.Instrucciones
                     else salida = "" + Convert.ToDecimal(op1);
 
                     if (op2 is String) salida = salida + "<=" + op2.ToString();
-                    else salida = salida + "==" + Convert.ToDecimal(op2);
+                    else salida = salida + "<=" + Convert.ToDecimal(op2);
 
                     return salida;
 
@@ -315,6 +373,7 @@ namespace P1.Optimizacion.Instrucciones
                 #region igual
                 if (operador == tipOper.IIGUAL)
                 {
+                    if (lin == -10) return op1.ToString() + "==" + op2.ToString();
                     String salida = "";
                     if(op1 is String)//significa que una variable x
                     {
@@ -375,7 +434,28 @@ namespace P1.Optimizacion.Instrucciones
                 object operUn = operUna.getOptimizar(arbol, nuevo, reporte, temp);
                 if (this.operador == tipOper.MENOSU)
                 {
+
+                    if (lin == -10) return "-"+operUn.ToString() ;
+                    String salida = "";
+                    if (operUn is String) salida = "-"+operUn.ToString();
+                    else
+                    {
+                       /* String[] valores = new String[2];
+                        if (operUn is int || operUn is Decimal)
+                        {
+                            if (Convert.ToDecimal(operUn) == 0)
+                            {
+                                valores[0] = "false";
+                                valores[1] = op1.ToString() + "+" + op2.ToString();
+                                return valores;
+                            }
+                        }*/
+                        salida = "-" + Convert.ToDecimal(operUn);
+                    }
+
                    
+                    return salida;
+
                 }
                 
                 #endregion

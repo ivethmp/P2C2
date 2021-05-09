@@ -1,4 +1,5 @@
 ﻿using P1.Optimizacion.Arbol;
+using P1.Optimizacion.GenerarN;
 using P1.Optimizacion.Interfaz;
 using P1.Optimizacion.Reporte;
 using System;
@@ -31,9 +32,23 @@ namespace P1.Optimizacion.Instrucciones
 
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo,LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
+            
             String cadena = id1+"[("+tipo.ToString().ToLower()+")"+id2+"]";
             if (temp.Contains(id2)) System.Diagnostics.Debug.WriteLine("el id dentro del array es " + id2);
             else temp.AddLast(id2);
+            if (lin == -10) return cadena;
+            if (tipo2 == Simbolo.Tipo.ARRAY0)
+            {
+                if (val is Expr2) val = ((Expr2)val).getOptimizar(arbol, nuevo, reporte, temp);
+                /*if(val is String)
+                {
+                    if (temp.Contains(val.ToString())) System.Diagnostics.Debug.WriteLine("al.ToString());
+                    else temp.AddLast(val.ToString());
+                }*/
+                cadena = cadena +"="+ val.ToString();
+                nuevo.AddLast(new NewCod(cadena + ";"));
+                return cadena;
+            }
             return cadena;
         }
     }

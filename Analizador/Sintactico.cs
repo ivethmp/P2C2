@@ -47,7 +47,7 @@ namespace P1.Analizador
             }
             if (raiz == null)
             {
-                System.Diagnostics.Debug.WriteLine("no tiene nada el arbol");
+               System.Diagnostics.Debug.WriteLine("no tiene nada el arbol");
                 return;
             }
 
@@ -178,7 +178,7 @@ namespace P1.Analizador
                 
                 foreach (ParseTreeNode declarar in bloque.ChildNodes[1].ChildNodes)
                 {
-                    System.Diagnostics.Debug.WriteLine("entre al for");//le mando el tipo de variable global
+                    //System.Diagnostics.Debug.WriteLine("entre al for");//le mando el tipo de variable global
                     lista.AddLast(instruc(declarar, bloque.ChildNodes[0].ChildNodes[0].Token.Text, ambito));
                 }
                 return lista;
@@ -217,7 +217,7 @@ namespace P1.Analizador
             //ParseTreeNode actual2 = nodoA.ChildNodes.ElementAt(1).ChildNodes.ElementAt[0];
 
             
-            System.Diagnostics.Debug.WriteLine("el token es " +tokenOp);
+         //   System.Diagnostics.Debug.WriteLine("el token es " +tokenOp);
             //System.Diagnostics.Debug.WriteLine("el token es 2 " + actual2);
             switch (tokenOp.ToLower())
             {
@@ -228,10 +228,10 @@ namespace P1.Analizador
                         if (nodoA.ChildNodes[0].Term.Name == "LISTDECLARA")//lista de ides de declaraciones
                         {
                             tipoA = tipoVar(nodoA.ChildNodes[2].ChildNodes[0]);
-                            System.Diagnostics.Debug.WriteLine("el valor en lista es");
+                          //  System.Diagnostics.Debug.WriteLine("el valor en lista es");
                             foreach (ParseTreeNode son in nodoA.ChildNodes[0].ChildNodes)
                             {
-                                System.Diagnostics.Debug.WriteLine("el valor es" + son.Token.Text,"el ambito es"+ambito);
+                              //  System.Diagnostics.Debug.WriteLine("el valor es" + son.Token.Text,"el ambito es"+ambito);
                                 Simb simbol = new Simb(son.Token.Text, tipoA, ambito, "Variable", 0, 0, son.Token.Location.Line, son.Token.Location.Column);
                                 ides.AddLast(simbol);
                             }
@@ -240,7 +240,7 @@ namespace P1.Analizador
                         }
                         else // solo es una variable declarada
                         {
-                            System.Diagnostics.Debug.WriteLine("entre a declara 1");
+                           // System.Diagnostics.Debug.WriteLine("entre a declara 1");
                             //System.Diagnostics.Debug.WriteLine("el ambito es" + ambito);
                             tipoA = tipoVar(nodoA.ChildNodes[2].ChildNodes[0]);
                             Simb simbol = new Simb(nodoA.ChildNodes[0].Token.Text, tipoA,ambito, "Variable", 0, 0, nodoA.ChildNodes[0].Token.Location.Line, nodoA.ChildNodes[0].Token.Location.Column);

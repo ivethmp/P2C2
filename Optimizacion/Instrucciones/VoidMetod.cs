@@ -36,7 +36,7 @@ namespace P1.Optimizacion.Instrucciones
                 //System.Diagnostics.Debug.Write("la instruccion es: " + ins + " la linea es: " + ins.lin);
                 //ASTEMP.Instrucciones.Remove(ins);
             }
-            System.Diagnostics.Debug.WriteLine("las instrucciones2 son: " + instruccion.Count);
+            //System.Diagnostics.Debug.WriteLine("las instrucciones2 son: " + instruccion.Count);
             nuevo.AddLast(new NewCod("\n}\n\n"));
             return null;
         }

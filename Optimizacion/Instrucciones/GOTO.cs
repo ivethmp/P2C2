@@ -28,7 +28,7 @@ namespace P1.Optimizacion.Instrucciones
             if (lin == -10) return cadenagoto;//codigo eliminado
 
             bool bandera = false;
-            int cont = 0;
+            
             String optimi = "";
             String elimi = "";
             String agregar = "";
@@ -36,11 +36,11 @@ namespace P1.Optimizacion.Instrucciones
             int fila = 0; ;
             foreach (Instr2 ins in arbol.Instrucciones)
             {
-                System.Diagnostics.Debug.WriteLine("esto en goto "+cont);
+            //    System.Diagnostics.Debug.WriteLine("esto en goto "+cont);
 
                 if (bandera == true)
                 {
-                    System.Diagnostics.Debug.WriteLine("la salida de la instrucciones " + ins);
+                    //System.Diagnostics.Debug.WriteLine("la salida de la instrucciones " + ins);
                     if (ins is ETIQUETA)
                     {
                         int aux = ins.lin;
@@ -72,7 +72,7 @@ namespace P1.Optimizacion.Instrucciones
                     
 
                 }
-                cont++;
+                //cont++;
             }
 
             

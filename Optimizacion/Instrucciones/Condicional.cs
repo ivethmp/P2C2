@@ -43,7 +43,7 @@ namespace P1.Optimizacion.Instrucciones
             condicion.lin = aux;
             
 
-            string cadenagoto = "if (" + condi + ")"+salto;
+            string cadenagoto = "if (" + condi + ")"+salto + ";";
             if (lin == -10) return cadenagoto;//codigo eliminado
 
             int bandera = 0;
@@ -55,19 +55,19 @@ namespace P1.Optimizacion.Instrucciones
             String etiqu = "";
             String etiquF = "";
             String cond2 = "";
-
+            Instr2 auxI = null;
             foreach (Instr2 ins in arbol.Instrucciones)
             {
                 if (bandera == 1)
                 {
-                    if (ins is GOTO)
+                    if (ins is GOTO)//siguiente goto
                     {
                         if (condi.Equals("true"))
                         {
                             ins.lin = -10;
                             salto2 = (String)ins.getOptimizar(arbol, nuevo, reporte, temp);
                             elimi = "if(" + cond2 + ") " + salto + "<br>"+salto2;
-                            ins.lin = -10;
+                            ins.lin = aux; 
                             regla = 3;
                             nuevo.AddLast(new NewCod(salto));
                             if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, salto, fila));
@@ -111,11 +111,16 @@ namespace P1.Optimizacion.Instrucciones
                         ins.lin = aux;
                         if (etiqu.Equals(etiq))
                         {
-                            cadenagoto = "if(" + condi + ") goto " + etiquF;
+                            cadenagoto = "if(" + condi + ")  ";
                             ins.lin = -10;
                             regla = 2;
                             nuevo.AddLast(new NewCod(cadenagoto));
                             if (regla != 0) reporte.AddLast(new CodigoC(optimi, regla, elimi, cadenagoto, fila));
+                            return cadenagoto;
+                        }
+                        else
+                        {
+                            nuevo.AddLast(new NewCod(cadenagoto));
                             return cadenagoto;
                         }
                    }
@@ -123,6 +128,14 @@ namespace P1.Optimizacion.Instrucciones
 
                 if(ins is Condicional && ins.lin == lin && ins.col == col)//es la actual
                 {
+                    if(condicion is Operacion)
+                    {
+
+                    }else
+                    {
+                        nuevo.AddLast(new NewCod(cadenagoto));
+                        return cadenagoto;
+                    }
                     if (((Operacion)condicion).operador == Operacion.tipOper.IIGUAL || ((Operacion)condicion).operador == Operacion.tipOper.DIF)
                     {
                        object salida = condicion.getOptimizar(arbol, nuevo, reporte, temp);

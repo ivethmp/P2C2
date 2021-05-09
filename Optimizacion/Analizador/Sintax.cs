@@ -51,7 +51,7 @@ namespace P1.Optimizacion.Analizador
             
             
 
-            foreach (String str in temps)
+           /* foreach (String str in temps)
             {
                 cadena = cadena + str + ",";
             }
@@ -59,7 +59,7 @@ namespace P1.Optimizacion.Analizador
             {
                 cadena = "float " + cadena.TrimEnd(',') + ";\n\n";
             }
-            nuevo.AddFirst(new NewCod(cadena));
+            nuevo.AddFirst(new NewCod(cadena));*/
             cadena = "#include <stdio.h>\n";
             nuevo.AddFirst(new NewCod(cadena));
             foreach (Instr2 ins in nuevo)
@@ -129,7 +129,7 @@ namespace P1.Optimizacion.Analizador
         private Instr2 instr (ParseTreeNode nodoA)
         {
             string tokenOp = nodoA.ToString().Split(' ')[0];
-            System.Diagnostics.Debug.WriteLine("el token es " + tokenOp);
+            //System.Diagnostics.Debug.WriteLine("el token es " + tokenOp);
 
             switch (tokenOp.ToLower())
             {
@@ -142,10 +142,10 @@ namespace P1.Optimizacion.Analizador
                             {
                                 ids.AddLast(variable.Token.Text);
                             }
-                            return new Declaracion(ids, 0, tipoVar(nodoA.ChildNodes[0].ChildNodes[0]), nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                            return new Declaracion(ids, "f", tipoVar(nodoA.ChildNodes[0].ChildNodes[0]), nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
                         }
                         ids.AddLast(nodoA.ChildNodes[1].Token.Text);
-                        return new Declaracion(ids, nodoA.ChildNodes[3], tipoVar(nodoA.ChildNodes[0].ChildNodes[0]), nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
+                        return new Declaracion(ids, nodoA.ChildNodes[3].Token.Text, tipoVar(nodoA.ChildNodes[0].ChildNodes[0]), nodoA.ChildNodes[2].Token.Location.Line, nodoA.ChildNodes[2].Token.Location.Column);
 
                     }
                 case "void":
@@ -176,7 +176,7 @@ namespace P1.Optimizacion.Analizador
                         }
                         else
                         {
-                            String cadena = "printf(\""+nodoA.ChildNodes[2].Token.Text+"\");";
+                            String cadena = "printf("+nodoA.ChildNodes[2].Token.Text+");";
                             return new NoChange(cadena);
                         }
                     }

@@ -1,4 +1,5 @@
 ﻿using P1.Optimizacion.Arbol;
+using P1.Optimizacion.GenerarN;
 using P1.Optimizacion.Interfaz;
 using P1.Optimizacion.Reporte;
 using System;
@@ -21,6 +22,7 @@ namespace P1.Optimizacion.Instrucciones
 
         public object getOptimizar(AST2 arbol, LinkedList<Instr2> nuevo, LinkedList<CodigoC> reporte, LinkedList<string> temp)
         {
+            nuevo.AddLast(new NewCod(cadenaEntera));
             return null;
         }
     }
