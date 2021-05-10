@@ -59,7 +59,23 @@ namespace P1.Arbol
 
         }
 
-        public bool buscarActual(String id)
+     
+        public String buscarAmbito(String id)
+        {
+            id = id.ToLower();
+
+            for (Entor e = this; e != null; e = e.anterior)
+            {
+                Simb simbolo = (Simb)(e.tabS[id]);
+                if (simbolo != null)
+                    return simbolo.ambito.ToLower();
+
+
+            }
+            return "";
+        }
+
+        public bool buscarActual(String id)//solo muestra la Global
         {
             id = id.ToLower();
             Simb encontrar = (Simb)(tabS[id]);

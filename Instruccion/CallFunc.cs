@@ -52,13 +52,17 @@ namespace P1.Instruccion
             Func f = arbol.getFuncion(id);//IDE.getFunction(id);
             //encuentro la funcion
             Simb aux = en.getSimb(f.ambito);
+            //if()
+            
             int contador =0 ;
             //recorro la funcion primero para obtener el tamaño de la funcion
             if (null != f)
             {
                 f.setValParam(valoresP);
-                if (f.tipoF != Simb.Tipo.VOID) contador = 1;//reservo el espacio para el return
-
+                if (f.tipoF != Simb.Tipo.VOID)
+                { contador = 1;//reservo el espacio para el return
+                   // aux.param = aux.param + contador;
+                        }
                 foreach (Expr e in valoresP)//valParam son de la llamada a funcion 
                 {
                     
@@ -83,7 +87,7 @@ namespace P1.Instruccion
                     }
                 }
 
-
+                aux = en.getSimb(f.ambito);
                 //Ahora tengo que mover el apuntador
                 inter.AddLast(new GenCod("sp", "" + aux.getParam(), "+", "sp", "", ""));
                 inter.AddLast(new GenCod(id + "();\n\n", "", "", "TEXTO", "", ""));

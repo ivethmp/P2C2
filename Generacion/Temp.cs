@@ -21,7 +21,7 @@ namespace P1.Generacion
             
             this.numero = cuentaTemp(inter);
             cont++;
-            System.Diagnostics.Debug.WriteLine("veamos si cuenta" + cont + " el num es " + numero);
+           // System.Diagnostics.Debug.WriteLine("veamos si cuenta" + cont + " el num es " + numero);
         }
 
         int cuentaTemp(LinkedList<Instruc> inter)

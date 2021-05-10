@@ -41,11 +41,13 @@ namespace P1.Instruccion
                     String temp = (String)newTemp.ejecutar(gen,en, arbol, inter);//obtengo el temporal
                     
 
-                bool respuesta = en.buscarActual(ide);
+                bool respuesta = en.buscarActual(ide);//solo busca en la global
+
+                System.Diagnostics.Debug.WriteLine("el acutal es " + ide + " donde encontro?" + respuesta);
                 Instruc temp3 = new Temp(inter);
 
                 String temp33 = (String)temp3.ejecutar(gen, en, arbol, inter);
-                if (respuesta == true)
+                if (respuesta == true)//dentro del mismo ambito
                 {
                     inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp, "", ""));
                    // inter.AddLast(new GenCod("sp", "" + simbol.apuntador, "+", temp11, "", ""));
@@ -53,11 +55,17 @@ namespace P1.Instruccion
                    // inter.AddLast(new GenCod(temp11, temp22, "", "GETSTACK", "", ""));
                     //retorno el temporal que contiene el valor de la variable
                 }
+                else if (en.buscarAmbito(ide) == Func.ambiteActual)//son del mismo ambito no se aumenta el sp ni se disminuye
+                {
+                    inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp, "", ""));
+                }
                 else
                 {
                     inter.AddLast(temp3);
                     Simb simbol2 = en.getSimb(actual.ambito);
-                    if(simbol2.ambito=="Global") inter.AddLast(new GenCod("", "" + "0", "", temp, "", ""));
+                    //System.Diagnostics.Debug.WriteLine("el resultado de la busqueda "+ en.buscarAmbito(ide)+"el ambiente actual es: " +Func.ambiteActual +"los valores son: 1 " + simbol2.id + " el otro> " + actual.ambito);
+                    if (simbol2.ambito == "Global") inter.AddLast(new GenCod("", "" + "0", "", temp, "", ""));
+                    //tengo que ver lo que deverdad se va borrar
                     else inter.AddLast(new GenCod("sp", "" + simbol2.param, "-", temp, "", ""));
                     String temp2 = temp;
                     temp = temp33;
@@ -131,16 +139,23 @@ namespace P1.Instruccion
                         else inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp2, "", ""));
                         inter.AddLast(new GenCod(temp2, tempHeap, "", "STACK", "", "")); //Stack[temp2]=tempHeap
                     }
-                    else
+                    else if (en.buscarAmbito(ide) == Func.ambiteActual)//son del mismo ambito
                     {
-                        inter.AddLast(temp4);
+                        inter.AddLast(new GenCod("sp", "" + actual.apuntador, "+", temp, "", ""));
+                    }
+                    else {
                         Simb simbol2 = en.getSimb(actual.ambito);
-                        inter.AddLast(new GenCod("sp", "" + simbol2.param, "-", temp2, "", ""));
-                        String temp02 = temp2;
-                        temp2 = temp44;
-                        inter.AddLast(new GenCod(temp02, "" + actual.apuntador, "+", temp2, "", ""));
+                         
+                        
+                            inter.AddLast(temp4);
+                            inter.AddLast(new GenCod("sp", "" + simbol2.param, "-", temp2, "", ""));
+                            String temp02 = temp2;
+                            temp2 = temp44;
+                            inter.AddLast(new GenCod(temp02, "" + actual.apuntador, "+", temp2, "", ""));
 
-                        inter.AddLast(new GenCod(temp2, tempHeap, "", "STACK", "", "")); //Stack[temp2]=tempHeap
+                            inter.AddLast(new GenCod(temp2, tempHeap, "", "STACK", "", "")); //Stack[temp2]=tempHeap
+                        
+                        
 
                     }
 

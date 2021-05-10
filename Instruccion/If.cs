@@ -72,12 +72,25 @@ namespace P1.Instruccion
             Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instrucciones)
                 {
-                    
-                    if (ins is Continue || ins is Break)
+
+                if (ins is Continue)
+                {
+                    if (For.continueS != "")
                     {
-                        inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
-                    //salida = "break";
+                        inter.AddLast(new GenCod("", "", "", "GOTO", For.continueS, ""));
+                        For.continueS = "";
                     }
+                    else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                }
+                if (ins is Break)
+                {
+                    if (For.breakS != "")
+                    {
+                        inter.AddLast(new GenCod("", "", "", "GOTO", For.breakS, ""));
+                        For.breakS = "";
+                    }
+                    else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                }
                 ins.ejecutar(gen, tabLoc, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
             }
 
@@ -110,9 +123,23 @@ namespace P1.Instruccion
                     foreach (Instruc ins in ifElse.instrucciones)
                     {
                        
-                        if (ins is Continue || ins is Break)
+                        if(ins is Continue)
                         {
-                            inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                            if (For.continueS != "")
+                            {
+                                inter.AddLast(new GenCod("", "", "", "GOTO", For.continueS, ""));
+                                For.continueS = "";
+                            }
+                            else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                        }
+                        if (ins is Break)
+                        {
+                            if(For.breakS != "")
+                            {
+                                inter.AddLast(new GenCod("", "", "", "GOTO", For.breakS, ""));
+                                For.breakS = "";
+                            }
+                            else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
                         }
                         ins.ejecutar(gen, tabLoc2, arbol, inter);//si no hay return, break o continue, simplemente se ejecutan las instrucciones dentro del if
                     }
@@ -155,11 +182,25 @@ namespace P1.Instruccion
             {                                                       // Entor tabLoc = new Entor(en);
                 foreach (Instruc ins in instElse)
                     {
-                        
-                        if (ins is Continue || ins is Break)
+
+                    if (ins is Continue)
+                    {
+                        if (For.continueS != "")
                         {
-                            inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                            inter.AddLast(new GenCod("", "", "", "GOTO", For.continueS, ""));
+                            For.continueS = "";
                         }
+                        else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                    }
+                    if (ins is Break)
+                    {
+                        if (For.breakS != "")
+                        {
+                            inter.AddLast(new GenCod("", "", "", "GOTO", For.breakS, ""));
+                            For.breakS = "";
+                        }
+                        else inter.AddLast(new GenCod("", "", "", "GOTO", saltos, ""));
+                    }
                     ins.ejecutar(gen, tabLoc, arbol, inter);
                 }
                 }

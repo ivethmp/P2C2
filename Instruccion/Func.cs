@@ -11,6 +11,7 @@ namespace P1.Instruccion
 {
     class Func : Instruc
     {
+        public static string ambiteActual = "Global";
         public int lin { get ; set; }
         public int col { get; set; }
         LinkedList<Declara> param;
@@ -50,8 +51,9 @@ namespace P1.Instruccion
 
             gen.Agregar("FunProc-"+id+ en.TabSimb.Count, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
             tabL.Agregar("FunProc-"+id, new Simb("FunProc-"+id, tipoF, ambito, "Proc-Fun", 0,parametros, lin, col));
-            
+            //en.Agregar("FunProc-" + id, new Simb("FunProc-" + id, tipoF, ambito, "Proc-Fun", 0, parametros, lin, col));
 
+            ambiteActual = ("FunProc-" + id).ToLower();
             inter.AddLast(new GenCod("void "+id+"(){\n\n", "", "", "TEXTO", "", ""));
             /*Etiq etiqueta = new Etiq(inter, "");
             String salida = (String)etiqueta.ejecutar(gen, en, arbol, inter);
@@ -140,7 +142,8 @@ namespace P1.Instruccion
 
                for (int i = 0; i < totales; i++)
                {
-                P.Stack0.RemoveLast();
+              if( P.Stack0.Count!=0)
+                   P.Stack0.RemoveLast();
                   /* foreach(Instruc ins in inter)
                    {
                        if (ins is Stack)

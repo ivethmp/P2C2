@@ -42,7 +42,7 @@ namespace P1.Reportes
             String ignor="";
             foreach (ParseTreeNode hoja in nodos.ChildNodes)
             {
-                System.Diagnostics.Debug.WriteLine(hoja.ToString().Split(' ')[0]);
+                //System.Diagnostics.Debug.WriteLine(hoja.ToString().Split(' ')[0]);
                 ignor = hoja.ToString().Split(' ')[0];
                 if (!(ignor.Equals(";") || ignor == ")" || ignor == "("))
                 {

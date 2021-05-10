@@ -43,12 +43,14 @@ namespace P1.Instruccion
             }
             //generno el codigo para la intruccion verdadera
             inter.AddLast(new GenCod("", "", "", "IF", etiqV+ ":\n", ""));
-                foreach (Instruc ins in instrucciones)
+            For.continueS = EtiqNueva;
+            For.breakS = etiqF;
+            foreach (Instruc ins in instrucciones)
                 {
                     
                     if (ins is Continue)
-                    {
-                        inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
+                    {   
+                         inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
                     }
                     else if (ins is Break)
                     {
@@ -56,6 +58,8 @@ namespace P1.Instruccion
                     }
                 ins.ejecutar(gen, en, arbol, inter);
             }
+            For.continueS = "";
+            For.breakS = "";
             //GENERO EL goto del la etiqueta verdadera para generar el ciclo
             inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
             // goto siguiente;

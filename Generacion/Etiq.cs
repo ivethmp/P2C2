@@ -22,7 +22,7 @@ namespace P1.Generacion
             this.cond = cond;
             this.numero = cuentaEtiq(inter);
             cont++;
-            System.Diagnostics.Debug.WriteLine("veamos si cuenta" + cont + " el num es " + numero);
+           // System.Diagnostics.Debug.WriteLine("veamos si cuenta" + cont + " el num es " + numero);
         }
        
 

@@ -67,7 +67,13 @@ namespace P1.Instruccion
                     temp22 = temp33;
                     Simb simbol2 = en.getSimb(simbol.ambito);
                     if (simbol2.ambito == "Global") inter.AddLast(new GenCod("", "" + "0", "", temp11, "", ""));
+                    else if (en.buscarAmbito(ide) == Func.ambiteActual)//son del mismo ambito
+                    {
+                        
+                        inter.AddLast(new GenCod("sp", "" + "0", "+", temp11, "", ""));
+                    }
                     else inter.AddLast(new GenCod("sp", "" + simbol2.param, "-", temp11, "", ""));
+
                     inter.AddLast(new GenCod(temp11, "" + simbol.apuntador, "+", temp02, "", ""));
                     inter.AddLast(new GenCod(temp02, temp22, "", "GETSTACK", "", ""));
                 }

@@ -86,7 +86,7 @@ namespace P1.Analizador
                     inst.ejecutar(General, entorno, arb, inter);
                 }
             }
-
+           
             RepTabS reporte = new RepTabS();
             reporte.GenHTML(entorno,"TablaSimb-Global");
             RepTabS reporte2 = new RepTabS();

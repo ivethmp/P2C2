@@ -9,6 +9,8 @@ namespace P1.Instruccion
 {
     class For : Instruc
     {
+        public static string breakS ="";
+        public static string continueS = "";
         public int lin { get ; set; }
         public int col { get; set; }
         Instruc Asignar;
@@ -52,20 +54,27 @@ namespace P1.Instruccion
             }
             //generno el codigo para la intruccion verdadera
             inter.AddLast(new GenCod("", "", "", "IF", etiqV+ ":\n", ""));
+            continueS = EtiqNueva;
+            breakS = etiqF;
             foreach (Instruc ins in instrucciones)
             {
                 
                 if (ins is Continue)
                 {
+                    
                     inter.AddLast(new GenCod("", "", "", "GOTO", EtiqNueva, ""));
                 }
                 else if (ins is Break)
                 {
+                    
                     inter.AddLast(new GenCod("", "", "", "GOTO", etiqF, ""));
                    
                 }
                 ins.ejecutar(gen, en, arbol, inter);
             }
+
+            continueS = "";
+            breakS = "";
             //genero la operacion de aumento del valor de la variable 
             Expr contador = new Oper(new IdentVal(id, Asignar.lin, Asignar.col), new Prim(1,0,0), Oper.getOperador("+"));
             Asig AsignoN = new Asig(id, contador, Asignar.lin, Asignar.col);
